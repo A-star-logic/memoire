@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "snyk-security.snyk-vulnerability-scanner",
+    "streetsidesoftware.code-spell-checker",
+    "mhutchie.git-graph",
+    "vscode-icons-team.vscode-icons",
+    "ms-azuretools.vscode-docker",
+    "github.vscode-github-actions",
+    "nuxt.mdc"
+  ]
+}

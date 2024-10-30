@@ -1,3 +1,7 @@
+python_env
+dataset
+.memoire
+
 # Logs
 logs
 *.log
