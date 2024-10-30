@@ -1,13 +1,14 @@
 // node
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 
 // utils
+import { secureVerifyDocumentID } from '../../utils/security.js';
 import { prepareForBM25 } from '../../utils/text-processing.js';
 
 const b = 0.75;
 const k1 = 1.5;
 
-let documentsData: {
+const documentsData: {
   [documentID: string]: {
     termFrequency: { [key: string]: number };
     wordLength: number;
@@ -25,14 +26,36 @@ let termsData: {
  */
 export async function loadFTSIndexFromDisk(): Promise<void> {
   try {
-    documentsData = JSON.parse(
-      await readFile('.memoire/fts/documentsData.json', { encoding: 'utf8' }),
-    ) as typeof documentsData;
-    termsData = JSON.parse(
-      await readFile('.memoire/fts/termsData.json', { encoding: 'utf8' }),
-    ) as typeof termsData;
-  } catch {
-    console.log('No full text search index found; creating a new one');
+    const files = await readdir('.memoire/fts', { recursive: true });
+    if (files.length > 0) {
+      for (const file of files) {
+        if (file.endsWith('.json') && file !== 'termsData.json') {
+          const documentData = JSON.parse(
+            // eslint-disable-next-line security/detect-non-literal-fs-filename
+            await readFile(`.memoire/fts/${file}`, { encoding: 'utf8' }),
+          ) as (typeof documentsData)[string];
+          documentsData[file.replace('.json', '')] = documentData;
+        }
+      }
+      console.log(
+        `${Object.keys(documentsData).length} documents loaded in FTS index`,
+      );
+      if (files.includes('termsData.json')) {
+        termsData = JSON.parse(
+          await readFile('.memoire/fts/termsData.json', { encoding: 'utf8' }),
+        ) as typeof termsData;
+        console.log(
+          `${Object.keys(termsData).length} terms loaded in FTS index`,
+        );
+      }
+    }
+  } catch (error) {
+    // @ts-expect-error fix later, not a problem right now
+    if (error.code === 'ENOENT') {
+      console.log('No FTS index found');
+    } else {
+      console.log(error);
+    }
   }
 }
 
@@ -41,11 +64,21 @@ export async function loadFTSIndexFromDisk(): Promise<void> {
  */
 export async function saveFTSIndexToDisk(): Promise<void> {
   await mkdir('.memoire/fts', { recursive: true });
-  await writeFile(
-    '.memoire/fts/documentsData.json',
-    JSON.stringify(documentsData),
-  );
   await writeFile('.memoire/fts/termsData.json', JSON.stringify(termsData));
+  for (const documentID of Object.keys(documentsData)) {
+    if (documentID !== 'undefined') {
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      await writeFile(
+        '.memoire/fts/' +
+          (await secureVerifyDocumentID({ documentID })) +
+          '.json',
+        JSON.stringify({
+          termFrequency: documentsData[documentID].termFrequency,
+          wordLength: documentsData[documentID].wordLength,
+        } satisfies (typeof documentsData)[string]),
+      );
+    }
+  }
 }
 
 /**
@@ -98,8 +131,8 @@ async function bm25({
 }
 
 /**
- * Add a document to the full text search index
- * **IMPORTANT**: This function must be sync, or it could mess the calculations
+ * Add a document to the full text search index.
+ * **Note**: This function does not calculate the IDF, this needs to be done after ingesting documents
  * @param root named parameters
  * @param root.documentID the id of the document
  * @param root.text the text of the document
@@ -135,17 +168,17 @@ export async function addFTSDocument({
 
     termsData[term] = termData;
   }
-
-  await calculateIDF();
 }
 
 /**
  * Calculate the IDF of the index; must be run after ingesting documents and before searching
  */
 export async function calculateIDF(): Promise<void> {
-  for (const [, termData] of Object.entries(termsData)) {
+  const totalDocuments = Object.keys(documentsData).length;
+  console.log(`Total documents: ${totalDocuments}`);
+  for (const termData of Object.values(termsData)) {
     termData.inverseDocumentFrequency = Math.log(
-      (Object.keys(documentsData).length - termData.documentFrequency + 0.5) /
+      (totalDocuments - termData.documentFrequency + 0.5) /
         (termData.documentFrequency + 0.5) +
         1,
     );

@@ -1,10 +1,11 @@
 // node
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 
 // utils
+import { secureVerifyDocumentID } from '../../utils/security.js';
 import { calculateSimilarity } from '../../utils/similarity.js';
 
-let documentsData: {
+const documentsData: {
   [documentIDatChunkID: string]: {
     chunkID: number;
     documentID: string;
@@ -17,13 +18,28 @@ let documentsData: {
  */
 export async function loadVectorIndexFromDisk(): Promise<void> {
   try {
-    documentsData = JSON.parse(
-      await readFile('.memoire/vector/documentsData.json', {
-        encoding: 'utf8',
-      }),
-    ) as typeof documentsData;
-  } catch {
-    console.log('No full vector search index found; creating a new one');
+    const files = await readdir('.memoire/vector', { recursive: true });
+    if (files.length > 0) {
+      for (const file of files) {
+        if (file.endsWith('.json')) {
+          const documentData = JSON.parse(
+            // eslint-disable-next-line security/detect-non-literal-fs-filename
+            await readFile(`.memoire/vector/${file}`, { encoding: 'utf8' }),
+          ) as (typeof documentsData)[string];
+          documentsData[documentData.documentID] = documentData;
+        }
+      }
+    }
+    console.log(
+      `${Object.keys(documentsData).length} documents loaded in vector index`,
+    );
+  } catch (error) {
+    // @ts-expect-error fix later, not a problem right now
+    if (error.code === 'ENOENT') {
+      console.log('No Vector index found');
+    } else {
+      console.log(error);
+    }
   }
 }
 
@@ -32,10 +48,21 @@ export async function loadVectorIndexFromDisk(): Promise<void> {
  */
 export async function saveVectorIndexToDisk(): Promise<void> {
   await mkdir('.memoire/vector', { recursive: true });
-  await writeFile(
-    '.memoire/vector/documentsData.json',
-    JSON.stringify(documentsData),
-  );
+  for (const documentID of Object.keys(documentsData)) {
+    if (documentID !== 'undefined') {
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      await writeFile(
+        '.memoire/vector/' +
+          (await secureVerifyDocumentID({ documentID })) +
+          '.json',
+        JSON.stringify({
+          chunkID: documentsData[documentID].chunkID,
+          documentID: documentsData[documentID].documentID,
+          embedding: documentsData[documentID].embedding,
+        } satisfies (typeof documentsData)[string]),
+      );
+    }
+  }
 }
 
 /**

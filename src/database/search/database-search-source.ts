@@ -6,8 +6,6 @@ interface SourceDocument {
   title: string;
 }
 
-let cache: { [documentID: string]: SourceDocument } = {};
-
 /**
  * Save the source document to disk
  * @param root named parameters
@@ -27,35 +25,15 @@ export async function saveSourceDocument({
   metadata: object;
   title: string;
 }): Promise<void> {
-  cache[documentID] = {
-    chunkedContent,
-    metadata,
-    title,
-  };
-  // await mkdir('.memoire/sources', { recursive: true });
-  // await writeFile(
-  //   `.memoire/sources/${documentID}.json`,
-  //   JSON.stringify({
-  //     chunkedContent,
-  //     metadata,
-  //     title,
-  //   } satisfies SourceDocument),
-  // );
-}
-
-export async function flushCache(): Promise<void> {
   await mkdir('.memoire/sources', { recursive: true });
-  for (const documentID in cache) {
-    await writeFile(
-      `.memoire/sources/${documentID}.json`,
-      JSON.stringify({
-        chunkedContent: cache[documentID].chunkedContent,
-        metadata: cache[documentID].metadata,
-        title: cache[documentID].title,
-      } satisfies SourceDocument),
-    );
-  }
-  cache = {};
+  await writeFile(
+    `.memoire/sources/${documentID}.json`,
+    JSON.stringify({
+      chunkedContent,
+      metadata,
+      title,
+    } satisfies SourceDocument),
+  );
 }
 
 /**

@@ -5,13 +5,12 @@
 import { readdir, readFile } from 'node:fs/promises';
 
 // core
-import { addDocument, search } from './core/search.js';
+import { addDocument } from './core/search.js';
 import {
   calculateIDF,
   saveFTSIndexToDisk,
 } from './database/search/database-search-fts.js';
 import { saveVectorIndexToDisk } from './database/search/database-search-vector.js';
-import { flushCache } from './database/search/database-search-source.js';
 
 const files = await readdir('./dataset', { recursive: true });
 
@@ -20,11 +19,10 @@ const formatMemoryUsage = (data: number): string => {
 };
 
 let ingestionTimes: number[] = [];
-let iteration = 0;
+let limit = 0;
 const start = new Date();
 for (const filePath of files) {
-  if (filePath.includes('.json') && iteration < 1000) {
-    iteration += 1;
+  if (filePath.includes('.json') && limit++ < 10_000) {
     const startIngestionTime = new Date();
     const document = await readFile(`./dataset/${filePath}`, {
       encoding: 'utf8',
@@ -56,21 +54,6 @@ console.log(`Average ingestion time: ${averageTime / 1000}s`);
 ingestionTimes = []; // release memory
 
 console.log(`Memory used: ${formatMemoryUsage(process.memoryUsage().rss)}`);
-const startFlush = new Date();
-await flushCache();
-const endFlush = new Date();
-console.log(
-  `\nFlushing cache in ${(endFlush.getTime() - startFlush.getTime()) / 1000}s`,
-);
-
-console.log(`Memory used: ${formatMemoryUsage(process.memoryUsage().rss)}`);
-
-const startIndexing = new Date();
-await calculateIDF();
-const endIndexing = new Date();
-console.log(
-  `\nIndexing ${(endIndexing.getTime() - startIndexing.getTime()) / 1000}s`,
-);
 
 const startSaveFTSIndex = new Date();
 await saveFTSIndexToDisk();
@@ -82,30 +65,12 @@ const startSaveVectorIndex = new Date();
 await saveVectorIndexToDisk();
 const endSaveVectorIndex = new Date();
 console.log(
-  `\nSaving vector index in ${(endSaveVectorIndex.getTime() - startSaveVectorIndex.getTime()) / 1000}s`,
+  `Saving vector index in ${(endSaveVectorIndex.getTime() - startSaveVectorIndex.getTime()) / 1000}s`,
 );
 
-const document = await readFile(`./dataset/${files[0]}`, {
-  encoding: 'utf8',
-});
-const data: {
-  chunks: { [key: string]: { embedding: number[]; text: string } };
-} = JSON.parse(document);
-
-const fakeQuery = {
-  embedding: data.chunks['0'].embedding,
-  text: data.chunks['0'].text,
-};
-
-const searchStart = new Date();
-await search({
-  embedding: fakeQuery.embedding,
-  query: fakeQuery.text,
-});
-const searchEnd = new Date();
-
+const startIndexing = new Date();
+await calculateIDF();
+const endIndexing = new Date();
 console.log(
-  `\nSearch took ${(searchEnd.getTime() - searchStart.getTime()) / 1000}s`,
+  `\nIndexing ${(endIndexing.getTime() - startIndexing.getTime()) / 1000}s`,
 );
-
-console.log(`Memory used: ${formatMemoryUsage(process.memoryUsage().rss)}`);
