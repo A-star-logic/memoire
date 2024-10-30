@@ -129,7 +129,7 @@ export async function createDocumentChunks({
  * @param root named parameters
  * @param root.document A document, or a list of chunks from a document to embed
  * @param root.isQuery is the documnt for query
- * @returns an object with the averaged embedding an an array of chunk embeddings
+ * @returns an object with an array of chunk embeddings and their ids
  */
 export async function embedDocumentWithCohere({
   document,
