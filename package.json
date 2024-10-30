@@ -13,6 +13,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@sinclair/typebox": "^0.33.17",
     "@types/node": "^22.8.2"
   }
 }

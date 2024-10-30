@@ -1,6 +1,6 @@
 python_env
 dataset
-.lancedb
+.memoire
 
 # Logs
 logs

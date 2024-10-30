@@ -1,20 +1,68 @@
-import { prepareForBM25 } from './text-processing.js';
+// node
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+
+// utils
+import { prepareForBM25 } from '../../utils/text-processing.js';
 
 const b = 0.75;
 const k1 = 1.5;
 
-const documentsData: {
+let documentsData: {
   [documentID: string]: {
     termFrequency: { [key: string]: number };
     wordLength: number;
   };
 } = {};
-const termsData: {
+let termsData: {
   [term: string]: {
     documentFrequency: number;
     inverseDocumentFrequency: number;
   };
 } = {};
+
+/**
+ * Load the index from disk
+ */
+export async function loadFTSIndexFromDisk(): Promise<void> {
+  try {
+    documentsData = JSON.parse(
+      await readFile('.memoire/fts/documentsData.json', { encoding: 'utf8' }),
+    ) as typeof documentsData;
+    termsData = JSON.parse(
+      await readFile('.memoire/fts/termsData.json', { encoding: 'utf8' }),
+    ) as typeof termsData;
+  } catch {
+    console.log('No full text search index found; creating a new one');
+  }
+}
+
+/**
+ * Save the index to disk
+ */
+export async function saveFTSIndexToDisk(): Promise<void> {
+  await mkdir('.memoire/fts', { recursive: true });
+  await writeFile(
+    '.memoire/fts/documentsData.json',
+    JSON.stringify(documentsData),
+  );
+  await writeFile('.memoire/fts/termsData.json', JSON.stringify(termsData));
+}
+
+/**
+ * Verify if a document has been indexed
+ *
+ * **Note**: We are using the FTS index as "ground truth" for speed
+ * @param root named parameters
+ * @param root.documentID the id of the document
+ * @returns true if the document exists
+ */
+export async function exists({
+  documentID,
+}: {
+  documentID: string;
+}): Promise<boolean> {
+  return documentID in documentsData;
+}
 
 /**
  * Calculate the bm25 score of a query against a document
@@ -56,7 +104,7 @@ async function bm25({
  * @param root.documentID the id of the document
  * @param root.text the text of the document
  */
-export async function addDocument({
+export async function addFTSDocument({
   documentID,
   text,
 }: {
@@ -87,6 +135,8 @@ export async function addDocument({
 
     termsData[term] = termData;
   }
+
+  await calculateIDF();
 }
 
 /**
@@ -106,15 +156,16 @@ export async function calculateIDF(): Promise<void> {
  * Execute a full text search
  * @param root named parameters
  * @param root.query the text query to use for the full text search
+ * @param root.maxResults the maximum number of results
  * @returns an array of scores
  */
-export async function search({ query }: { query: string }): Promise<number[]> {
-  console.log(
-    `total documents: ${Object.keys(documentsData).length}; total unique terms: ${Object.keys(termsData).length}`,
-  );
-  console.log(Object.values(termsData));
-  console.log(Object.keys(termsData));
-
+export async function FTSSearch({
+  maxResults,
+  query,
+}: {
+  maxResults: number;
+  query: string;
+}): Promise<{ documentID: string; score: number }[]> {
   const normalizedQuery = await prepareForBM25({ text: query });
   const totalWordsLength = Object.values(documentsData).reduce(
     (sum, currentData) => {
@@ -125,14 +176,15 @@ export async function search({ query }: { query: string }): Promise<number[]> {
   const averageDocumentLength =
     totalWordsLength / Object.keys(documentsData).length;
 
-  return await Promise.all(
-    Object.keys(documentsData).map(async (documentID) => {
-      const score = await bm25({
-        averageDocumentLength,
-        documentID,
-        normalizedQuery,
-      });
-      return score;
-    }),
-  );
+  const results: Awaited<ReturnType<typeof FTSSearch>> = [];
+  // todo: can be optimised to limit results size to maxResult instead of splicing it at the end
+  for (const documentID of Object.keys(documentsData)) {
+    const score = await bm25({
+      averageDocumentLength,
+      documentID,
+      normalizedQuery,
+    });
+    results.push({ documentID, score });
+  }
+  return results.splice(maxResults + 1);
 }

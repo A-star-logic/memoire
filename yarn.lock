@@ -1914,6 +1914,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sinclair/typebox@npm:^0.33.17":
+  version: 0.33.17
+  resolution: "@sinclair/typebox@npm:0.33.17"
+  checksum: 10c0/7808ee635fed449eebdfb7e86cf1e84aeff6b27232923277b6a6a0e57f3d38b8ac3dbc3d30bcd60a2e93c5fadc3aad20d387e3a85670a0f893eebed0ef5ca6a6
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:^1.0.6":
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
@@ -4768,6 +4775,7 @@ __metadata:
   resolution: "memoire@workspace:."
   dependencies:
     "@ansearch/config": "npm:^0.0.2"
+    "@sinclair/typebox": "npm:^0.33.17"
     "@types/node": "npm:^22.8.2"
     "@typescript-eslint/parser": "npm:^8.11.0"
     eslint: "npm:^9.13.0"
