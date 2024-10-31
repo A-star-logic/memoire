@@ -2,8 +2,10 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 
 // utils
-import { secureVerifyDocumentID } from '../../utils/security.js';
-import { prepareForBM25 } from '../../utils/text-processing.js';
+import { secureVerifyDocumentID } from '../../utils/utils-security.js';
+import { prepareForBM25 } from '../../utils/utils-text-processing.js';
+import { logger } from '../reporting/database-external-config.js';
+import { errorReport } from '../reporting/database-interface-reporting.ee.js';
 
 const b = 0.75;
 const k1 = 1.5;
@@ -37,14 +39,14 @@ export async function loadFTSIndexFromDisk(): Promise<void> {
           documentsData[file.replace('.json', '')] = documentData;
         }
       }
-      console.log(
+      logger.info(
         `${Object.keys(documentsData).length} documents loaded in FTS index`,
       );
       if (files.includes('termsData.json')) {
         termsData = JSON.parse(
           await readFile('.memoire/fts/termsData.json', { encoding: 'utf8' }),
         ) as typeof termsData;
-        console.log(
+        logger.info(
           `${Object.keys(termsData).length} terms loaded in FTS index`,
         );
       }
@@ -52,9 +54,12 @@ export async function loadFTSIndexFromDisk(): Promise<void> {
   } catch (error) {
     // @ts-expect-error fix later, not a problem right now
     if (error.code === 'ENOENT') {
-      console.log('No FTS index found');
+      logger.info('No FTS index found');
     } else {
-      console.log(error);
+      await errorReport({
+        error,
+        message: 'Error loading FTS index from disk',
+      });
     }
   }
 }
@@ -175,7 +180,6 @@ export async function addFTSDocument({
  */
 export async function calculateIDF(): Promise<void> {
   const totalDocuments = Object.keys(documentsData).length;
-  console.log(`Total documents: ${totalDocuments}`);
   for (const termData of Object.values(termsData)) {
     termData.inverseDocumentFrequency = Math.log(
       (totalDocuments - termData.documentFrequency + 0.5) /

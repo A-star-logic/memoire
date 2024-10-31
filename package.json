@@ -1,19 +1,43 @@
 {
-  "name": "memoire",
+  "name": "Memoire",
+  "version": "0.0.0",
   "packageManager": "yarn@4.2.2",
+  "scripts": {
+    "dev": "NODE_ENV=development tsx watch --conditions=development src/index.ts",
+    "build": "tsup"
+  },
   "devDependencies": {
     "@ansearch/config": "^0.0.2",
+    "@types/luxon": "^3",
     "@types/node": "^22.8.4",
     "@typescript-eslint/parser": "^8.11.0",
+    "dotenv": "^16.4.5",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
+    "pino-pretty": "^11.3.0",
     "prettier": "^3.3.3",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "type": "module",
   "dependencies": {
-    "@sinclair/typebox": "^0.33.17"
+    "@fastify/compress": "^8.0.1",
+    "@fastify/cors": "^10.0.1",
+    "@fastify/helmet": "^12.0.1",
+    "@fastify/swagger": "^9.2.0",
+    "@fastify/swagger-ui": "^5.1.0",
+    "@fastify/type-provider-typebox": "^5.0.0",
+    "@fastify/under-pressure": "^9.0.1",
+    "@sentry/node": "^8.36.0",
+    "@sentry/profiling-node": "^8.36.0",
+    "@sinclair/typebox": "^0.33.17",
+    "fastify": "^5.0.0",
+    "fastify-plugin": "^5.0.1",
+    "http-terminator": "^3.2.0",
+    "luxon": "^3.5.0",
+    "pino": "^9.5.0",
+    "posthog-node": "^4.2.1",
+    "tsup": "^8.3.5"
   }
 }
