@@ -2,8 +2,10 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 
 // utils
-import { secureVerifyDocumentID } from '../../utils/security.js';
-import { calculateSimilarity } from '../../utils/similarity.js';
+import { secureVerifyDocumentID } from '../../utils/utils-security.js';
+import { calculateSimilarity } from '../../utils/utils-similarity.js';
+import { logger } from '../reporting/database-external-config.js';
+import { errorReport } from '../reporting/database-interface-reporting.ee.js';
 
 const documentsData: {
   [documentIDatChunkID: string]: {
@@ -30,15 +32,18 @@ export async function loadVectorIndexFromDisk(): Promise<void> {
         }
       }
     }
-    console.log(
+    logger.info(
       `${Object.keys(documentsData).length} documents loaded in vector index`,
     );
   } catch (error) {
     // @ts-expect-error fix later, not a problem right now
     if (error.code === 'ENOENT') {
-      console.log('No Vector index found');
+      logger.info('No Vector index found');
     } else {
-      console.log(error);
+      await errorReport({
+        error,
+        message: 'Error loading Vector index from disk',
+      });
     }
   }
 }

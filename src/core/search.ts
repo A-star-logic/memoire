@@ -1,5 +1,9 @@
 import { rerank } from '../ai/ai-reranker.js';
 import {
+  autoEmbed,
+  embedQuery,
+} from '../ai/embedding/ai-embeddings-interface.js';
+import {
   addFTSDocument,
   FTSSearch,
   loadFTSIndexFromDisk,
@@ -19,40 +23,43 @@ await loadFTSIndexFromDisk();
 
 /**
  * Add a document for search.
- * The document.content MUST be chunked, or it will mess with the highlights
+ * **Note**: This function does not calculate the IDF, this needs to be done after ingesting documents
  * @param root named parameters
- * @param root.chunkedContent the content as chunks
+ * @param root.content the content of the document
  * @param root.documentID the document ID
- * @param root.embeddings the chunks that have been embedded
  * @param root.metadata the metadata of the document
  * @param root.title the document title
  */
 export async function addDocument({
-  chunkedContent,
+  content,
   documentID,
-  embeddings,
   metadata,
-  title,
+  title = undefined,
 }: {
-  chunkedContent: string[];
+  content: string;
   documentID: string;
-  embeddings: { chunkID: number; embedding: number[] }[]; // todo remove and replace by a call within this function
   metadata: object;
-  title: string;
+  title: string | undefined;
 }): Promise<void> {
   // if (await exists({ documentID })) {
   //   await deleteVectorChunks({ documentID });
   // }
 
-  await bulkAddVectorChunks({ documentID, embeddings });
+  const autoEmbedPromise = autoEmbed({ document: content });
 
   await addFTSDocument({
     documentID,
-    text: title + chunkedContent.join(' '),
+    text: title ? title + content : content,
+  });
+
+  const autoEmbedResult = await autoEmbedPromise;
+  await bulkAddVectorChunks({
+    documentID,
+    embeddings: autoEmbedResult,
   });
 
   await saveSourceDocument({
-    chunkedContent,
+    chunkedContent: autoEmbedResult,
     documentID,
     metadata,
     title,
@@ -62,17 +69,14 @@ export async function addDocument({
 /**
  * Search for the most similar documents, and return an array of scored documents
  * @param root named parameters
- * @param root.embedding removeme
  * @param root.maxResults the maximum number of results returned by the query (default: 100)
  * @param root.query the query for keyword search
  * @returns an object with two arrays: one for vector search, one for keyword search
  */
 export async function search({
-  embedding,
   maxResults = 100,
   query,
 }: {
-  embedding: number[]; // todo remove
   maxResults?: number;
   query: string;
 }): Promise<
@@ -82,14 +86,13 @@ export async function search({
     highlights: string | undefined;
     metadata: object;
     score: number;
-    title: string;
+    title: string | undefined;
   }[]
 > {
-  // const embeddingResponse = await embedDocument({ chunks: [query] });
+  const embedding = await embedQuery({ query });
 
   const keywordPromise = FTSSearch({ maxResults, query });
   const vectorPromise = vectorSearch({
-    // embedding: embeddingResponse[0].embedding,
     embedding,
     maxResults,
   });

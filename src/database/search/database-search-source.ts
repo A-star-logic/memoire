@@ -1,9 +1,10 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { secureVerifyDocumentID } from '../../utils/utils-security.js';
 
 interface SourceDocument {
   chunkedContent: string[];
   metadata: object;
-  title: string;
+  title: string | undefined;
 }
 
 /**
@@ -20,16 +21,19 @@ export async function saveSourceDocument({
   metadata,
   title,
 }: {
-  chunkedContent: string[];
+  chunkedContent: { chunkText: string }[];
   documentID: string;
   metadata: object;
-  title: string;
+  title: string | undefined;
 }): Promise<void> {
   await mkdir('.memoire/sources', { recursive: true });
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
   await writeFile(
-    `.memoire/sources/${documentID}.json`,
+    `.memoire/sources/${await secureVerifyDocumentID({ documentID })}.json`,
     JSON.stringify({
-      chunkedContent,
+      chunkedContent: chunkedContent.map((chunk) => {
+        return chunk.chunkText;
+      }),
       metadata,
       title,
     } satisfies SourceDocument),
@@ -48,6 +52,7 @@ async function loadSourceDocument({
   documentID: string;
 }): Promise<SourceDocument> {
   return JSON.parse(
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
     await readFile(`.memoire/sources/${documentID}.json`, { encoding: 'utf8' }),
   ) as SourceDocument;
 }
