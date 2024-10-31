@@ -40,6 +40,9 @@ export async function apiUsageReport({
   /** The server memory usage in MB */ // todo not the right place to do this (put it in the ingestion pipeline instead) + send warnings when server starts to get overloaded
   // const memoryUsage =
   //   Math.round((process.memoryUsage.rss() / 1024 / 1024) * 100) / 100;
+
+  // filter out liveness and doc requests
+  if (url.includes('liveness') || url.includes('/docs/')) return;
   posthogClient.capture({
     distinctId: 'anonymous',
     event: 'use API',

@@ -1,6 +1,5 @@
 // libs
 import { config } from 'dotenv';
-import { logger } from '../database/reporting/database-external-config.js';
 
 /**
  * Load the .env file
@@ -8,7 +7,8 @@ import { logger } from '../database/reporting/database-external-config.js';
  */
 export function loadEnvironment(): void {
   if (process.env.NODE_ENV !== 'production') {
-    logger.debug('Loading .env file');
+    // eslint-disable-next-line no-console
+    console.log('Loading .env file');
     config({ path: '.env' }); // when launched from the root
     config({ path: '../../.env' });
   }
