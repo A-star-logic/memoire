@@ -2,7 +2,7 @@ export interface EmbeddingModelInput {
   chunks: string[];
 }
 export type EmbeddingModelOutput = {
-  chunkID: number;
+  chunkID: string;
   chunkText: string;
   embedding: number[];
 }[];

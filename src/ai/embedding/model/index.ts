@@ -32,7 +32,7 @@ switch (process.env.EMBEDDING_MODEL) {
   case 'titan': {
     const titanModel = await import('./ai-embedding-model-titan.js');
     embedDocumentFunction = titanModel.embedDocument;
-    embedQueryFunction = titanModel.embedQuery;
+    embedQueryFunction = titanModel.embedDocument;
     isTooLargeFunction = titanModel.isTooLarge;
     logger.info('Using Titan model for embedding');
     break;
