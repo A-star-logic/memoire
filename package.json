@@ -4,7 +4,11 @@
   "packageManager": "yarn@4.2.2",
   "scripts": {
     "dev": "NODE_ENV=development tsx watch --conditions=development src/index.ts",
-    "build": "tsup"
+    "build": "tsup",
+    "lint": "yarn lint:eslint ; yarn lint:tsc ; yarn lint:prettier",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier . --check --config .prettierrc.js",
+    "lint:tsc": "tsc -p ./tsconfig.json"
   },
   "devDependencies": {
     "@ansearch/config": "^0.0.2",
@@ -12,7 +16,6 @@
     "@types/node": "^22.8.4",
     "@typescript-eslint/parser": "^8.11.0",
     "@xenova/transformers": "^2.17.2",
-    "dotenv": "^16.4.5",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
@@ -36,6 +39,7 @@
     "@sentry/profiling-node": "^8.36.0",
     "@sinclair/typebox": "^0.33.17",
     "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
     "fastify": "^5.0.0",
     "fastify-plugin": "^5.0.1",
     "http-terminator": "^3.2.0",
