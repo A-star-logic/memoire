@@ -64,6 +64,9 @@ jobs:
         run: yarn workspaces focus -A --production
         shell: bash
 
+      - name: DEBUG
+        run: ls
+
       - name: Clean TS, build, test files...
         run: |
           find . -name '*.ts' -delete
