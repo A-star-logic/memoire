@@ -32,10 +32,12 @@
     "@sentry/node": "^8.36.0",
     "@sentry/profiling-node": "^8.36.0",
     "@sinclair/typebox": "^0.33.17",
+    "axios": "^1.7.7",
     "fastify": "^5.0.0",
     "fastify-plugin": "^5.0.1",
     "http-terminator": "^3.2.0",
     "luxon": "^3.5.0",
+    "mammoth": "^1.8.0",
     "pino": "^9.5.0",
     "posthog-node": "^4.2.1",
     "tsup": "^8.3.5"
