@@ -1,0 +1,15 @@
+name: prepare
+description: checkout the repo, install dependencies (and use the cache)
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Use cache
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'yarn'
+
+    - name: Install
+      run: yarn install --immutable
+      shell: bash
