@@ -3,14 +3,26 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 import { type Static, Type } from '@sinclair/typebox';
 
 // server
-import type { CustomFastifyInstance } from '../../server/types.js';
+import type {
+  CustomFastifyInstance,
+  CustomRequest,
+} from '../../server/types.js';
 
 // database
-import { calculateIDF } from '../../database/search/database-search-fts.js';
+import {
+  calculateIDF,
+  saveFTSIndexToDisk,
+} from '../../database/search/database-search-fts.js';
 
 // core
 import { extractFromUrl } from '../../core/extractor.js';
 import { addDocument, search } from '../../core/search.js';
+
+// database
+import { errorReport } from '../../database/reporting/database-interface-reporting.ee.js';
+import { saveVectorIndexToDisk } from '../../database/search/database-search-vector.js';
+
+// utils
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
 
 const basicResponseSchema = Type.Object({
@@ -19,46 +31,69 @@ const basicResponseSchema = Type.Object({
   }),
 });
 
+const documentLinkBodySchema = Type.Object(
+  {
+    documents: Type.Array(
+      Type.Object(
+        {
+          documentID: Type.String({
+            description:
+              'The ID of the document. **Note** This id can only support letters, numbers, dashes (-) and underscores (_)',
+            examples: ['abc-123', 'document1'],
+          }),
+          metadata: Type.Optional(
+            Type.Object(
+              {},
+              {
+                description:
+                  'Any metadata related to the document. This is not used for the search of filtering',
+                examples: [{ meta: 'data' }],
+              },
+            ),
+          ),
+          title: Type.Optional(
+            Type.String({
+              description: 'The title of the document, if any',
+              examples: ['My Document'],
+            }),
+          ),
+          url: Type.String({ examples: ['https://example.com'] }),
+        },
+        {
+          description: 'An array of document to ingest.',
+        },
+      ),
+    ),
+  },
+  { additionalProperties: false },
+);
+
+/**
+ * The post reply hook, that will:
+ * - ingest the documents // todo do this later, when we have a stronger architecture that can catch errors and self-correct
+ * - Run the IDF calculation
+ * - Save changes to disk
+ * @param _request the fastify request
+ * @param _reply the fastify reply
+ */
+async function postIngestion(
+  _request: CustomRequest,
+  _reply: unknown,
+): Promise<void> {
+  // const { documents } = request.body as Static<typeof documentLinkBodySchema>;
+  try {
+    await calculateIDF();
+    await saveFTSIndexToDisk();
+    await saveVectorIndexToDisk();
+  } catch (error) {
+    await errorReport({ error, message: 'In post ingestion hook' });
+  }
+}
+
 export const searchRouter: FastifyPluginAsyncTypebox = async (
   app: CustomFastifyInstance,
   _options,
 ) => {
-  const documentLinkBodySchema = Type.Object(
-    {
-      documents: Type.Array(
-        Type.Object(
-          {
-            documentID: Type.String({
-              description:
-                'The ID of the document. **Note** This id can only support letters, numbers, dashes (-) and underscores (_)',
-              examples: ['abc-123', 'document1'],
-            }),
-            metadata: Type.Optional(
-              Type.Object(
-                {},
-                {
-                  description:
-                    'Any metadata related to the document. This is not used for the search of filtering',
-                  examples: [{ meta: 'data' }],
-                },
-              ),
-            ),
-            title: Type.Optional(
-              Type.String({
-                description: 'The title of the document, if any',
-                examples: ['My Document'],
-              }),
-            ),
-            url: Type.String({ examples: ['https://example.com'] }),
-          },
-          {
-            description: 'An array of document to ingest.',
-          },
-        ),
-      ),
-    },
-    { additionalProperties: false },
-  );
   app.post<{
     Body: Static<typeof documentLinkBodySchema>;
     Reply: Static<typeof basicResponseSchema>;
@@ -66,6 +101,8 @@ export const searchRouter: FastifyPluginAsyncTypebox = async (
     '/ingest/document-links',
     {
       onRequest: [app.token_auth],
+      // @ts-expect-error dunno how to type this properly
+      onResponse: [postIngestion],
       schema: {
         body: documentLinkBodySchema,
         description: `
@@ -74,6 +111,7 @@ Send a list of downloadable link of documents to be ingested.
 Support:
 
 - txt
+- docx (word > 2007)
 `,
         response: {
           200: basicResponseSchema,
@@ -111,7 +149,6 @@ Support:
         });
       }
 
-      await calculateIDF();
       return { message: 'ok' };
     },
   );
