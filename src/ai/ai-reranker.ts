@@ -93,5 +93,5 @@ export async function rerank({
   results.sort((a, b) => {
     return b.score - a.score;
   });
-  return results.splice(maxResults + 1);
+  return results.slice(0, maxResults + 1);
 }

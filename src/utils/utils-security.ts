@@ -12,8 +12,9 @@ export async function secureVerifyDocumentID({
 }: {
   documentID: string;
 }): Promise<string> {
-  // allow only word and number characters underscore and dashes https://regex101.com/r/OJeFLm/2
-  const hasForbiddenCharacters = /[^\w-]/gm.test(documentID);
+  // allow only word and number characters underscore and dashes https://regex101.com/r/OJeFLm/3
+  // note: '@' symbols are allowed but undocumented, as we use this to index vector chunks
+  const hasForbiddenCharacters = /[^\w@-]/gm.test(documentID);
   if (hasForbiddenCharacters) {
     throw new Error('Document ID contains forbidden characters');
   }
