@@ -78,6 +78,7 @@ jobs:
           retention-days: 1
           name: build
           path: |
+            **/dist/*
             node_modules/*
             docker/*
             package.json
@@ -92,11 +93,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
-
-      - name: Load transpile artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
