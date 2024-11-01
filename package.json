@@ -11,6 +11,7 @@
     "@types/luxon": "^3",
     "@types/node": "^22.8.4",
     "@typescript-eslint/parser": "^8.11.0",
+    "@xenova/transformers": "^2.17.2",
     "dotenv": "^16.4.5",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
@@ -29,6 +30,8 @@
     "@fastify/swagger-ui": "^5.1.0",
     "@fastify/type-provider-typebox": "^5.0.0",
     "@fastify/under-pressure": "^9.0.1",
+    "@langchain/community": "^0.3.11",
+    "@langchain/core": "^0.3.16",
     "@sentry/node": "^8.36.0",
     "@sentry/profiling-node": "^8.36.0",
     "@sinclair/typebox": "^0.33.17",
@@ -40,6 +43,7 @@
     "mammoth": "^1.8.0",
     "pino": "^9.5.0",
     "posthog-node": "^4.2.1",
+    "tiktoken": "^1.0.17",
     "tsup": "^8.3.5"
   }
 }

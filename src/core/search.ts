@@ -1,7 +1,7 @@
 import { rerank } from '../ai/ai-reranker.js';
 import {
   autoEmbed,
-  embedQuery,
+  autoEmbedQuery,
 } from '../ai/embedding/ai-embeddings-interface.js';
 import {
   addFTSDocument,
@@ -89,11 +89,10 @@ export async function search({
     title: string | undefined;
   }[]
 > {
-  const embedding = await embedQuery({ query });
-
+  const embeddingPromise = autoEmbedQuery({ query });
   const keywordPromise = FTSSearch({ maxResults, query });
   const vectorPromise = vectorSearch({
-    embedding,
+    embedding: await embeddingPromise,
     maxResults,
   });
   const [keywordResults, vectorResults] = await Promise.all([
@@ -104,9 +103,7 @@ export async function search({
   const originalDocumentsPromise = getSourceDocuments({
     searchResults: [...vectorResults, ...keywordResults],
   });
-
   const reRanked = await rerank({ keywordResults, maxResults, vectorResults });
-
   const originalDocuments = await originalDocumentsPromise;
 
   const results = [];

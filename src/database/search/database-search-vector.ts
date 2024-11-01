@@ -108,7 +108,7 @@ export async function vectorSearch({
   maxResults: number;
 }): Promise<{ chunkID: number; documentID: string; score: number }[]> {
   const result: Awaited<ReturnType<typeof vectorSearch>> = [];
-  // todo: can be optimised to limit results size to maxResult instead of splicing it at the end
+  // todo: can be optimised to limit results size to maxResult instead of slicing it at the end
   for (const chunk of Object.values(documentsData)) {
     result.push({
       chunkID: chunk.chunkID,
@@ -122,7 +122,7 @@ export async function vectorSearch({
   result.sort((a, b) => {
     return b.score - a.score;
   });
-  return result.splice(maxResults + 1);
+  return result.slice(0, maxResults + 1);
 }
 
 // /**

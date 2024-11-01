@@ -223,5 +223,5 @@ export async function FTSSearch({
     });
     results.push({ documentID, score });
   }
-  return results.splice(maxResults + 1);
+  return results.slice(0, maxResults + 1);
 }
