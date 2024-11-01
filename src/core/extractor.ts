@@ -16,7 +16,9 @@ export async function extractFromUrl({
   const fileType = extension?.split('?')[0];
   if (fileType === 'docx' || fileType === 'txt') {
     const response = await axios.get(url, { responseType: 'arraybuffer' });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const documentBuffer = Buffer.from(response.data);
+
     if (fileType === 'docx') {
       const result = await mammoth.extractRawText({
         buffer: documentBuffer,
