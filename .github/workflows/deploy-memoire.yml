@@ -36,7 +36,6 @@ jobs:
           name: dist
           path: |
             dist/*
-      # need an additional step for saving the maps to Sentry
 
   # Having multiple jobs allow the equivalent of multi-stage builds in docker; but we can leverage more easily github cache from the action workflow
   build:
@@ -79,7 +78,6 @@ jobs:
           retention-days: 1
           name: build
           path: |
-            dist/*
             node_modules/*
             docker/*
             package.json
@@ -90,10 +88,15 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Load artifact
+      - name: Load build artifact
         uses: actions/download-artifact@v4
         with:
           name: build
+
+      - name: Load transpile artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
