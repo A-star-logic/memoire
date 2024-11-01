@@ -1,7 +1,6 @@
 run-name: Deploy api
 
 on:
-  pull_request:
   push:
     branches: [main]
 
@@ -65,9 +64,6 @@ jobs:
         run: yarn workspaces focus -A --production
         shell: bash
 
-      - name: DEBUG
-        run: ls
-
       - name: Clean TS, build, test files...
         run: |
           find . -name '*.ts' -delete
@@ -113,6 +109,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/A-star-logic/memoire:latest, ghcr.io/A-star-logic/memoire:${{ github.sha }}
+          tags: ghcr.io/a-star-logic/memoire:latest, ghcr.io/A-star-logic/memoire:${{ github.sha }}
           file: ./docker/Dockerfile.memoire
           context: ./
