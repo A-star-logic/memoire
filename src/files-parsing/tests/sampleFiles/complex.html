@@ -1,0 +1,2806 @@
+<!DOCTYPE html>
+
+
+<html itemscope itemtype="https://schema.org/QAPage" class="html__responsive " lang="en">
+
+<head>
+
+  <title>javascript - Extracting values from nested object and outputting their keys according to a rule (3 minimal
+    values) in a certain format - Stack Overflow</title>
+  <link rel="shortcut icon" href="https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico?v=ec617d715196">
+  <link rel="apple-touch-icon"
+    href="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a">
+  <link rel="image_src" href="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a">
+  <link rel="search" type="application/opensearchdescription+xml" title="Stack Overflow" href="/opensearch.xml">
+  <link rel="canonical"
+    href="https://stackoverflow.com/questions/71691737/extracting-values-from-nested-object-and-outputting-their-keys-according-to-a-ru" />
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0">
+  <meta property="og:type" content="website" />
+  <meta property="og:url"
+    content="https://stackoverflow.com/questions/71691737/extracting-values-from-nested-object-and-outputting-their-keys-according-to-a-ru" />
+  <meta property="og:site_name" content="Stack Overflow" />
+  <meta property="og:image" itemprop="image primaryImageOfPage"
+    content="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:domain" content="stackoverflow.com" />
+  <meta name="twitter:title" property="og:title" itemprop="name"
+    content="Extracting values from nested object and outputting their keys according to a rule (3 minimal values) in a certain format" />
+  <meta name="twitter:description" property="og:description" itemprop="description"
+    content="I have an object with some nested data that I need to process programmatically to achieve a certain output. It will be the easiest to explain by demonstrating with example.&#xA;Example&#xA;&#xA;I conducted an " />
+  <script id="webpack-public-path" type="text/uri-list">https://cdn.sstatic.net/</script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+  <script defer
+    src="https://cdn.sstatic.net/Js/third-party/npm/@stackoverflow/stacks/dist/js/stacks.min.js?v=d5f780ae3281"></script>
+  <script src="https://cdn.sstatic.net/Js/stub.en.js?v=d1b2dbc97e66"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.sstatic.net/Shared/stacks.css?v=dbee492db9b7">
+  <link rel="stylesheet" type="text/css" href="https://cdn.sstatic.net/Sites/stackoverflow/primary.css?v=d540aba22a4d">
+
+
+
+  <link rel="alternate" type="application/atom+xml"
+    title="Feed for question &#x27;Extracting values from nested object and outputting their keys according to a rule (3 minimal values) in a certain format&#x27;"
+    href="/feeds/question/71691737">
+  <script>
+    StackExchange.ready(function () {
+
+      StackExchange.using("snippets", function () {
+        StackExchange.snippets.initSnippetRenderer();
+      });
+
+      StackExchange.using("postValidation", function () {
+        StackExchange.postValidation.initOnBlurAndSubmit($('#post-form'), 2, 'answer');
+      });
+
+
+      StackExchange.question.init({ canOpenBounty: true, votesCast: [], showTrendingSortLaunchPopover: false, showTrendingSortPostLaunchPopover: false, totalCommentCount: 0, shownCommentCount: 0, enableTables: true, questionId: 71691737 });
+
+      styleCode();
+
+      StackExchange.realtime.subscribeToQuestion('1', '71691737');
+      StackExchange.using("gps", function () { StackExchange.gps.trackOutboundClicks('#content', '.js-post-body'); });
+
+
+    });
+  </script>
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.sstatic.net/Shared/Channels/channels.css?v=db82e15fc6d3">
+
+
+
+
+
+  <script>
+    StackExchange.ready(function () {
+      StackExchange.realtime.init('wss://qa.sockets.stackexchange.com');
+      StackExchange.realtime.subscribeToReputationNotifications('1');
+      StackExchange.realtime.subscribeToTopBarNotifications('1');
+    });
+  </script>
+  <script type="application/json" data-role="module-args"
+    data-module-name="Shared/options.mod"></script>
+  <script type="application/json" data-role="module-args"
+    data-module-name="Shared/settings.mod"></script>
+  <script>StackExchange.init();</script>
+
+  <script>
+    StackExchange.using.setCacheBreakers({ "Js/adops.en.js": "6da43f5e0a84", "Js/ask.en.js": "", "Js/begin-edit-event.en.js": "20edbaccceae", "Js/copy-transpiled.en.js": "d31dc7eba3bc", "Js/events.en.js": "", "Js/explore-qlist.en.js": "2b1f34938b8b", "Js/full-anon.en.js": "2d9d0c080b56", "Js/full.en.js": "89a98431c98d", "Js/highlightjs-loader.en.js": "510e2f94c2bf", "Js/inline-tag-editing.en.js": "3e8cc64ee9d6", "Js/keyboard-shortcuts.en.js": "107c2ac31497", "Js/markdown-it-loader.en.js": "5818ef89ff9d", "Js/mentions-transpiled.en.js": "d398f7c1afbf", "Js/moderator.en.js": "25d76b1d2706", "Js/postCollections-transpiled.en.js": "11a255fe9394", "Js/post-validation.en.js": "243bf7d290a3", "Js/question-editor.en.js": "", "Js/review-v2-transpiled.en.js": "d8246fd945d5", "Js/revisions.en.js": "47b4d5ac24c9", "Js/stacks-editor.en.js": "58f53e9e8a88", "Js/tageditor.en.js": "dc13482a67f8", "Js/tageditornew.en.js": "b3d2f0187c1a", "Js/tagsuggestions.en.js": "bd6ec908f2a7", "Js/unlimited-transpiled.en.js": "f26a1d5f3365", "Js/wmd.en.js": "102d8a628997", "Js/snippet-javascript-codemirror.en.js": "ae1dcf38deb7" });
+    StackExchange.using("gps", function () {
+      StackExchange.gps.init(false);
+    });
+  </script>
+  <noscript id="noscript-css">
+    <style>
+      body,
+      .s-topbar {
+        margin-top: 1.9em
+      }
+    </style>
+  </noscript>
+</head>
+
+<body class="question-page unified-theme">
+
+  <div id="notify-container"></div>
+  <div id="custom-header"></div>
+
+
+  <header class="s-topbar ps-fixed t0 l0 js-top-bar">
+    <div class="s-topbar--container">
+      <a href="#" class="s-topbar--menu-btn js-left-sidebar-toggle" role="menuitem" aria-haspopup="true"
+        aria-controls="left-sidebar" aria-expanded="false"><span></span></a>
+      <div class="topbar-dialog leftnav-dialog js-leftnav-dialog dno">
+        <div class="left-sidebar js-unpinned-left-sidebar" data-can-be="left-sidebar" data-is-here-when="sm"></div>
+      </div>
+      <a href="https://stackoverflow.com" class="s-topbar--logo js-gps-track"
+        data-gps-track="top_nav.click({is_current:false, location:2, destination:8})">
+        <span class="-img _glyph">Stack Overflow</span>
+      </a>
+
+
+
+      <ol class="s-navigation" role="presentation">
+
+
+        <li>
+          <a href="#" class="s-navigation--item js-gps-track js-products-menu" aria-controls="products-popover"
+            data-controller="s-popover" data-action="s-popover#toggle" data-s-popover-placement="bottom"
+            data-s-popover-toggle-class="is-selected"
+            data-gps-track="top_nav.products.click({location:2, destination:1})"
+            data-ga="[&quot;top navigation&quot;,&quot;products menu click&quot;,null,null,null]">
+            Products
+          </a>
+        </li>
+
+      </ol>
+      <div class="s-popover ws2 mtn2 p0" id="products-popover" role="menu" aria-hidden="true">
+        <div class="s-popover--arrow"></div>
+        <ol class="list-reset s-anchors s-anchors__inherit">
+          <li class="m6">
+            <a href="/" class="bar-sm p6 d-block h:bg-black-225 js-gps-track"
+              data-gps-track="top_nav.products.click({location:2, destination:2})"
+              data-ga="[&quot;top navigation&quot;,&quot;public qa submenu click&quot;,null,null,null]">
+              <span class="fs-body1 d-block">Stack Overflow</span>
+              <span class="fs-caption d-block fc-black-400">Public questions &amp; answers</span>
+            </a>
+          </li>
+          <li class="m6">
+            <a href="https://stackoverflow.co/teams/" class="bar-sm p6 d-block h:bg-black-225 js-gps-track"
+              data-gps-track="top_nav.products.click({location:2, destination:3})"
+              data-ga="[&quot;top navigation&quot;,&quot;teams submenu click&quot;,null,null,null]">
+              <span class="fs-body1 d-block">Stack Overflow for Teams</span>
+              <span class="fs-caption d-block fc-black-400">Where developers &amp; technologists share private knowledge
+                with coworkers</span>
+            </a>
+          </li>
+          <li class="m6">
+            <a href="https://stackoverflow.co/talent/" class="bar-sm p6 d-block h:bg-black-225 js-gps-track"
+              data-gps-track="top_nav.products.click({location:2, destination:5})"
+              data-ga="[&quot;top navigation&quot;,&quot;talent submenu click&quot;,null,null,null]">
+              <span class="fs-body1 d-block">Talent</span>
+              <span class="fs-caption d-block fc-black-400">
+                Build your employer brand
+              </span>
+            </a>
+          </li>
+          <li class="m6">
+            <a href="https://stackoverflow.co/advertising/" class="bar-sm p6 d-block h:bg-black-225 js-gps-track"
+              data-gps-track="top_nav.products.click({location:2, destination:6})"
+              data-ga="[&quot;top navigation&quot;,&quot;advertising submenu click&quot;,null,null,null]">
+              <span class="fs-body1 d-block">Advertising</span>
+              <span class="fs-caption d-block fc-black-400">Reach developers &amp; technologists worldwide</span>
+            </a>
+          </li>
+          <li class="bt bc-black-200 py6 px6 bbr-md">
+            <a href="https://stackoverflow.co/labs/" class="bar-sm p6 d-block h:bg-black-225 js-gps-track"
+              data-gps-track="top_nav.products.click({location:2, destination:7})"
+              data-ga="[&quot;top navigation&quot;,&quot;labs submenu click&quot;,null,null,null]">
+              <span class="fs-body1 d-block">Labs</span>
+              <span class="fs-caption d-block fc-black-400">The future of collective knowledge sharing</span>
+            </a>
+          </li>
+          <li class="bg-black-100 bt bc-black-200 py6 px6 bbr-md">
+            <a href="https://stackoverflow.co/" class="fc-black-400 d-block py6 px6 h:fc-black-600 js-gps-track"
+              data-gps-track="top_nav.products.click({location:2, destination:7})"
+              data-ga="[&quot;top navigation&quot;,&quot;about submenu click&quot;,null,null,null]">About the
+              company</a>
+          </li>
+        </ol>
+      </div>
+
+
+      <form id="search" role="search" action=/search class="s-topbar--searchbar js-searchbar " autocomplete="off">
+        <div class="s-topbar--searchbar--input-group">
+          <input name="q" type="text" role="combobox" placeholder="Search&#x2026;" value="" autocomplete="off"
+            maxlength="240" class="s-input s-input__search js-search-field " aria-label="Search"
+            aria-controls="top-search" data-controller="s-popover" data-action="focus->s-popover#show"
+            data-s-popover-placement="bottom-start" />
+          <svg aria-hidden="true" class="s-input-icon s-input-icon__search svg-icon iconSearch" width="18" height="18"
+            viewBox="0 0 18 18">
+            <path
+              d="m18 16.5-5.14-5.18h-.35a7 7 0 1 0-1.19 1.19v.35L16.5 18l1.5-1.5ZM12 7A5 5 0 1 1 2 7a5 5 0 0 1 10 0Z" />
+          </svg>
+          <div class="s-popover p0 wmx100 wmn4 sm:wmn-initial js-top-search-popover" id="top-search" role="menu">
+            <div class="s-popover--arrow"></div>
+            <div class="js-spinner p24 d-flex ai-center jc-center d-none">
+              <div class="s-spinner s-spinner__sm fc-orange-400">
+                <div class="v-visible-sr">Loading&#x2026;</div>
+              </div>
+            </div>
+
+            <span class="v-visible-sr js-screen-reader-info"></span>
+            <div class="js-ac-results overflow-y-auto hmx3 d-none"></div>
+
+            <div class="js-search-hints" aria-describedby="Tips for searching"></div>
+          </div>
+        </div>
+      </form>
+
+      <nav class="h100 ml-auto overflow-x-auto pr12">
+        <ol class="s-topbar--content" role="menubar">
+          <li role="none"><button
+              class="s-topbar--item s-btn s-btn__icon s-btn__muted d-none sm:d-inline-flex js-searchbar-trigger"
+              role="menuitem" aria-label="Search" aria-haspopup="true" aria-controls="search"
+              title="Click to show search"><svg aria-hidden="true" class="svg-icon iconSearch" width="18" height="18"
+                viewBox="0 0 18 18">
+                <path
+                  d="m18 16.5-5.14-5.18h-.35a7 7 0 1 0-1.19 1.19v.35L16.5 18l1.5-1.5ZM12 7A5 5 0 1 1 2 7a5 5 0 0 1 10 0Z" />
+              </svg></button></li>
+
+          <li role="none">
+            <a href="/users/9020761/mael-abgrall"
+              class="s-topbar--item s-user-card s-user-card__small m0 px12 js-gps-track" role="menuitem"
+              data-gps-track="profile_summary.click()">
+              <div class="s-avatar s-avatar__24 s-user-card--avatar sm:m0" title="Mael Abgrall"><img
+                  src="https://i.stack.imgur.com/tmQmX.jpg?s=64&amp;g=1" alt="Mael Abgrall&#39;s user avatar" width="24"
+                  height="24" class="bar-sm s-avatar--image js-avatar-me"></div> <span class="v-visible-sr">Mael
+                Abgrall</span>
+
+              <div class="s-user-card--info sm:d-none">
+                <ul class="s-user-card--awards">
+                  <li class="s-user-card--rep js-header-rep" title="your reputation: 447" aria-hidden="true">
+                    447
+                    <span class="v-visible-sr">, 447 reputation</span>
+                  </li>
+                  <li class="-badges mr0">
+                    <span title="2 gold badges" aria-hidden="true"><span class="badge1">&#9679;</span><span
+                        class="badgecount">2</span></span><span class="v-visible-sr">2 gold badges</span><span
+                      title="6 silver badges" aria-hidden="true"><span class="badge2">&#9679;</span><span
+                        class="badgecount">6</span></span><span class="v-visible-sr">6 silver badges</span><span
+                      title="16 bronze badges" aria-hidden="true"><span class="badge3">&#9679;</span><span
+                        class="badgecount">16</span></span><span class="v-visible-sr">16 bronze badges</span>
+                  </li>
+                </ul>
+              </div>
+            </a>
+          </li>
+          <li role="none">
+            <a href="https://stackexchange.com/users/12370244?tab=inbox" class="s-topbar--item js-inbox-button"
+              aria-label="Inbox" role="menuitem" title="Recent inbox messages" aria-haspopup="true"
+              aria-expanded="false" data-unread-count="0">
+              <svg aria-hidden="true" class="svg-icon iconInbox" width="20" height="18" viewBox="0 0 20 18">
+                <path
+                  d="M4.63 1h10.56a2 2 0 0 1 1.94 1.35L20 10.79V15a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-4.21l2.78-8.44c.25-.8 1-1.36 1.85-1.35Zm8.28 12 2-2h2.95l-2.44-7.32a1 1 0 0 0-.95-.68H5.35a1 1 0 0 0-.95.68L1.96 11h2.95l2 2h6Z" />
+              </svg>
+              <span class="s-activity-indicator s-activity-indicator__danger js-unread-count d-none">0</span>
+            </a>
+          </li>
+          <li role="none">
+            <a href="https://stackexchange.com/users/12370244?tab=reputation"
+              class="s-topbar--item js-achievements-button" data-unread-class="fc-success" aria-label="Achievements"
+              role="menuitem" title="Recent achievements: reputation, badges, and privileges earned"
+              aria-haspopup="true" aria-expanded="false" data-unread-count="-3" data-lit-up="false">
+              <svg aria-hidden="true" class="svg-icon iconAchievements" width="18" height="18" viewBox="0 0 18 18">
+                <path
+                  d="M15 2V1H3v1H0v4c0 1.6 1.4 3 3 3v1c.4 1.5 3 2.6 5 3v2H5s-1 1.5-1 2h10c0-.4-1-2-1-2h-3v-2c2-.4 4.6-1.5 5-3V9c1.6-.2 3-1.4 3-3V2h-3ZM3 7c-.5 0-1-.5-1-1V4h1v3Zm8.4 2.5L9 8 6.6 9.4l1-2.7L5 5h3l1-2.7L10 5h2.8l-2.3 1.8 1 2.7h-.1ZM16 6c0 .5-.5 1-1 1V4h1v2Z" />
+              </svg>
+              <span class="s-activity-indicator s-activity-indicator__success js-unread-count d-none">+-3</span>
+            </a>
+          </li>
+          <li role="none">
+            <a href="/help" class="s-topbar--item js-help-button" role="menuitem"
+              title="Help Center and other resources" aria-haspopup="true" aria-controls="topbar-help-dialog"
+              data-ga="[&quot;top navigation&quot;,&quot;help menu click&quot;,null,null,null]"><svg aria-hidden="true"
+                class="svg-icon iconHelp" width="18" height="18" viewBox="0 0 18 18">
+                <path
+                  d="M9 1C4.64 1 1 4.64 1 9c0 4.36 3.64 8 8 8 4.36 0 8-3.64 8-8 0-4.36-3.64-8-8-8Zm.81 12.13c-.02.71-.55 1.15-1.24 1.13-.66-.02-1.17-.49-1.15-1.2.02-.72.56-1.18 1.22-1.16.7.03 1.2.51 1.17 1.23ZM11.77 8c-.59.66-1.78 1.09-2.05 1.97a4 4 0 0 0-.09.75c0 .05-.03.16-.18.16H7.88c-.16 0-.18-.1-.18-.15.06-1.35.66-2.2 1.83-2.88.39-.29.7-.75.7-1.24.01-1.24-1.64-1.82-2.35-.72-.21.33-.18.73-.18 1.1H5.75c0-1.97 1.03-3.26 3.03-3.26 1.75 0 3.47.87 3.47 2.83 0 .57-.2 1.05-.48 1.44Z" />
+              </svg></a>
+          </li>
+          <div class="topbar-dialog help-dialog js-help-dialog dno" id="topbar-help-dialog" role="menu">
+            <div class="modal-content">
+              <ul>
+                <li>
+                  <a href="/tour" class="js-gps-track s-block-link" data-gps-track="help_popup.click({ item_type:1 })"
+                    data-ga="[&quot;top navigation&quot;,&quot;tour submenu click&quot;,null,null,null]">
+                    Tour
+                    <span class="item-summary">
+                      Start here for a quick overview of the site
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/help" class="js-gps-track s-block-link" data-gps-track="help_popup.click({ item_type:4 })"
+                    data-ga="[&quot;top navigation&quot;,&quot;help center&quot;,null,null,null]">
+                    Help Center
+                    <span class="item-summary">
+                      Detailed answers to any questions you might have
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://meta.stackoverflow.com" class="js-gps-track s-block-link"
+                    data-gps-track="help_popup.click({ item_type:2 })"
+                    data-ga="[&quot;top navigation&quot;,&quot;meta submenu click&quot;,null,null,null]">
+                    Meta
+                    <span class="item-summary">
+                      Discuss the workings and policies of this site
+                    </span>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://stackoverflow.co/" class="js-gps-track s-block-link"
+                    data-gps-track="help_popup.click({ item_type:6 })"
+                    data-ga="[&quot;top navigation&quot;,&quot;about us submenu click&quot;,null,null,null]">
+                    About Us
+                    <span class="item-summary">
+                      Learn more about Stack Overflow the company, and our products
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <li role="none">
+            <a href="https://stackexchange.com" class="s-topbar--item js-site-switcher-button js-gps-track"
+              data-gps-track="site_switcher.show" aria-label="Site switcher" role="menuitem"
+              title="A list of all 183 Stack Exchange sites" aria-haspopup="true" aria-expanded="false"
+              data-ga="[&quot;top navigation&quot;,&quot;stack exchange click&quot;,null,null,null]">
+              <svg aria-hidden="true" class="svg-icon iconStackExchange" width="18" height="18" viewBox="0 0 18 18">
+                <path
+                  d="M15 1H3a2 2 0 0 0-2 2v2h16V3a2 2 0 0 0-2-2ZM1 13c0 1.1.9 2 2 2h8v3l3-3h1a2 2 0 0 0 2-2v-2H1v2Zm16-7H1v4h16V6Z" />
+              </svg>
+            </a>
+          </li>
+
+
+          <li class="js-topbar-dialog-corral" role="presentation">
+
+
+            <div class="topbar-dialog siteSwitcher-dialog dno" role="menu">
+              <div class="header fw-wrap">
+                <h3 class="flex--item">
+                  <a href="https://stackoverflow.com">current community</a>
+                </h3>
+                <div class="flex--item fl1">
+                  <div class="ai-center d-flex jc-end">
+                    <button class="js-close-button s-btn s-btn__muted p0 ml8 d-none sm:d-block" type="button"
+                      aria-label="Close">
+                      <svg aria-hidden="true" class="svg-icon iconClear" width="18" height="18" viewBox="0 0 18 18">
+                        <path
+                          d="M15 4.41 13.59 3 9 7.59 4.41 3 3 4.41 7.59 9 3 13.59 4.41 15 9 10.41 13.59 15 15 13.59 10.41 9 15 4.41Z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-content bg-blue-200 current-site-container">
+                <div class="d-none sm:d-block">
+                  <div class="d-flex ai-end">
+                    <div class="s-user-card flex--item fl1">
+                      <a href="/users/9020761/mael-abgrall" class="s-avatar s-avatar__32 s-user-card--avatar">
+                        <div class="gravatar-wrapper-32"><img src="https://i.stack.imgur.com/tmQmX.jpg?s=32&amp;g=1"
+                            alt="Mael Abgrall&#39;s user avatar" width="32" height="32"
+                            class="bar-sm avatar s-avatar--image"></div>
+                      </a>
+                      <div class="s-user-card--info">
+                        <a href="/users/9020761/mael-abgrall" class="s-user-card--link">Mael Abgrall</a>
+                        <div class="s-user-card--awards lh-unset fc-black-500 fw-bold">
+                          <span class="reputation-score" title="reputation score " dir="ltr">447</span><span
+                            title="2 gold badges" aria-hidden="true"><span class="badge1"></span><span
+                              class="badgecount">2</span></span><span class="v-visible-sr">2 gold badges</span><span
+                            title="6 silver badges" aria-hidden="true"><span class="badge2"></span><span
+                              class="badgecount">6</span></span><span class="v-visible-sr">6 silver badges</span><span
+                            title="16 bronze badges" aria-hidden="true"><span class="badge3"></span><span
+                              class="badgecount">16</span></span><span class="v-visible-sr">16 bronze badges</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="related-links flex--item p8">
+                      <a href="https://stackoverflow.com/users/logout"
+                        data-gps-track="site_switcher.click({ item_type:8 })">log out</a>
+                    </div>
+                  </div>
+                </div>
+                <ul class="current-site">
+                  <li class="d-flex">
+                    <div class="fl1">
+                      <a href="https://stackoverflow.com" class="current-site-link d-flex gx8 site-link js-gps-track"
+                        data-id="1" data-gps-track="site_switcher.click({ item_type:3 })">
+                        <div class="favicon favicon-stackoverflow site-icon flex--item" title="Stack Overflow"></div>
+                        <span class="flex--item fl1">
+                          Stack Overflow
+                        </span>
+                      </a>
+
+                    </div>
+                    <div class="related-links">
+                      <a href="https://stackoverflow.com/help" class="js-gps-track"
+                        data-gps-track="site_switcher.click({ item_type:14 })">help</a>
+                      <a href="https://chat.stackoverflow.com/?tab=site&amp;host=stackoverflow.com" class="js-gps-track"
+                        data-gps-track="site_switcher.click({ item_type:6 })">chat</a>
+                      <a href="https://stackoverflow.com/users/logout" class="js-gps-track"
+                        data-gps-track="site_switcher.click({ item_type:8 })">log out</a>
+                    </div>
+
+                  </li>
+                  <li class="related-site d-flex">
+                    <div class="L-shaped-icon-container">
+                      <span class="L-shaped-icon"></span>
+                    </div>
+
+                    <a href="https://meta.stackoverflow.com" class="s-block-link px16 d-flex gx8 site-link js-gps-track"
+                      data-id="552"
+                      data-gps-track="site.switch({ target_site:552, item_type:3 }),site_switcher.click({ item_type:4 })">
+                      <div class="favicon favicon-stackoverflowmeta site-icon flex--item" title="Meta Stack Overflow">
+                      </div>
+                      <span class="flex--item fl1">
+                        Meta Stack Overflow
+                      </span>
+                    </a>
+
+                  </li>
+                </ul>
+              </div>
+
+              <div class="header" id="your-communities-header">
+                <h3>
+                  <a href="https://stackexchange.com/users/12370244/?tab=accounts">your communities</a>
+                </h3>
+
+                <a href="#" id="edit-pinned-sites">edit</a>
+                <a href="#" id="cancel-pinned-sites" style="display: none;">cancel</a>
+              </div>
+              <div class="modal-content" id="your-communities-section">
+
+                <ul class="my-sites">
+                  <li class="p0">
+                    <a href="https://stackoverflow.com" class="s-block-link px16 d-flex gx8 site-link js-gps-track"
+                      data-id="1"
+                      data-gps-track="site.switch({ target_site:1, item_type:3 }),site_switcher.click({ item_type:1 })">
+                      <div class="favicon favicon-stackoverflow site-icon flex--item" title="Stack Overflow"></div>
+                      <span class="flex--item fl1">
+                        Stack Overflow
+                      </span>
+                      <span class="rep-score flex--item">447</span>
+                    </a>
+
+                  </li>
+                  <li class="p0">
+                    <a href="https://serverfault.com" class="s-block-link px16 d-flex gx8 site-link js-gps-track"
+                      data-id="2"
+                      data-gps-track="site.switch({ target_site:2, item_type:3 }),site_switcher.click({ item_type:1 })">
+                      <div class="favicon favicon-serverfault site-icon flex--item" title="Server Fault"></div>
+                      <span class="flex--item fl1">
+                        Server Fault
+                      </span>
+                      <span class="rep-score flex--item">131</span>
+                    </a>
+
+                  </li>
+                  <li class="p0">
+                    <a href="https://unix.stackexchange.com" class="s-block-link px16 d-flex gx8 site-link js-gps-track"
+                      data-id="106"
+                      data-gps-track="site.switch({ target_site:106, item_type:3 }),site_switcher.click({ item_type:1 })">
+                      <div class="favicon favicon-unix site-icon flex--item" title="Unix &amp; Linux"></div>
+                      <span class="flex--item fl1">
+                        Unix &amp; Linux
+                      </span>
+                      <span class="rep-score flex--item">103</span>
+                    </a>
+
+                  </li>
+                  <li class="p0">
+                    <a href="https://ai.stackexchange.com" class="s-block-link px16 d-flex gx8 site-link js-gps-track"
+                      data-id="658"
+                      data-gps-track="site.switch({ target_site:658, item_type:3 }),site_switcher.click({ item_type:1 })">
+                      <div class="favicon favicon-ai site-icon flex--item" title="Artificial Intelligence"></div>
+                      <span class="flex--item fl1">
+                        Artificial Intelligence
+                      </span>
+                      <span class="rep-score flex--item">101</span>
+                    </a>
+
+                  </li>
+                  <li class="p0">
+                    <a href="https://askubuntu.com" class="s-block-link px16 d-flex gx8 site-link js-gps-track"
+                      data-id="89"
+                      data-gps-track="site.switch({ target_site:89, item_type:3 }),site_switcher.click({ item_type:1 })">
+                      <div class="favicon favicon-askubuntu site-icon flex--item" title="Ask Ubuntu"></div>
+                      <span class="flex--item fl1">
+                        Ask Ubuntu
+                      </span>
+                      <span class="rep-score flex--item">101</span>
+                    </a>
+
+                  </li>
+                </ul>
+                <div class="pinned-site-editor-container" style="display: none;">
+                  <input type="hidden" name="fkey"
+                    value="fd668bbb56a48e0cdd87a4f583896cb6ffc8aa0e980a6df9fabbe53dafdbdf67">
+                  <div class="d-flex p12">
+                    <div class="flex--item fl1 ps-relative">
+                      <input id="js-site-search-txt" type="text" class="s-input s-input__sm w100 h100 site-filter-input"
+                        value="" placeholder="Add a Stack Exchange community" />
+                      <ul class="js-found-sites found-sites hmx1 l0 r0 ps-absolute overflow-y-auto"></ul>
+                    </div>
+                    <button class="ml8 s-btn s-btn__sm" type="submit" id="pin-site-btn" disabled="disabled">Add</button>
+                  </div>
+                  <ul class="pinned-site-list sortable" data-custom-list="False">
+                  </ul>
+                  <div class="d-flex p12 jc-end">
+                    <a class="flex--item s-btn s-btn__sm js-reset-pinned-sites" href="#">Reset</a>
+                    <button class="ml8 flex--item s-btn s-btn__filled s-btn__sm" type="submit"
+                      id="save-pinned-sites-btn" disabled="disabled">Save</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="header">
+                <h3><a href="https://stackexchange.com/sites">more stack exchange communities</a>
+                </h3>
+                <a href="https://stackoverflow.blog" class="float-right">company blog</a>
+              </div>
+              <div class="modal-content">
+                <div class="child-content"></div>
+              </div>
+            </div>
+
+          </li>
+
+        </ol>
+      </nav>
+
+
+    </div>
+  </header>
+
+  <script>
+    StackExchange.ready(function () { StackExchange.topbar.init(); });
+    StackExchange.scrollPadding.setPaddingTop(50, 10); 
+  </script>
+
+
+
+
+
+  <div class="container">
+
+
+    <div id="left-sidebar" data-is-here-when="md lg" class="left-sidebar js-pinned-left-sidebar ps-relative">
+      <div class="left-sidebar--sticky-container js-sticky-leftnav">
+        <nav role="navigation">
+          <ol class="nav-links">
+            <li>
+              <ol class="nav-links">
+
+
+                <li class="ps-relative" aria-current="false">
+
+
+                  <a href="/" class="s-block-link pl8 js-gps-track nav-links--link -link__with-icon"
+                    data-gps-track="top_nav.click({is_current: false, location:2, destination:8,  has_activity_notification:False})"
+                    aria-controls="" data-controller="" data-s-popover-placement="right" aria-current="false"
+                    data-s-popover-auto-show="true" data-s-popover-hide-on-outside-click="never">
+                    <div class="d-flex ai-center">
+                      <svg aria-hidden="true" class="svg-icon iconHome" width="18" height="18" viewBox="0 0 18 18">
+                        <path d="M15 10v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5H0l9-9 9 9h-3Zm-8 1v6h4v-6H7Z" />
+                      </svg> <span class="-link--channel-name pl6">Home</span>
+
+                    </div>
+                  </a>
+                </li>
+
+
+
+
+                <li class="ps-relative  youarehere" aria-current="true">
+
+
+                  <a id="nav-questions" href="/questions"
+                    class="s-block-link pl8 js-gps-track nav-links--link -link__with-icon"
+                    data-gps-track="top_nav.click({is_current: true, location:2, destination:1,  has_activity_notification:False})"
+                    aria-controls="" data-controller="" data-s-popover-placement="right" aria-current="false"
+                    data-s-popover-auto-show="true" data-s-popover-hide-on-outside-click="never">
+                    <div class="d-flex ai-center">
+                      <svg aria-hidden="true" class="svg-icon iconQuestion" width="18" height="18" viewBox="0 0 18 18">
+                        <path
+                          d="m4 15-3 3V4c0-1.1.9-2 2-2h12c1.09 0 2 .91 2 2v9c0 1.09-.91 2-2 2H4Zm7.75-3.97c.72-.83.98-1.86.98-2.94 0-1.65-.7-3.22-2.3-3.83a4.41 4.41 0 0 0-3.02 0 3.8 3.8 0 0 0-2.32 3.83c0 1.29.35 2.29 1.03 3a3.8 3.8 0 0 0 2.85 1.07c.62 0 1.2-.11 1.71-.34.65.44 1 .68 1.06.7.23.13.46.23.7.3l.59-1.13a5.2 5.2 0 0 1-1.28-.66Zm-1.27-.9a5.4 5.4 0 0 0-1.5-.8l-.45.9c.33.12.66.29.98.5-.2.07-.42.11-.65.11-.61 0-1.12-.23-1.52-.68-.86-1-.86-3.12 0-4.11.8-.9 2.35-.9 3.15 0 .9 1.01.86 3.03-.01 4.08Z" />
+                      </svg> <span class="-link--channel-name pl6">Questions</span>
+
+                    </div>
+                  </a>
+                </li>
+
+
+
+
+
+
+                <li class="ps-relative" aria-current="false">
+
+
+                  <a href="/tags" class="s-block-link pl8 js-gps-track nav-links--link -link__with-icon"
+                    data-gps-track="top_nav.click({is_current: false, location:2, destination:2,  has_activity_notification:False})"
+                    aria-controls="" data-controller="" data-s-popover-placement="right" aria-current="false"
+                    data-s-popover-auto-show="true" data-s-popover-hide-on-outside-click="never">
+                    <div class="d-flex ai-center">
+                      <svg aria-hidden="true" class="svg-icon iconTags" width="18" height="18" viewBox="0 0 18 18">
+                        <path
+                          d="M9.24 1a3 3 0 0 0-2.12.88l-5.7 5.7a2 2 0 0 0-.38 2.31 3 3 0 0 1 .67-1.01l6-6A3 3 0 0 1 9.83 2H14a3 3 0 0 1 .79.1A2 2 0 0 0 13 1H9.24Z"
+                          opacity=".4" />
+                        <path
+                          d="M9.83 3a2 2 0 0 0-1.42.59l-6 6a2 2 0 0 0 0 2.82L6.6 16.6a2 2 0 0 0 2.82 0l6-6A2 2 0 0 0 16 9.17V5a2 2 0 0 0-2-2H9.83ZM12 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" />
+                      </svg> <span class="-link--channel-name pl6">Tags</span>
+
+                    </div>
+                  </a>
+                </li>
+
+
+                <li class="pb24"></li>
+
+
+
+                <li class="ps-relative" aria-current="false">
+
+
+                  <a href="/users/saves/9020761/all"
+                    class="s-block-link pl8 js-gps-track nav-links--link -link__with-icon"
+                    data-gps-track="top_nav.click({is_current: false, location:2, destination:8,  has_activity_notification:False})"
+                    aria-controls="" data-controller="" data-s-popover-placement="right" aria-current="false"
+                    data-s-popover-auto-show="true" data-s-popover-hide-on-outside-click="never">
+                    <div class="d-flex ai-center">
+                      <svg aria-hidden="true" class="svg-icon iconBookmark" width="18" height="18" viewBox="0 0 18 18">
+                        <path d="M3 17V3c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v14l-6-4-6 4Z" />
+                      </svg> <span class="-link--channel-name pl6">Saves</span>
+
+                    </div>
+                  </a>
+                </li>
+
+
+
+
+                <li class="ps-relative" aria-current="false">
+
+
+                  <a id="nav-users" href="/users" class="s-block-link pl8 js-gps-track nav-links--link -link__with-icon"
+                    data-gps-track="top_nav.click({is_current: false, location:2, destination:3,  has_activity_notification:False})"
+                    aria-controls="" data-controller="" data-s-popover-placement="right" aria-current="false"
+                    data-s-popover-auto-show="true" data-s-popover-hide-on-outside-click="never">
+                    <div class="d-flex ai-center">
+                      <svg aria-hidden="true" class="svg-icon iconPeople" width="18" height="18" viewBox="0 0 18 18">
+                        <path
+                          d="M17 14c0 .44-.45 1-1 1H9a1 1 0 0 1-1-1H2c-.54 0-1-.56-1-1 0-2.63 3-4 3-4s.23-.4 0-1c-.84-.62-1.06-.59-1-3 .06-2.42 1.37-3 2.5-3s2.44.58 2.5 3c.06 2.41-.16 2.38-1 3-.23.59 0 1 0 1s1.55.71 2.42 2.09c.78-.72 1.58-1.1 1.58-1.1s.23-.4 0-1c-.84-.61-1.06-.58-1-3 .06-2.41 1.37-3 2.5-3s2.44.59 2.5 3c.05 2.42-.16 2.39-1 3-.23.6 0 1 0 1s3 1.38 3 4Z" />
+                      </svg> <span class="-link--channel-name pl6">Users</span>
+
+                    </div>
+                  </a>
+                </li>
+
+
+
+
+                <li class="ps-relative" aria-current="false">
+
+
+                  <a id="nav-companies"
+                    href="https://stackoverflow.com/jobs/companies?so_medium=stackoverflow&amp;so_source=SiteNav"
+                    class="s-block-link pl8 js-gps-track nav-links--link -link__with-icon"
+                    data-gps-track="top_nav.click({is_current: false, location:2, destination:12,  has_activity_notification:False})"
+                    aria-controls="" data-controller="" data-s-popover-placement="right" aria-current="false"
+                    data-s-popover-auto-show="true" data-s-popover-hide-on-outside-click="never">
+                    <div class="d-flex ai-center">
+                      <svg aria-hidden="true" class="svg-icon iconBriefcase" width="18" height="18" viewBox="0 0 18 18">
+                        <path
+                          d="M5 4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7c0-1.1.9-2 2-2h1V4Zm7 0H6v1h6V4Z" />
+                      </svg> <span class="-link--channel-name pl6">Companies</span>
+
+                    </div>
+                  </a>
+                </li>
+
+
+
+                <li class="ml8 mt32 mb8">
+                  <a href="javascript:void(0)" class="s-link s-link d-flex fl-grow1 fc-black-400 h:fc-black-600 fs-fine"
+                    role="button" aria-controls="popover-labs-left-nav" data-controller="s-popover"
+                    data-action="s-popover#toggle" data-s-popover-placement="top"
+                    data-s-popover-toggle-class="is-selected">
+                    <div class="flex--item fl-grow1 tt-uppercase fc-black-600 fw-bold">Labs</div>
+                    <div class="flex--item px12">
+                      <svg aria-hidden="true" class="svg-icon iconInfoSm" width="14" height="14" viewBox="0 0 14 14">
+                        <path d="M7 1a6 6 0 1 1 0 12A6 6 0 0 1 7 1Zm1 10V6H6v5h2Zm0-6V3H6v2h2Z" />
+                      </svg>
+                    </div>
+                  </a>
+                </li>
+
+
+                <li class="ps-relative" aria-current="false">
+
+
+                  <a id="nav-labs-discussions" href="/beta/discussions"
+                    class="s-block-link pl8 ai-center js-gps-track nav-links--link -link__with-icon"
+                    data-gps-track="top_nav.click({is_current: false, location:2, destination:24,  has_activity_notification:False})"
+                    aria-controls="" data-controller="" data-s-popover-placement="right" aria-current="false"
+                    data-s-popover-auto-show="true" data-s-popover-hide-on-outside-click="never">
+                    <div class="d-flex ai-center">
+                      <svg aria-hidden="true" class="w16 svg-icon iconMessage" width="18" height="18"
+                        viewBox="0 0 18 18">
+                        <path
+                          d="M5 7a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1Zm1 2a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2H6Zm-5 9V4c0-1.1.9-2 2-2h12c1.09 0 2 .91 2 2v9c0 1.09-.91 2-2 2H4.5L1 18Zm2.76-5h11.23a.06.06 0 0 0 0-.01H15V4a.06.06 0 0 0-.01-.01H3v9.65l.76-.65Z" />
+                      </svg> <span class="-link--channel-name pl6">Discussions</span>
+
+                      <div class="ps-absolute flex--item r2 mx4 ml-auto">
+                        <div class="bar-sm bg-purple-100 fc-purple-400 fs-fine fw-bold px4 py2 lh-unset tt-uppercase">
+                          New</div>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+
+
+                <li class="ml8 mt32 mb8">
+                  <div class="d-flex jc-space-between ai-center">
+                    <a class="s-link d-flex fl-grow1 fc-black-400 h:fc-black-600 fs-fine js-collectives-navcta-toggle"
+                      href="javascript:void(0)" role="button" aria-controls="popover-discover-collectives"
+                      data-controller="s-popover" data-action="s-popover#toggle" data-s-popover-placement="top"
+                      data-s-popover-toggle-class="is-selected"
+                      data-gps-track="top_nav.click({is_current:false, location:2, destination:17})">
+                      <div class="flex--item fl-grow1 tt-uppercase fc-black-600 fw-bold">Collectives</div>
+                      <div class="flex--item px12">
+                        <svg aria-hidden="true" class="svg-icon iconPlusSm" width="14" height="14" viewBox="0 0 14 14">
+                          <path d="M8 2H6v4H2v2h4v4h2V8h4V6H8V2Z" />
+                        </svg>
+                      </div>
+                    </a>
+
+                  </div>
+
+                </li>
+
+
+                <li class="ps-relative" aria-current="false">
+
+
+                  <a id="nav-collective-discover" href="/collectives"
+                    class="s-block-link pl8 ai-center js-collectives-navcta-toggle js-gps-track nav-links--link -link__with-icon"
+                    data-gps-track="top_nav.click({is_current: false, location:2, destination:18,  has_activity_notification:False})"
+                    aria-controls="" data-controller="" data-s-popover-placement="right" aria-current="false"
+                    data-s-popover-auto-show="true" data-s-popover-hide-on-outside-click="never">
+                    <div class="d-flex ai-center">
+                      <svg aria-hidden="true" class="mt-auto fc-orange-400 svg-icon iconStarVerified" width="18"
+                        height="18" viewBox="0 0 18 18">
+                        <path
+                          d="M9.86.89a1.14 1.14 0 0 0-1.72 0l-.5.58c-.3.35-.79.48-1.23.33l-.72-.25a1.14 1.14 0 0 0-1.49.85l-.14.76c-.1.45-.45.8-.9.9l-.76.14c-.67.14-1.08.83-.85 1.49l.25.72c.15.44.02.92-.33 1.23l-.58.5a1.14 1.14 0 0 0 0 1.72l.58.5c.35.3.48.79.33 1.23l-.25.72c-.23.66.18 1.35.85 1.49l.76.14c.45.1.8.45.9.9l.14.76c.14.67.83 1.08 1.49.85l.72-.25c.44-.15.92-.02 1.23.33l.5.58c.46.52 1.26.52 1.72 0l.5-.58c.3-.35.79-.48 1.23-.33l.72.25c.66.23 1.35-.18 1.49-.85l.14-.76c.1-.45.45-.8.9-.9l.76-.14c.67-.14 1.08-.83.85-1.49l-.25-.72c-.15-.44-.02-.92.33-1.23l.58-.5c.52-.46.52-1.26 0-1.72l-.58-.5c-.35-.3-.48-.79-.33-1.23l.25-.72a1.14 1.14 0 0 0-.85-1.49l-.76-.14c-.45-.1-.8-.45-.9-.9l-.14-.76a1.14 1.14 0 0 0-1.49-.85l-.72.25c-.44.15-.92.02-1.23-.33l-.5-.58Zm-.49 2.67L10.6 6.6c.05.15.19.24.34.25l3.26.22c.36.03.5.48.23.71l-2.5 2.1a.4.4 0 0 0-.14.4l.8 3.16a.4.4 0 0 1-.6.44L9.2 12.13a.4.4 0 0 0-.42 0l-2.77 1.74a.4.4 0 0 1-.6-.44l.8-3.16a.4.4 0 0 0-.13-.4l-2.5-2.1a.4.4 0 0 1 .22-.7l3.26-.23a.4.4 0 0 0 .34-.25l1.22-3.03a.4.4 0 0 1 .74 0Z" />
+                      </svg> <span class="-link--channel-name pl6">Explore Collectives</span>
+
+                    </div>
+                  </a>
+                </li>
+
+
+              </ol>
+            </li>
+
+
+
+
+
+            <li class="js-freemium-cta ps-relative">
+              <a href="#" title="Dismiss"
+                class="js-freemium-cta-dismiss ps-absolute tn8 r0 s-btn s-btn__muted s-btn__xs">
+                <svg aria-hidden="true" class="svg-icon iconClearSm" width="14" height="14" viewBox="0 0 14 14">
+                  <path
+                    d="M12 3.41 10.59 2 7 5.59 3.41 2 2 3.41 5.59 7 2 10.59 3.41 12 7 8.41 10.59 12 12 10.59 8.41 7 12 3.41Z" />
+                </svg>
+              </a>
+
+              <div class="fs-fine tt-uppercase fc-black-600 fw-bold ml8 mt16 mb8">Teams</div>
+
+              <div class="bt bl bb bc-black-200 p12 pb6 fc-black-500 blr-sm overflow-hidden">
+                <strong class="fc-black-600 mb6">Stack Overflow for Teams</strong>
+                – Start collaborating and sharing organizational knowledge.
+
+                <img class="wmx100 mx-auto my8 h-auto d-block" width="139" height="114"
+                  src="https://cdn.sstatic.net/Img/teams/teams-illo-free-sidebar-promo.svg?v=47faa659a05e" alt="">
+
+                <a href="https://try.stackoverflow.co/why-teams/?utm_source=so-owned&amp;utm_medium=side-bar&amp;utm_campaign=campaign-38&amp;utm_content=cta"
+                  class="w100 s-btn s-btn__filled s-btn__xs bg-orange-400 js-gps-track"
+                  data-gps-track="teams.create.left-sidenav.click({ Action: 6 })"
+                  data-ga="[&quot;teams left navigation&quot;,&quot;left nav free cta&quot;,&quot;stackoverflow.com/teams/create/free&quot;,null,null]">Create
+                  a free Team</a>
+                <a href="https://stackoverflow.co/teams/" class="w100 s-btn s-btn__muted s-btn__xs js-gps-track"
+                  data-gps-track="teams.create.left-sidenav.click({ Action: 5 })"
+                  data-ga="[&quot;teams left navigation&quot;,&quot;left nav free cta&quot;,&quot;stackoverflow.com/teams&quot;,null,null]">Why
+                  Teams?</a>
+
+              </div>
+            </li>
+
+            <script>
+              $('.js-freemium-cta-dismiss').click(function (e) {
+                e.preventDefault();
+                StackExchange.helpers.toggleAccountPreferenceFlags(32, true);
+                $('.js-freemium-cta').addClass('d-none');
+                $('.js-create-team-cta').removeClass('d-none');
+                return false;
+              });
+            </script>
+
+            <li class="d-flex ai-center jc-space-between ml8 mt32 mb8 js-create-team-cta d-none">
+              <a href="javascript:void(0)"
+                class="s-link d-flex fl-grow1 fc-black-400 h:fc-black-600 fs-fine js-gps-track" role="button"
+                aria-controls="popover-teams-create-cta" data-controller="s-popover" data-action="s-popover#toggle"
+                data-s-popover-placement="bottom-start" data-s-popover-toggle-class="is-selected"
+                data-gps-track="teams.create.left-sidenav.click({ Action: ShowInfo })"
+                data-ga="[&quot;teams left navigation&quot;,&quot;left nav show teams info&quot;,null,null,null]">
+                <div class="flex--item fl-grow1 fc-black-600 fw-bold tt-uppercase">Teams</div>
+                <div class="flex--item px12">
+                  <svg aria-hidden="true" class="svg-icon iconPlusSm" width="14" height="14" viewBox="0 0 14 14">
+                    <path d="M8 2H6v4H2v2h4v4h2V8h4V6H8V2Z" />
+                  </svg>
+                </div>
+              </a>
+            </li>
+            <li class="ps-relative js-create-team-cta d-none">
+              <a href="https://stackoverflowteams.com/teams/create/free/?utm_source=so-owned&amp;utm_medium=side-bar&amp;utm_campaign=campaign-38&amp;utm_content=cta"
+                class="s-block-link pl8 js-gps-track nav-links--link"
+                title="Stack Overflow for Teams is a private, secure spot for your organization's questions and answers."
+                data-gps-track="teams.create.left-sidenav.click({ Action: FreemiumTeamsCreateClick })"
+                data-ga="[&quot;teams left navigation&quot;,&quot;left nav team click&quot;,&quot;stackoverflow.com/teams/create/free&quot;,null,null]">
+                <div class="d-flex ai-center">
+                  <div class="flex--item s-avatar va-middle bg-orange-400">
+                    <div class="s-avatar--letter mtn1">
+                      <svg aria-hidden="true" class="svg-icon iconBriefcaseSm" width="14" height="14"
+                        viewBox="0 0 14 14">
+                        <path
+                          d="M4 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1h.5c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5h-7A1.5 1.5 0 0 1 2 10.5v-5C2 4.67 2.67 4 3.5 4H4V3Zm5 1V3H5v1h4Z" />
+                      </svg>
+                    </div>
+                    <svg aria-hidden="true" class="native s-avatar--badge svg-icon iconShieldXSm" width="9" height="10"
+                      viewBox="0 0 9 10">
+                      <path fill="var(--white)"
+                        d="M0 1.84 4.5 0 9 1.84v3.17C9 7.53 6.3 10 4.5 10 2.7 10 0 7.53 0 5.01V1.84Z" />
+                      <path fill="var(--black-400)"
+                        d="M1 2.5 4.5 1 8 2.5v2.51C8 7.34 5.34 9 4.5 9 3.65 9 1 7.34 1 5.01V2.5Zm2.98 3.02L3.2 7h2.6l-.78-1.48a.4.4 0 0 1 .15-.38c.34-.24.73-.7.73-1.14 0-.71-.5-1.23-1.41-1.23-.92 0-1.39.52-1.39 1.23 0 .44.4.9.73 1.14.12.08.18.23.15.38Z" />
+                    </svg>
+                  </div>
+                  <div class="flex--item pl6">
+                    Create free Team
+                  </div>
+                </div>
+              </a>
+            </li>
+            <li class="mt8 px8">
+              <button class="s-btn s-btn__outlined s-btn__sm w100 px0 js-gps-track"
+                aria-controls="teams-were-moved-popover" aria-expanded="false" data-controller="s-popover"
+                data-action="s-popover#toggle" data-s-popover-placement="bottom-start"
+                data-gps-track="teams.sot_migration_notification_teams_moved.click()">
+                Looking for your Teams?
+              </button>
+            </li>
+
+          </ol>
+        </nav>
+      </div>
+
+      <div class="s-popover mt4 ws3" id="teams-were-moved-popover" role="menu">
+        <div class="s-popover--arrow"></div>
+        <p>Stack Overflow for Teams has its own domain!</p>
+        <p>You can now access your Teams at <a href="https://stackoverflowteams.com"
+            class="s-link fs-italic">stackoverflowteams.com</a>. Teams no longer appear in the left sidebar on <span
+            class="fs-italic">stackoverflow.com</span>. Check your email to learn more about these changes.</p>
+      </div>
+
+      <div class="s-popover ws2" id="popover-discover-collectives" role="menu">
+        <div class="s-popover--arrow"></div>
+        <div>
+          <svg aria-hidden="true" class="fc-orange-400 float-right ml24 svg-spot spotCollective" width="48" height="48"
+            viewBox="0 0 48 48">
+            <path
+              d="M25.5 7a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM14 18.25c0-.69.56-1.25 1.25-1.25h22.5c.69 0 1.25.56 1.25 1.25V37.5a1 1 0 0 1-1.6.8l-4.07-3.05a1.25 1.25 0 0 0-.75-.25H15.25c-.69 0-1.25-.56-1.25-1.25v-15.5ZM7 24.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM25.5 48a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM48 24.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"
+              opacity=".2" />
+            <path
+              d="M21 3.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0ZM24.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM0 23.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0ZM3.5 22a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM21 44.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0Zm3.5-1.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm20-23a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM43 23.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm-23.23-3.14a1 1 0 0 1-.13 1.4l-2.08 1.74 2.08 1.73a1 1 0 1 1-1.28 1.54l-2.42-2.02a1.63 1.63 0 0 1 0-2.5l2.42-2.02a1 1 0 0 1 1.4.13Zm7.59 1.41a1 1 0 1 1 1.28-1.54l2.42 2.02c.78.65.78 1.85 0 2.5l-2.42 2.02a1 1 0 1 1-1.28-1.54l2.08-1.73-2.08-1.73ZM24.12 18a1 1 0 0 1 .87 1.12l-1 8a1 1 0 1 1-1.98-.24l1-8a1 1 0 0 1 1.11-.87Zm-11.87-5C11.01 13 10 14 10 15.25v15.5c0 1.24 1 2.25 2.25 2.25h17.33c.06 0 .11.02.15.05l4.07 3.05a2 2 0 0 0 3.2-1.6V15.25c0-1.24-1-2.25-2.25-2.25h-22.5ZM12 15.25c0-.14.11-.25.25-.25h22.5c.14 0 .25.11.25.25V34.5l-4.07-3.05a2.2 2.2 0 0 0-1.35-.45H12.25a.25.25 0 0 1-.25-.25v-15.5Zm7.24-10.68a1 1 0 1 0-.48-1.94A22.04 22.04 0 0 0 2.91 17.7a1 1 0 1 0 1.92.58 20.04 20.04 0 0 1 14.4-13.72Zm11.05-1.66a1 1 0 0 0-.58 1.92c6.45 1.92 11.54 7 13.46 13.46a1 1 0 1 0 1.92-.58 22.05 22.05 0 0 0-14.8-14.8ZM4.57 28.76a1 1 0 0 0-1.94.48 22.03 22.03 0 0 0 16.13 16.13 1 1 0 1 0 .48-1.94A20.03 20.03 0 0 1 4.57 28.76Zm40.8.48a1 1 0 1 0-1.94-.48 20.04 20.04 0 0 1-13.72 14.41 1 1 0 0 0 .58 1.92 22.04 22.04 0 0 0 15.08-15.85Z" />
+          </svg>
+          <h5 class="pt4 fw-bold">Collectives™ on Stack Overflow</h5>
+          <p class="my16 fs-caption fc-black-500">Find centralized, trusted content and collaborate around the
+            technologies you use most.</p>
+          <a href="/collectives" class="js-gps-track s-btn s-btn__filled s-btn__xs"
+            data-gps-track="top_nav.click({is_current:false, location:2, destination:18})">
+            Learn more about Collectives
+          </a>
+        </div>
+      </div>
+
+      <div class="s-popover ws2" id="popover-teams-create-cta" role="menu" aria-hidden="true">
+        <div class="s-popover--arrow"></div>
+
+        <div class="ps-relative overflow-hidden">
+          <p class="mb2"><strong>Teams</strong></p>
+          <p class="mb12 fs-caption fc-black-400">Q&amp;A for work</p>
+          <p class="mb12 fs-caption fc-black-500">Connect and share knowledge within a single location that is
+            structured and easy to search.</p>
+          <a href="https://stackoverflow.co/teams/" class="js-gps-track s-btn s-btn__filled s-btn__xs"
+            data-gps-track="teams.create.left-sidenav.click({ Action: CtaClick })"
+            data-ga="[&quot;teams left navigation&quot;,&quot;left nav cta&quot;,&quot;stackoverflow.com/teams&quot;,null,null]">
+            Learn more about Teams
+          </a>
+        </div>
+
+        <div class="ps-absolute t8 r8">
+          <svg aria-hidden="true" class="fc-orange-400 svg-spot spotPeople" width="48" height="48" viewBox="0 0 48 48">
+            <path
+              d="M13.5 28a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM7 30a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v5h11v-5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H33v5a1 1 0 0 1-1 1H20a1 1 0 0 1-1-1v-5H8a1 1 0 0 1-1-1V30Zm25-6.5a4.5 4.5 0 1 0 9 0 4.5 4.5 0 0 0-9 0ZM24.5 34a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"
+              opacity=".2" />
+            <path
+              d="M16.4 26.08A6 6 0 1 0 7.53 26C5.64 26.06 4 27.52 4 29.45V40a1 1 0 0 0 1 1h9a1 1 0 1 0 0-2h-4v-7a1 1 0 1 0-2 0v7H6v-9.55c0-.73.67-1.45 1.64-1.45H16a1 1 0 0 0 .4-1.92ZM12 18a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm16.47 14a6 6 0 1 0-8.94 0A3.6 3.6 0 0 0 16 35.5V46a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V35.5c0-1.94-1.64-3.42-3.53-3.5ZM20 28a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm-.3 6h8.6c1 0 1.7.75 1.7 1.5V45h-2v-7a1 1 0 1 0-2 0v7h-4v-7a1 1 0 1 0-2 0v7h-2v-9.5c0-.75.7-1.5 1.7-1.5ZM42 22c0 1.54-.58 2.94-1.53 4A3.5 3.5 0 0 1 44 29.45V40a1 1 0 0 1-1 1h-9a1 1 0 1 1 0-2h4v-7a1 1 0 1 1 2 0v7h2v-9.55A1.5 1.5 0 0 0 40.48 28H32a1 1 0 0 1-.4-1.92A6 6 0 1 1 42 22Zm-2 0a4 4 0 1 0-8 0 4 4 0 0 0 8 0Z" />
+            <g opacity=".35">
+              <path
+                d="M17 10a1 1 0 011-1h12a1 1 0 110 2H18a1 1 0 01-1-1Zm1-5a1 1 0 100 2h12a1 1 0 100-2H18ZM14 1a1 1 0 00-1 1v12a1 1 0 001 1h5.09l4.2 4.2a1 1 0 001.46-.04l3.7-4.16H34a1 1 0 001-1V2a1 1 0 00-1-1H14Zm1 12V3h18v10h-5a1 1 0 00-.75.34l-3.3 3.7-3.74-3.75a1 1 0 00-.71-.29H15Z" />
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="s-popover ws2" id="popover-labs-left-nav" role="menu" aria-hidden="true">
+        <div class="s-popover--arrow"></div>
+        <svg aria-hidden="true" class="fc-black-600 mb8 svg-icon iconLabs" width="42" height="18">
+          <path
+            d="M11.5 13.624a.374.374 0 0 1-.37.376H5.361a.374.374 0 0 1-.37-.376V4.376c0-.207.165-.376.37-.376H6.62c.204 0 .37.169.37.376v7.611h4.138c.205 0 .371.169.371.377v1.26zm9.432.215c-.07.1-.185.161-.308.161H19.13a.376.376 0 0 1-.356-.254l-.55-1.7h-3.111l-.55 1.7a.377.377 0 0 1-.355.254h-1.494a.376.376 0 0 1-.353-.506l3.39-9.247A.376.376 0 0 1 16.103 4h1.13c.158 0 .299.099.353.247l3.39 9.247a.376.376 0 0 1-.045.345zm-4.157-7.386l-1.219 3.531h2.266l-1.047-3.53zm13.335 5.71a.37.37 0 0 0-.003.524c.956.971 2.047 1.313 3.486 1.313 1.014 0 1.92-.265 2.582-.788.67-.53 1.063-1.306 1.063-2.255 0-.855-.268-1.622-.867-2.145-.456-.41-1.008-.633-1.89-.767l-1.037-.153c-.377-.057-.672-.19-.832-.332-.146-.132-.221-.315-.221-.568 0-.309.11-.56.306-.737.199-.179.518-.312.986-.312.708 0 1.254.151 1.726.601a.37.37 0 0 0 .516-.004l.883-.87a.37.37 0 0 0-.008-.534C35.942 4.334 35.004 4 33.721 4c-1.016 0-1.872.292-2.479.836-.61.548-.935 1.32-.935 2.207 0 .82.243 1.502.781 2.01h.001c.468.437 1.135.716 1.93.826l1.072.153c.508.073.647.147.795.286l.008.007c.14.125.234.34.234.67 0 .332-.124.567-.344.73-.235.174-.617.293-1.165.293-.867 0-1.49-.185-2.066-.76a.37.37 0 0 0-.522-.003l-.92.908zM22.37 14a.374.374 0 0 1-.37-.376V4.376c0-.207.166-.376.37-.376h3.543c.913 0 1.697.264 2.257.78.564.519.863 1.259.863 2.129 0 .845-.377 1.524-.87 1.947.57.433 1.01 1.145 1.01 2.157 0 .941-.317 1.702-.894 2.224-.57.517-1.354.763-2.225.763H22.37zm3.543-1.977c.96 0 .959-1.01.959-1.01s0-1.013-.959-1.013H24v2.023h1.913zm-.115-4.063c1.074 0 1.074-1.015 1.074-1.015s0-1.016-1.074-1.016H24V7.96h1.798z"
+            fill="var(--black-600)" />
+          <path
+            d="M0 4v10a4 4 0 0 0 4 4h34a4 4 0 0 0 4-4V4a4 4 0 0 0-4-4H4a4 4 0 0 0-4 4zm4-2h34a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"
+            fill="var(--black-600)" />
+        </svg>
+        <p class="fs-caption">Get early access and see previews of new features.</p>
+        <a class="s-btn s-btn__filled s-btn__xs s-btn__icon fs-fine" href="https://stackoverflow.co/labs/"><svg
+            aria-hidden="true" class="svg-icon iconShareSm" width="14" height="14" viewBox="0 0 14 14">
+            <path
+              d="M5 1H3a2 2 0 0 0-2 2v8c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V9h-2v2H3V3h2V1Zm2 0h6v6h-2V4.5L6.5 9 5 7.5 9.5 3H7V1Z" />
+          </svg> Learn more about Labs</a>
+      </div>
+
+
+    </div>
+
+
+
+    <div id="content" class="snippet-hidden">
+
+
+
+      <div itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
+        <link itemprop="image"
+          href="https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon.png?v=c78bd457575a">
+
+        <div class="inner-content clearfix">
+
+
+
+          <div id="question-header" class="d-flex sm:fd-column">
+            <h1 itemprop="name" class="fs-headline1 ow-break-word mb8 flex--item fl1"><a
+                href="/questions/71691737/extracting-values-from-nested-object-and-outputting-their-keys-according-to-a-ru"
+                class="question-hyperlink">Extracting values from nested object and outputting their keys according to a
+                rule (3 minimal values) in a certain format</a></h1>
+            <div class="ml12 aside-cta flex--item print:d-none sm:ml0 sm:mb12 sm:order-first sm:as-end">
+              <a href="/questions/ask" class="ws-nowrap s-btn s-btn__filled">
+                Ask Question
+              </a>
+
+            </div>
+          </div>
+          <div class="d-flex fw-wrap pb8 mb16 bb bc-black-200">
+            <div class="flex--item ws-nowrap mr16 mb8" title="2022-03-31 11:33:02Z">
+              <span class="fc-black-400 mr2">Asked</span>
+              <time itemprop="dateCreated" datetime="2022-03-31T11:33:02">1 year, 11 months ago</time>
+            </div>
+            <div class="flex--item ws-nowrap mr16 mb8">
+              <span class="fc-black-400 mr2">Modified</span>
+              <a href="?lastactivity" class="s-link s-link__inherit" title="2022-04-03 12:04:27Z">1 year, 11 months
+                ago</a>
+            </div>
+            <div class="flex--item ws-nowrap mb8" title="Viewed 517 times">
+              <span class="fc-black-400 mr2">Viewed</span>
+              517 times
+            </div>
+          </div>
+
+          <div id="mainbar" role="main" aria-label="question and answers">
+
+            <div class="question js-question" data-questionid="71691737" data-position-on-page="0" data-score="0"
+              id="question">
+
+
+              <div class="post-layout ">
+                <div class="votecell post-layout--left">
+                  <div class="js-voting-container d-flex jc-center fd-column ai-stretch gs4 fc-black-300"
+                    data-post-id="71691737" data-referrer="None">
+                    <button
+                      class="js-vote-up-btn flex--item s-btn ba bar-pill c-pointer as-center bc-black-225 fc-black-500 h:bg-theme-primary-200 h:fc-black-500 f:fc-black-050"
+                      data-controller="s-tooltip" data-s-tooltip-placement="right"
+                      title="This question shows research effort; it is useful and clear" aria-pressed="false"
+                      aria-label="Up vote"
+                      data-selected-classes="fc-theme-primary bc-theme-primary bg-theme-primary-100"
+                      data-unselected-classes="bc-black-225 fc-black-500 h:bg-theme-primary-200 h:fc-black-500 f:fc-black-050">
+                      <svg aria-hidden="true" class="svg-icon iconArrowUp" width="18" height="18" viewBox="0 0 18 18">
+                        <path d="M1 12h16L9 4l-8 8Z" />
+                      </svg>
+                    </button>
+                    <div
+                      class="js-vote-count flex--item d-flex fd-column ai-center fc-theme-body-font fw-bold fs-subheading py4"
+                      itemprop="upvoteCount" data-value="0">
+                      0
+                    </div>
+                    <button
+                      class="js-vote-down-btn flex--item mb8 s-btn ba bar-pill c-pointer as-center bc-black-225 fc-black-500 h:bg-theme-primary-200 h:fc-black-500 f:fc-black-050"
+                      data-controller="s-tooltip" data-s-tooltip-placement="right"
+                      title="This question does not show any research effort; it is unclear or not useful"
+                      aria-pressed="false" aria-label="Down vote"
+                      data-selected-classes="fc-theme-primary bc-theme-primary bg-theme-primary-100"
+                      data-unselected-classes="bc-black-225 fc-black-500 h:bg-theme-primary-200 h:fc-black-500 f:fc-black-050">
+                      <svg aria-hidden="true" class="svg-icon iconArrowDown" width="18" height="18" viewBox="0 0 18 18">
+                        <path d="M1 6h16l-8 8-8-8Z" />
+                      </svg>
+                    </button>
+
+
+
+                    <button class="js-saves-btn s-btn s-btn__unset c-pointer py4" type="button" id="saves-btn-71691737"
+                      data-controller="s-tooltip" data-s-tooltip-placement="right" data-s-popover-placement=""
+                      title="Save this question." aria-pressed="false" data-post-id="71691737" data-post-type-id="1"
+                      data-user-privilege-for-post-click="11" aria-controls="" data-s-popover-auto-show="false">
+                      <svg aria-hidden="true"
+                        class="fc-theme-primary-400 js-saves-btn-selected d-none svg-icon iconBookmark" width="18"
+                        height="18" viewBox="0 0 18 18">
+                        <path d="M3 17V3c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v14l-6-4-6 4Z" />
+                      </svg>
+                      <svg aria-hidden="true" class="js-saves-btn-unselected svg-icon iconBookmarkAlt" width="18"
+                        height="18" viewBox="0 0 18 18">
+                        <path d="m9 10.6 4 2.66V3H5v10.26l4-2.66ZM3 17V3c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v14l-6-4-6 4Z" />
+                      </svg>
+                    </button>
+
+
+
+
+
+
+
+
+
+                    <a class="js-post-issue flex--item s-btn s-btn__unset c-pointer py6 mx-auto"
+                      href="/posts/71691737/timeline" data-shortcut="T" data-ks-title="timeline"
+                      data-controller="s-tooltip" data-s-tooltip-placement="right" title="Show activity on this post."
+                      aria-label="Timeline"><svg aria-hidden="true" class="mln2 mr0 svg-icon iconHistory" width="19"
+                        height="18" viewBox="0 0 19 18">
+                        <path
+                          d="M3 9a8 8 0 1 1 3.73 6.77L8.2 14.3A6 6 0 1 0 5 9l3.01-.01-4 4-4-4h3L3 9Zm7-4h1.01L11 9.36l3.22 2.1-.6.93L10 10V5Z" />
+                      </svg></a>
+
+                  </div>
+
+                </div>
+
+
+
+                <div class="postcell post-layout--right">
+
+                  <div class="s-prose js-post-body" itemprop="text">
+
+                    <p>I have an object with some nested data that I need to process programmatically to achieve a
+                      certain output. It will be the easiest to explain by demonstrating with example.</p>
+                    <p><em>Example</em>
+                      <br>
+                      I conducted an experiment and measured speed of dogs and cats running. I gathered the data in the
+                      following <code>groups</code> object. We can see two major categories for each group, i.e.,
+                      <code>dogs</code> and <code>cats</code>. Then, in each group, we have one property about the mean
+                      average speed time of the group members, as well as <code>individuals</code> object that holds the
+                      data about each group member.
+                    </p>
+                    <pre class="lang-js prettyprint-override"><code>const groups = {
+  dogs: {
+    groupMeanRecord: 11.7,
+    individuals: {
+      lassie: {
+        record: 10,
+        age: 2,
+      },
+      slinky: {
+        record: 13,
+        age: 4,
+      },
+      toto: {
+        record: 11.5,
+        age: 1,
+      },
+      marley: {
+        record: 15,
+        age: 1,
+      },
+      beethoven: {
+        record: 9,
+        age: 13,
+      },
+    },
+  },
+  cats: {
+    groupMeanRecord: 7.75,
+    individuals: {
+      grumpyCat: {
+        record: 6,
+        age: 4,
+      },
+      salem: {
+        record: 9,
+        age: 11,
+      },
+      garfield: {
+        record: 5,
+        age: 3,
+      },
+      kitty: {
+        record: 11,
+        age: 10,
+      },
+    },
+  },
+};
+</code></pre>
+                    <p>I want to figure out who are the animals, in each group, whose <code>record</code> values are the
+                      lowest. I decided that I want the 3 lowest in each group. Hence, my desired output, given this
+                      current data, is:</p>
+                    <pre class="lang-js prettyprint-override"><code>const desiredOutput = {
+  dogs: 'beethoven, lassie, toto',
+  cats: 'garfield, grumpyCat, salem',
+};
+</code></pre>
+                    <hr />
+                    <p><em>my attempt</em></p>
+                    <p>Below is the code that I was able to come up with and it does give the desired output. However,
+                      as I'm new to JavaScript, I <em>believe</em> that there has to be an easier/more straightforward
+                      way to do this.</p>
+                    <ul>
+                      <li>
+                        <p><strong>step 1</strong> – clean up the data to get just what I need</p>
+                        <pre class="lang-js prettyprint-override"><code>const cleanDataArrOfArrs = Object.entries(groups).map(
+  ([group, groupData]) =&gt; [
+    group,
+    Object.entries(groupData.individuals).map(([individual, data]) =&gt; [
+      individual,
+      data.record,
+    ]),
+  ]
+);
+//   [
+//     'dogs',
+//     [
+//       ['lassie', 10],
+//       ['slinky', 13],
+//       ['toto', 11.5],
+//       ['marley', 15],
+//       ['beethoven', 9],
+//     ],
+//   ],
+//   [
+//     'cats',
+//     [
+//       ['grumpyCat', 6],
+//       ['salem', 9],
+//       ['garfield', 5],
+//       ['kitty', 11],
+//     ],
+//   ],
+// ]
+</code></pre>
+                      </li>
+                      <li>
+                        <p><strong>step 2</strong> – I want to make the result of step 1 an object of objects</p>
+                        <ul>
+                          <li>
+                            <p>utilizing this helper function from <a
+                                href="https://stackoverflow.com/a/63810699/6105259">here</a></p>
+                            <pre class="lang-js prettyprint-override"><code>const makeObject = (arr) =&gt; {
+  return Object.fromEntries(
+    arr.map(([key, val]) =&gt;
+      Array.isArray(val) ? [key, makeObject(val)] : [key, val]
+    )
+  );
+};
+</code></pre>
+                          </li>
+                          <li>
+                            <p>calling <code>makeObject()</code> on <code>cleanDataArrOfArrs</code></p>
+                            <pre class="lang-js prettyprint-override"><code>const cleanDataObj = makeObject(cleanDataArrOfArrs)
+// {
+//   dogs: { lassie: 10, slinky: 13, toto: 11.5, marley: 15, beethoven: 9 },
+//   cats: { grumpyCat: 6, salem: 9, garfield: 5, kitty: 11 },
+// };
+</code></pre>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <p><strong>step 3</strong> – now I want to sort <code>cleanDataObj.dogs</code> and
+                          <code>cleanDataObj.cats</code> properties from lowest to largest (respectively).</p>
+                        <ul>
+                          <li>utilizing a helper function from this <a
+                              href="https://stackoverflow.com/a/37607084/6105259">answer</a>:</li>
+                        </ul>
+                        <pre class="lang-js prettyprint-override"><code>const sortObj = (o) =&gt;
+  Object.fromEntries(Object.entries(o).sort((a, b) =&gt; a[1] - b[1]));
+</code></pre>
+                        <ul>
+                          <li>and finally:</li>
+                        </ul>
+                        <pre class="lang-js prettyprint-override"><code>const myOutput = Object.fromEntries(
+  Object.entries(cleanDataObj).map(([k, v]) =&gt; [
+    k,
+    Object.keys(sortObj(v)).slice(0, 3).join(', '),
+  ])
+);
+// {
+//   dogs: 'beethoven, lassie, toto',
+//   cats: 'garfield, grumpyCat, salem',
+// };
+</code></pre>
+                      </li>
+                    </ul>
+                    <hr />
+                    <p>My worry is that this code, although working, is neither readable nor addressing the task
+                      properly, and that there might be a much simpler way to approach this. I'd therefore be happy to
+                      learn how such a task could be otherwise done.</p>
+                  </div>
+
+                  <div class="mt24 mb12">
+                    <div class="post-taglist d-flex gs4 gsy fd-column">
+                      <div class="d-flex ps-relative fw-wrap">
+
+                        <ul class='ml0 list-ls-none js-post-tag-list-wrapper d-inline'>
+                          <li class='d-inline mr4 js-post-tag-list-item'><a href="/questions/tagged/javascript"
+                              class="post-tag" title="show questions tagged &#39;javascript&#39;"
+                              aria-label="show questions tagged &#39;javascript&#39;" rel="tag"
+                              aria-labelledby="tag-javascript-tooltip-container">javascript</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mb0 ">
+                    <div class="mt16 d-flex gs8 gsy fw-wrap jc-end ai-start pt4 mb16">
+                      <div class="flex--item mr16 fl1 w96">
+
+
+
+                        <div class="js-post-menu pt2" data-post-id="71691737" data-post-type-id="1">
+
+                          <div class="d-flex gs8 s-anchors s-anchors__muted fw-wrap">
+
+                            <div class="flex--item">
+                              <a href="/q/71691737/9020761" rel="nofollow" itemprop="url"
+                                class="js-share-link js-gps-track" title="Short permalink to this question"
+                                data-gps-track="post.click({ item: 2, priv: 11, post_type: 1 })"
+                                data-controller="se-share-sheet"
+                                data-se-share-sheet-title="Share a link to this question"
+                                data-se-share-sheet-subtitle="(Includes your user id)"
+                                data-se-share-sheet-post-type="question"
+                                data-se-share-sheet-social="facebook twitter devto" data-se-share-sheet-location="1"
+                                data-se-share-sheet-license-url="https%3a%2f%2fcreativecommons.org%2flicenses%2fby-sa%2f4.0%2f"
+                                data-se-share-sheet-license-name="CC BY-SA 4.0"
+                                data-s-popover-placement="bottom-start">Share</a>
+                            </div>
+
+
+                            <div class="flex--item">
+                              <a href="/posts/71691737/edit" class="js-suggest-edit-post js-gps-track"
+                                data-gps-track="post.click({ item: 6, priv: 11, post_type: 1 })"
+                                title="Revise and improve this post">Edit</a>
+                            </div>
+
+                            <div class="flex--item">
+                              <button type="button" id="btnFollowPost-71691737"
+                                class="s-btn s-btn__link js-follow-post js-follow-question js-gps-track"
+                                data-gps-track="post.click({ item: 14, priv: 11, post_type: 1 })"
+                                data-controller="s-tooltip " data-s-tooltip-placement="bottom"
+                                data-s-popover-placement="bottom" aria-controls=""
+                                title="Follow this question to receive notifications">
+                                Follow
+                              </button>
+                            </div>
+
+
+
+
+                            <div class="flex--item">
+                              <button type="button" class="js-flag-post-link s-btn s-btn__link js-gps-track"
+                                data-gps-track="post.click({ item: 5, priv: 11, post_type: 1 })"
+                                title="Flag this post for serious problems or moderator attention">
+                                Flag
+                              </button>
+                            </div>
+
+
+                          </div>
+                          <div class="js-menu-popup-container"></div>
+                        </div>
+                      </div>
+
+                      <div class="post-signature flex--item">
+                        <div class="user-info ">
+                          <div class="d-flex ">
+                            <div class="user-action-time fl-grow1">
+                              <a href="/posts/71691737/revisions" title="show all edits to this post"
+                                class="js-gps-track"
+                                data-gps-track="post.click({ item: 4, priv: 11, post_type: 1 })">edited <span
+                                  title='2022-04-03 11:09:20Z' class='relativetime'>Apr 3, 2022 at 11:09</span></a>
+                            </div>
+
+                          </div>
+                          <div class="user-gravatar32">
+
+                          </div>
+                          <div class="user-details" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                            <span class="d-none" itemprop="name">Emman</span>
+                            <div class="-flair">
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="post-signature owner flex--item">
+                        <div class="user-info ">
+                          <div class="d-flex ">
+                            <div class="user-action-time fl-grow1">
+                              asked <span title='2022-03-31 11:33:02Z' class='relativetime'>Mar 31, 2022 at 11:33</span>
+                            </div>
+
+                          </div>
+                          <div class="user-gravatar32">
+                            <a href="/users/6105259/emman">
+                              <div class="gravatar-wrapper-32"><img
+                                  src="https://www.gravatar.com/avatar/5f71a12cdb21ae33c1e482fccaecbfc1?s=64&amp;d=identicon&amp;r=PG&amp;f=y&amp;so-version=2"
+                                  alt="Emman&#39;s user avatar" width="32" height="32" class="bar-sm"></div>
+                            </a>
+                          </div>
+                          <div class="user-details" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                            <a href="/users/6105259/emman">Emman</a><span class="d-none" itemprop="name">Emman</span>
+                            <div class="-flair">
+                              <span class="reputation-score" title="reputation score " dir="ltr">3,921</span><span
+                                title="2 gold badges" aria-hidden="true"><span class="badge1"></span><span
+                                  class="badgecount">2</span></span><span class="v-visible-sr">2 gold badges</span><span
+                                title="21 silver badges" aria-hidden="true"><span class="badge2"></span><span
+                                  class="badgecount">21</span></span><span class="v-visible-sr">21 silver
+                                badges</span><span title="55 bronze badges" aria-hidden="true"><span
+                                  class="badge3"></span><span class="badgecount">55</span></span><span
+                                class="v-visible-sr">55 bronze badges</span>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+
+
+
+                <span class="d-none" itemprop="commentCount"></span>
+                <div class="post-layout--right js-post-comments-component">
+                  <div id="comments-71691737" class="comments js-comments-container bt bc-black-200 mt12  dno"
+                    data-post-id="71691737" data-min-length="15">
+                    <ul class="comments-list js-comments-list" data-remaining-comments-count="0" data-canpost="true"
+                      data-cansee="false" data-comments-unavailable="false" data-addlink-disabled="false">
+
+                    </ul>
+                    <div class="comment-form">
+                      <form id="add-comment-71691737" class=" "
+                        data-placeholdertext="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments."
+                        data-textarea-id="comment-input-71691737"></form>
+                    </div>
+                  </div>
+
+                  <div id="comments-link-71691737">
+                    <a class="js-add-link comments-link"
+                      title="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments."
+                      href=# href="#" role="button">Add a comment</a>
+                    <span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+                    <a class="js-show-link comments-link dno" title="Expand to show all comments on this post" href=#
+                      onclick="" role="button"></a>
+                  </div>
+                </div>
+                <div class="post-layout--right">
+                  <div style="margin-top:20px">
+                    <a class="bounty-link bounty js-gps-track" title="Offer some of your reputation for better answers"
+                      data-gps-track="post.click({ item: 3, priv: 11, post_type: 1 })">
+                      Start a bounty
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+
+
+
+
+            <div id="answers">
+              <a name="tab-top"></a>
+              <div id="answers-header">
+                <div class="answers-subheader d-flex ai-center mb8">
+                  <div class="flex--item fl1">
+                    <h2 class="mb0" data-answercount="1">
+                      1 Answer
+                      <span style="display:none;" itemprop="answerCount">1</span>
+                    </h2>
+                  </div>
+                  <div class="flex--item">
+
+
+                    <div class="d-flex g4 gsx ai-center sm:fd-column sm:ai-start">
+                      <div class="d-flex fd-column ai-end sm:ai-start">
+                        <label class="flex--item fs-caption" for="answer-sort-dropdown-select-menu">
+                          Sorted by:
+                        </label>
+                        <a class="js-sort-preference-change s-link flex--item fs-fine d-none" data-value="ScoreDesc"
+                          href="/questions/71691737/extracting-values-from-nested-object-and-outputting-their-keys-according-to-a-ru?answertab=scoredesc#tab-top">
+                          Reset to default
+                        </a>
+                      </div>
+                      <div class="flex--item s-select">
+                        <select id="answer-sort-dropdown-select-menu">
+                          <option value=scoredesc selected=selected>
+                            Highest score (default)
+                          </option>
+                          <option value=trending>
+                            Trending (recent votes count more)
+                          </option>
+                          <option value=modifieddesc>
+                            Date modified (newest first)
+                          </option>
+                          <option value=createdasc>
+                            Date created (oldest first)
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+
+              </div>
+
+
+
+              <a name="71725713"></a>
+              <div id="answer-71725713" class="answer js-answer accepted-answer js-accepted-answer"
+                data-answerid="71725713" data-parentid="71691737" data-score="1" data-position-on-page="1"
+                data-highest-scored="1" data-question-has-accepted-highest-score="1" itemprop="acceptedAnswer" itemscope
+                itemtype="https://schema.org/Answer">
+                <div class="post-layout">
+                  <div class="votecell post-layout--left">
+                    <div class="js-voting-container d-flex jc-center fd-column ai-stretch gs4 fc-black-300"
+                      data-post-id="71725713" data-referrer="None">
+                      <button
+                        class="js-vote-up-btn flex--item s-btn ba bar-pill c-pointer as-center bc-black-225 fc-black-500 h:bg-theme-primary-200 h:fc-black-500 f:fc-black-050"
+                        data-controller="s-tooltip" data-s-tooltip-placement="right" title="This answer is useful"
+                        aria-pressed="false" aria-label="Up vote"
+                        data-selected-classes="fc-theme-primary bc-theme-primary bg-theme-primary-100"
+                        data-unselected-classes="bc-black-225 fc-black-500 h:bg-theme-primary-200 h:fc-black-500 f:fc-black-050">
+                        <svg aria-hidden="true" class="svg-icon iconArrowUp" width="18" height="18" viewBox="0 0 18 18">
+                          <path d="M1 12h16L9 4l-8 8Z" />
+                        </svg>
+                      </button>
+                      <div
+                        class="js-vote-count flex--item d-flex fd-column ai-center fc-theme-body-font fw-bold fs-subheading py4"
+                        itemprop="upvoteCount" data-value="1">
+                        1
+                      </div>
+                      <button
+                        class="js-vote-down-btn flex--item mb8 s-btn ba bar-pill c-pointer as-center bc-black-225 fc-black-500 h:bg-theme-primary-200 h:fc-black-500 f:fc-black-050"
+                        data-controller="s-tooltip" data-s-tooltip-placement="right" title="This answer is not useful"
+                        aria-pressed="false" aria-label="Down vote"
+                        data-selected-classes="fc-theme-primary bc-theme-primary bg-theme-primary-100"
+                        data-unselected-classes="bc-black-225 fc-black-500 h:bg-theme-primary-200 h:fc-black-500 f:fc-black-050">
+                        <svg aria-hidden="true" class="svg-icon iconArrowDown" width="18" height="18"
+                          viewBox="0 0 18 18">
+                          <path d="M1 6h16l-8 8-8-8Z" />
+                        </svg>
+                      </button>
+
+
+
+                      <button class="js-saves-btn s-btn s-btn__unset c-pointer py4" type="button"
+                        id="saves-btn-71725713" data-controller="s-tooltip" data-s-tooltip-placement="right"
+                        data-s-popover-placement="" title="Save this answer." aria-pressed="false"
+                        data-post-id="71725713" data-post-type-id="2" data-user-privilege-for-post-click="11"
+                        aria-controls="" data-s-popover-auto-show="false">
+                        <svg aria-hidden="true"
+                          class="fc-theme-primary-400 js-saves-btn-selected d-none svg-icon iconBookmark" width="18"
+                          height="18" viewBox="0 0 18 18">
+                          <path d="M3 17V3c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v14l-6-4-6 4Z" />
+                        </svg>
+                        <svg aria-hidden="true" class="js-saves-btn-unselected svg-icon iconBookmarkAlt" width="18"
+                          height="18" viewBox="0 0 18 18">
+                          <path
+                            d="m9 10.6 4 2.66V3H5v10.26l4-2.66ZM3 17V3c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v14l-6-4-6 4Z" />
+                        </svg>
+                      </button>
+
+
+
+
+
+
+
+                      <div class="js-accepted-answer-indicator flex--item fc-green-400 py6 mtn8"
+                        data-s-tooltip-placement="right" title="Loading when this answer was accepted&#x2026;"
+                        tabindex="0" role="note" aria-label="Accepted">
+                        <div class="ta-center">
+                          <svg aria-hidden="true" class="svg-icon iconCheckmarkLg" width="36" height="36"
+                            viewBox="0 0 36 36">
+                            <path d="m6 14 8 8L30 6v8L14 30l-8-8v-8Z" />
+                          </svg>
+                        </div>
+                      </div>
+
+
+                      <a class="js-post-issue flex--item s-btn s-btn__unset c-pointer py6 mx-auto"
+                        href="/posts/71725713/timeline" data-shortcut="T" data-ks-title="timeline"
+                        data-controller="s-tooltip" data-s-tooltip-placement="right" title="Show activity on this post."
+                        aria-label="Timeline"><svg aria-hidden="true" class="mln2 mr0 svg-icon iconHistory" width="19"
+                          height="18" viewBox="0 0 19 18">
+                          <path
+                            d="M3 9a8 8 0 1 1 3.73 6.77L8.2 14.3A6 6 0 1 0 5 9l3.01-.01-4 4-4-4h3L3 9Zm7-4h1.01L11 9.36l3.22 2.1-.6.93L10 10V5Z" />
+                        </svg></a>
+
+                    </div>
+
+                  </div>
+
+
+
+                  <div class="answercell post-layout--right">
+
+                    <div class="s-prose js-post-body" itemprop="text">
+                      <p>This may be one possible solution to achieve the desired objective.</p>
+                      <p><strong>Code Snippet</strong></p>
+                      <p>
+                      <div class="snippet" data-lang="js" data-hide="false" data-console="true" data-babel="false">
+                        <div class="snippet-code">
+                          <pre class="snippet-code-js lang-js prettyprint-override"><code>// helper method
+const getIndNames = obj =&gt; (
+  Object.entries(obj)                   // iterate over key-value pairs
+  .map(([k, v]) =&gt; ({name: k, ...v}))   // get an array of objects with 'name', 'record', 'age' props
+  .sort((a, b) =&gt; a.record - b.record)  // sort the array descending order of record
+  .filter((_, idx) =&gt; (idx &lt; 3))        // filter to retain top 3
+  .map(({name}) =&gt; name)                // extract just the 'name' prop
+  .join(', ')                           // use '.join' to generate a comma-separated string
+);
+
+// method that iterates over each group (cats, dogs)
+const fastestThree = obj =&gt; (
+  Object.fromEntries(                     // convert the final-result back into object
+    Object.keys(obj).map(                 // iterate over key-value pairs of 'obj'
+      k =&gt; ([                             // for each key, return an array of 2 elements
+        [k],                              // first is the key 'k' itself
+        getIndNames(obj[k].individuals)   // second is the fastest-three cats/dogs
+      ])
+    )
+  )
+);
+
+// data from the question
+const groups = {
+  dogs: {
+    groupMeanRecord: 11.7,
+    individuals: {
+      lassie: {
+        record: 10,
+        age: 2,
+      },
+      slinky: {
+        record: 13,
+        age: 4,
+      },
+      toto: {
+        record: 11.5,
+        age: 1,
+      },
+      marley: {
+        record: 15,
+        age: 1,
+      },
+      beethoven: {
+        record: 9,
+        age: 13,
+      },
+    }
+  },
+  cats: {
+    groupMeanRecord: 7.75,
+    individuals: {
+      grumpyCat: {
+        record: 6,
+        age: 4,
+      },
+      salem: {
+        record: 9,
+        age: 11,
+      },
+      garfield: {
+        record: 5,
+        age: 3,
+      },
+      kitty: {
+        record: 11,
+        age: 10,
+      },
+    },
+  }
+};
+
+// invoke the method and print the result
+console.log(fastestThree(groups));</code></pre>
+                          <pre
+                            class="snippet-code-css lang-css prettyprint-override"><code>.as-console-wrapper { max-height: 100% !important; top: 0; }</code></pre>
+                        </div>
+                      </div>
+                      </p>
+                      <p><strong>Explanation</strong></p>
+                      <p>Inline comments in the above code-snippet explain the significant aspects of the solution.</p>
+                    </div>
+                    <div class="mt24">
+                      <div class="d-flex fw-wrap ai-start jc-end gs8 gsy">
+                        <time itemprop="dateCreated" datetime="2022-04-03T12:04:27"></time>
+                        <div class="flex--item mr16" style="flex: 1 1 100px;">
+
+
+
+                          <div class="js-post-menu pt2" data-post-id="71725713" data-post-type-id="2">
+
+                            <div class="d-flex gs8 s-anchors s-anchors__muted fw-wrap">
+
+                              <div class="flex--item">
+                                <a href="/a/71725713/9020761" rel="nofollow" itemprop="url"
+                                  class="js-share-link js-gps-track" title="Short permalink to this answer"
+                                  data-gps-track="post.click({ item: 2, priv: 11, post_type: 2 })"
+                                  data-controller="se-share-sheet"
+                                  data-se-share-sheet-title="Share a link to this answer"
+                                  data-se-share-sheet-subtitle="(Includes your user id)"
+                                  data-se-share-sheet-post-type="answer"
+                                  data-se-share-sheet-social="facebook twitter devto" data-se-share-sheet-location="2"
+                                  data-se-share-sheet-license-url="https%3a%2f%2fcreativecommons.org%2flicenses%2fby-sa%2f4.0%2f"
+                                  data-se-share-sheet-license-name="CC BY-SA 4.0"
+                                  data-s-popover-placement="bottom-start">Share</a>
+                              </div>
+
+
+                              <div class="flex--item">
+                                <a href="/posts/71725713/edit" class="js-suggest-edit-post js-gps-track"
+                                  data-gps-track="post.click({ item: 6, priv: 11, post_type: 2 })"
+                                  title="Revise and improve this post">Edit</a>
+                              </div>
+
+                              <div class="flex--item">
+                                <button type="button" id="btnFollowPost-71725713"
+                                  class="s-btn s-btn__link js-follow-post js-follow-answer js-gps-track"
+                                  data-gps-track="post.click({ item: 14, priv: 11, post_type: 2 })"
+                                  data-controller="s-tooltip " data-s-tooltip-placement="bottom"
+                                  data-s-popover-placement="bottom" aria-controls=""
+                                  title="Follow this answer to receive notifications">
+                                  Follow
+                                </button>
+                              </div>
+
+
+
+
+                              <div class="flex--item">
+                                <button type="button" class="js-flag-post-link s-btn s-btn__link js-gps-track"
+                                  data-gps-track="post.click({ item: 5, priv: 11, post_type: 2 })"
+                                  title="Flag this post for serious problems or moderator attention">
+                                  Flag
+                                </button>
+                              </div>
+
+
+                            </div>
+                            <div class="js-menu-popup-container"></div>
+                          </div>
+                        </div>
+
+
+                        <div class="post-signature flex--item fl0">
+                          <div class="user-info user-hover ">
+                            <div class="d-flex ">
+                              <div class="user-action-time fl-grow1">
+                                answered <span title='2022-04-03 12:04:27Z' class='relativetime'>Apr 3, 2022 at
+                                  12:04</span>
+                              </div>
+
+                            </div>
+                            <div class="user-gravatar32">
+                              <a href="/users/13658816/jsn00b">
+                                <div class="gravatar-wrapper-32"><img
+                                    src="https://i.stack.imgur.com/wU5Nw.png?s=64&amp;g=1"
+                                    alt="jsN00b&#39;s user avatar" width="32" height="32" class="bar-sm"></div>
+                              </a>
+                            </div>
+                            <div class="user-details" itemprop="author" itemscope itemtype="http://schema.org/Person">
+                              <a href="/users/13658816/jsn00b">jsN00b</a><span class="d-none"
+                                itemprop="name">jsN00b</span>
+                              <div class="-flair">
+                                <span class="reputation-score" title="reputation score " dir="ltr">3,654</span><span
+                                  title="2 gold badges" aria-hidden="true"><span class="badge1"></span><span
+                                    class="badgecount">2</span></span><span class="v-visible-sr">2 gold
+                                  badges</span><span title="8 silver badges" aria-hidden="true"><span
+                                    class="badge2"></span><span class="badgecount">8</span></span><span
+                                  class="v-visible-sr">8 silver badges</span><span title="21 bronze badges"
+                                  aria-hidden="true"><span class="badge3"></span><span
+                                    class="badgecount">21</span></span><span class="v-visible-sr">21 bronze
+                                  badges</span>
+                              </div>
+                            </div>
+                          </div>
+
+
+                        </div>
+                      </div>
+
+
+                    </div>
+
+                  </div>
+
+
+
+
+                  <span class="d-none" itemprop="commentCount"></span>
+                  <div class="post-layout--right js-post-comments-component">
+                    <div id="comments-71725713" class="comments js-comments-container bt bc-black-200 mt12  dno"
+                      data-post-id="71725713" data-min-length="15">
+                      <ul class="comments-list js-comments-list" data-remaining-comments-count="0" data-canpost="true"
+                        data-cansee="false" data-comments-unavailable="false" data-addlink-disabled="false">
+
+                      </ul>
+                      <div class="comment-form">
+                        <form id="add-comment-71725713" class=" "
+                          data-placeholdertext="Use comments to ask for more information or suggest improvements. Avoid comments like &#x201C;&#x2B;1&#x201D; or &#x201C;thanks&#x201D;."
+                          data-textarea-id="comment-input-71725713"></form>
+                      </div>
+                    </div>
+
+                    <div id="comments-link-71725713">
+                      <a class="js-add-link comments-link"
+                        title="Use comments to ask for more information or suggest improvements. Avoid comments like &#x201C;&#x2B;1&#x201D; or &#x201C;thanks&#x201D;."
+                        href=# href="#" role="button">Add a comment</a>
+                      <span class="js-link-separator dno">&nbsp;|&nbsp;</span>
+                      <a class="js-show-link comments-link dno" title="Expand to show all comments on this post" href=#
+                        onclick="" role="button"></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <a name='new-answer'></a>
+              <form id="post-form" action="/questions/71691737/answer/submit" method="post"
+                class="js-add-answer-component post-form">
+                <input type="hidden" id="post-id" value="71691737" />
+                <input type="hidden" id="qualityBanWarningShown" name="qualityBanWarningShown" value="false" />
+                <input type="hidden" name="referrer" value="https://www.google.com/" />
+                <h2 class="space" id="your-answer-header">
+                  Your Answer
+                </h2>
+
+
+                <script>
+                  StackExchange.ifUsing("editor", function () {
+                    StackExchange.using("externalEditor", function () {
+                      StackExchange.using("snippets", function () {
+                        StackExchange.snippets.init();
+                      });
+                    });
+                  }, "code-snippets");
+                </script>
+
+
+                <script>
+                  StackExchange.ready(function () {
+                    var channelOptions = {
+                      tags: "".split(" "),
+                      id: "1"
+                    };
+                    initTagRenderer("".split(" "), "".split(" "), channelOptions);
+
+                    StackExchange.using("externalEditor", function () {
+                      // Have to fire editor after snippets, if snippets enabled
+                      if (StackExchange.settings.snippets.snippetsEnabled) {
+                        StackExchange.using("snippets", function () {
+                          createEditor();
+                        });
+                      }
+                      else {
+                        createEditor();
+                      }
+                    });
+
+                    function createEditor() {
+                      StackExchange.prepareEditor({
+                        useStacksEditor: false,
+                        heartbeatType: 'answer',
+                        autoActivateHeartbeat: false,
+                        convertImagesToLinks: false,
+                        noModals: true,
+                        showLowRepImageUploadWarning: false,
+                        reputationToPostImages: null,
+                        bindNavPrevention: true,
+                        postfix: "",
+                        imageUploader: {
+                          brandingHtml: "Powered by \u003ca href=\"https://imgur.com/\"\u003e\u003csvg class=\"svg-icon\" width=\"50\" height=\"18\" viewBox=\"0 0 50 18\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"\u003e\u003ctitle\u003eImgur Logo\u003c/title\u003e\u003cpath d=\"M46.1709 9.17788C46.1709 8.26454 46.2665 7.94324 47.1084 7.58816C47.4091 7.46349 47.7169 7.36433 48.0099 7.26993C48.9099 6.97997 49.672 6.73443 49.672 5.93063C49.672 5.22043 48.9832 4.61182 48.1414 4.61182C47.4335 4.61182 46.7256 4.91628 46.0943 5.50789C45.7307 4.9328 45.2525 4.66231 44.6595 4.66231C43.6264 4.66231 43.1481 5.28821 43.1481 6.59048V11.9512C43.1481 13.2535 43.6264 13.8962 44.6595 13.8962C45.6924 13.8962 46.1709 13.2535 46.1709 11.9512V9.17788Z\"/\u003e\u003cpath d=\"M32.492 10.1419C32.492 12.6954 34.1182 14.0484 37.0451 14.0484C39.9723 14.0484 41.5985 12.6954 41.5985 10.1419V6.59049C41.5985 5.28821 41.1394 4.66232 40.1061 4.66232C39.0732 4.66232 38.5948 5.28821 38.5948 6.59049V9.60062C38.5948 10.8521 38.2696 11.5455 37.0451 11.5455C35.8209 11.5455 35.4954 10.8521 35.4954 9.60062V6.59049C35.4954 5.28821 35.0173 4.66232 34.0034 4.66232C32.9703 4.66232 32.492 5.28821 32.492 6.59049V10.1419Z\" /\u003e\u003cpath fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M25.6622 17.6335C27.8049 17.6335 29.3739 16.9402 30.2537 15.6379C30.8468 14.7755 30.9615 13.5579 30.9615 11.9512V6.59049C30.9615 5.28821 30.4833 4.66231 29.4502 4.66231C28.9913 4.66231 28.4555 4.94978 28.1109 5.50789C27.499 4.86533 26.7335 4.56087 25.7005 4.56087C23.1369 4.56087 21.0134 6.57349 21.0134 9.27932C21.0134 11.9852 23.003 13.913 25.3754 13.913C26.5612 13.913 27.4607 13.4902 28.1109 12.6616C28.1109 12.7229 28.1161 12.7799 28.121 12.8346C28.1256 12.8854 28.1301 12.9342 28.1301 12.983C28.1301 14.4373 27.2502 15.2321 25.777 15.2321C24.8349 15.2321 24.1352 14.9821 23.5661 14.7787C23.176 14.6393 22.8472 14.5218 22.5437 14.5218C21.7977 14.5218 21.2429 15.0123 21.2429 15.6887C21.2429 16.7375 22.9072 17.6335 25.6622 17.6335ZM24.1317 9.27932C24.1317 7.94324 24.9928 7.09766 26.1024 7.09766C27.2119 7.09766 28.0918 7.94324 28.0918 9.27932C28.0918 10.6321 27.2311 11.5116 26.1024 11.5116C24.9737 11.5116 24.1317 10.6491 24.1317 9.27932Z\"/\u003e\u003cpath d=\"M16.8045 11.9512C16.8045 13.2535 17.2637 13.8962 18.2965 13.8962C19.3298 13.8962 19.8079 13.2535 19.8079 11.9512V8.12928C19.8079 5.82936 18.4879 4.62866 16.4027 4.62866C15.1594 4.62866 14.279 4.98375 13.3609 5.88013C12.653 5.05154 11.6581 4.62866 10.3573 4.62866C9.34336 4.62866 8.57809 4.89931 7.9466 5.5079C7.58314 4.9328 7.10506 4.66232 6.51203 4.66232C5.47873 4.66232 5.00066 5.28821 5.00066 6.59049V11.9512C5.00066 13.2535 5.47873 13.8962 6.51203 13.8962C7.54479 13.8962 8.0232 13.2535 8.0232 11.9512V8.90741C8.0232 7.58817 8.44431 6.91179 9.53458 6.91179C10.5104 6.91179 10.893 7.58817 10.893 8.94108V11.9512C10.893 13.2535 11.3711 13.8962 12.4044 13.8962C13.4375 13.8962 13.9157 13.2535 13.9157 11.9512V8.90741C13.9157 7.58817 14.3365 6.91179 15.4269 6.91179C16.4027 6.91179 16.8045 7.58817 16.8045 8.94108V11.9512Z\"/\u003e\u003cpath d=\"M3.31675 6.59049C3.31675 5.28821 2.83866 4.66232 1.82471 4.66232C0.791758 4.66232 0.313354 5.28821 0.313354 6.59049V11.9512C0.313354 13.2535 0.791758 13.8962 1.82471 13.8962C2.85798 13.8962 3.31675 13.2535 3.31675 11.9512V6.59049Z\" /\u003e\u003cpath d=\"M1.87209 0.400291C0.843612 0.400291 0 1.1159 0 1.98861C0 2.87869 0.822846 3.57676 1.87209 3.57676C2.90056 3.57676 3.7234 2.87869 3.7234 1.98861C3.7234 1.1159 2.90056 0.400291 1.87209 0.400291Z\" fill=\"#1BB76E\"/\u003e\u003c/svg\u003e\u003c/a\u003e",
+                          contentPolicyHtml: "User contributions licensed under \u003ca href=\"https://stackoverflow.com/help/licensing\"\u003eCC BY-SA\u003c/a\u003e \u003ca href=\"https://stackoverflow.com/legal/acceptable-use-policy\"\u003e(content policy)\u003c/a\u003e",
+                          allowUrls: true
+                        },
+                        onDemand: false,
+                        discardSelector: ".discard-answer",
+                        enableTables: true,
+                        isStacksEditorPreviewEnabled: false
+                        , userId: 9020761, enableTables: true, enableSnippets: true
+                      });
+                    }
+                  });
+                </script>
+                <div id="post-editor" class="post-editor js-post-editor">
+
+
+                  <div class="ps-relative">
+                    <div class="wmd-container mb8">
+                      <div id="wmd-button-bar" class="wmd-button-bar btr-sm"></div>
+                      <div class="ai-content-policy-notice js-ai-policy-notice fc-black p8 bl br bc-black-300 d-none"
+                        aria-hidden="true">
+                        <div class="d-flex jc-space-between ac-center gsx gs2">
+                          <p class="flex--item as-center"><b>Reminder:</b> Answers generated by artificial intelligence
+                            tools are not allowed on Stack Overflow. <a href="/help/ai-policy">Learn more</a></p>
+                          <button class="flex--item js-dismiss-ai-banner s-btn s-btn__sm s-btn__icon fc-black"><svg
+                              aria-hidden="true" class="svg-icon iconClearSm" width="14" height="14"
+                              viewBox="0 0 14 14">
+                              <path
+                                d="M12 3.41 10.59 2 7 5.59 3.41 2 2 3.41 5.59 7 2 10.59 3.41 12 7 8.41 10.59 12 12 10.59 8.41 7 12 3.41Z" />
+                            </svg></button>
+                        </div>
+                      </div>
+                      <input type="hidden" name="AIPolicyNoticeShown" value="true" />
+                      <div class="js-stacks-validation">
+                        <div class="ps-relative">
+                          <textarea id="wmd-input" name="post-text" class="wmd-input s-input bar0 js-post-body-field"
+                            data-editor-type="wmd" data-post-type-id="2" cols="92" rows="15"
+                            aria-labelledby="your-answer-header" tabindex="101" data-min-length=""></textarea>
+                        </div>
+                        <div class="s-input-message mt4 d-none js-stacks-validation-message"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <aside
+                    class="d-flex ai-start jc-space-between js-answer-help s-notice s-notice__warning pb0 pr4 pt4 mb8 d-none"
+                    role="status" aria-hidden="true">
+                    <div class="flex--item pt8">
+                      <p>Thanks for contributing an answer to Stack Overflow!</p>
+                      <ul>
+                        <li>Please be sure to <em>answer the question</em>. Provide details and share your research!
+                        </li>
+                      </ul>
+                      <p>But <em>avoid</em> …</p>
+                      <ul>
+                        <li>Asking for help, clarification, or responding to other answers.</li>
+                        <li>Making statements based on opinion; back them up with references or personal experience.
+                        </li>
+                      </ul>
+                      <p>To learn more, see our <a href="/help/how-to-answer">tips on writing great answers</a>.</p>
+                    </div>
+                    <button class="flex--item js-answer-help-close-btn s-btn s-btn__muted fc-black-600">
+                      <svg aria-hidden="true" class="svg-icon iconClear" width="18" height="18" viewBox="0 0 18 18">
+                        <path
+                          d="M15 4.41 13.59 3 9 7.59 4.41 3 3 4.41 7.59 9 3 13.59 4.41 15 9 10.41 13.59 15 15 13.59 10.41 9 15 4.41Z" />
+                      </svg>
+                    </button>
+                  </aside>
+
+
+
+                  <div>
+                    <div id="draft-saved" class="fc-success h24" style="display:none;">Draft saved</div>
+                    <div id="draft-discarded" class="fc-error h24" style="display:none;">Draft discarded</div>
+                  </div>
+
+                  <fieldset class="mb8">
+                    <div class="d-flex gs4 jc-end">
+                      <div class="flex--item">
+                        <input id="communitymode" class="s-checkbox" type="checkbox" name="communitymode" />
+                      </div>
+                      <label class="flex--item s-label fw-normal" for="communitymode"
+                        title="Marking an answer community wiki encourages others to edit it by lowering the reputation barrier required to edit. However, you will not gain any upvote reputation from it. This cannot be undone.">Community
+                        wiki</label>
+                    </div>
+                  </fieldset>
+
+                  <div id="wmd-preview" class="s-prose mb16 wmd-preview js-wmd-preview"></div>
+                  <div></div>
+
+                  <div class="edit-block">
+                    <input id="fkey" name="fkey" type="hidden"
+                      value="fd668bbb56a48e0cdd87a4f583896cb6ffc8aa0e980a6df9fabbe53dafdbdf67">
+                    <input id="author" name="author" type="text">
+                  </div>
+
+                </div>
+
+
+                <div class="ps-relative">
+
+                </div>
+
+                <div class="form-submit clear-both d-flex gsx gs4">
+                  <button id="submit-button" class="flex--item s-btn s-btn__filled s-btn__icon" type="submit"
+                    tabindex="120" autocomplete="off">
+                    Post Your Answer
+                  </button>
+                  <button class="flex--item s-btn s-btn__danger discard-answer dno">
+                    Discard
+                  </button>
+                </div>
+                <div class="js-general-error general-error clear-both d-none" aria-live="polite"></div>
+              </form>
+
+
+              <h2 class="bottom-notice" data-loc="1">
+                <div>
+                  Not the answer you&#x27;re looking for? Browse other questions tagged <ul
+                    class='ml0 list-ls-none js-post-tag-list-wrapper d-inline'>
+                    <li class='d-inline mr4 js-post-tag-list-item'><a href="/questions/tagged/javascript"
+                        class="post-tag" title="show questions tagged &#39;javascript&#39;"
+                        aria-label="show questions tagged &#39;javascript&#39;" rel="tag"
+                        aria-labelledby="tag-javascript-tooltip-container">javascript</a></li>
+                  </ul> or <a href="/questions/ask">ask your own question</a>. </div>
+              </h2>
+            </div>
+          </div>
+
+
+          <div id="sidebar" class="show-votes" role="complementary" aria-label="sidebar">
+
+
+
+            <div class="s-sidebarwidget s-sidebarwidget__yellow s-anchors s-anchors__grayscale mb16"
+              data-tracker="cb=1">
+              <ul class="d-block p0 m0">
+                <li
+                  class="s-sidebarwidget--header s-sidebarwidget__small-bold-text d-flex fc-black-500 d:fc-black-600 bb bbw1">
+                  The Overflow Blog
+                </li>
+                <li class="s-sidebarwidget--item d-flex px16">
+                  <div class="flex--item1 fl-shrink0">
+                    <svg aria-hidden="true" class="va-text-top svg-icon iconPencilSm" width="14" height="14"
+                      viewBox="0 0 14 14">
+                      <path fill="#F1B600" d="m2 10.12 6.37-6.43 1.88 1.88L3.88 12H2v-1.88Z" />
+                      <path fill="#E87C87"
+                        d="m11.1 1.71 1.13 1.12c.2.2.2.51 0 .71L11.1 4.7 9.21 2.86l1.17-1.15c.2-.2.51-.2.71 0Z" />
+                    </svg>
+                  </div>
+                  <div class="flex--item wmn0 ow-break-word">
+                    <a href="https://stackoverflow.blog/2024/02/29/defining-socially-responsible-ai-how-we-select-api-partners/"
+                      class="js-gps-track"
+                      data-ga="[&quot;community bulletin board&quot;,&quot;The Overflow Blog&quot;,&quot;https://stackoverflow.blog/2024/02/29/defining-socially-responsible-ai-how-we-select-api-partners/&quot;,null,null]"
+                      data-gps-track="communitybulletin.click({ priority: 1, position: 0 })">Defining socially
+                      responsible AI: How we select partners</a>
+                  </div>
+                </li>
+                <li class="s-sidebarwidget--item d-flex px16">
+                  <div class="flex--item1 fl-shrink0">
+                    <svg aria-hidden="true" class="va-text-top svg-icon iconPencilSm" width="14" height="14"
+                      viewBox="0 0 14 14">
+                      <path fill="#F1B600" d="m2 10.12 6.37-6.43 1.88 1.88L3.88 12H2v-1.88Z" />
+                      <path fill="#E87C87"
+                        d="m11.1 1.71 1.13 1.12c.2.2.2.51 0 .71L11.1 4.7 9.21 2.86l1.17-1.15c.2-.2.51-.2.71 0Z" />
+                    </svg>
+                  </div>
+                  <div class="flex--item wmn0 ow-break-word">
+                    <a href="https://stackoverflow.blog/2024/03/01/it-s-rag-time-for-llms-that-need-a-source-of-truth/"
+                      class="js-gps-track"
+                      data-ga="[&quot;community bulletin board&quot;,&quot;The Overflow Blog&quot;,&quot;https://stackoverflow.blog/2024/03/01/it-s-rag-time-for-llms-that-need-a-source-of-truth/&quot;,null,null]"
+                      data-gps-track="communitybulletin.click({ priority: 1, position: 1 })">It’s RAG time for LLMs that
+                      need a source of truth</a>
+                  </div>
+                </li>
+                <li
+                  class="s-sidebarwidget--header s-sidebarwidget__small-bold-text d-flex fc-black-500 d:fc-black-600 bb bbw1">
+                  Upcoming Events
+                </li>
+                <li class="s-sidebarwidget--item d-flex px16">
+                  <div class="flex--item1 fl-shrink0">
+                    <div class="favicon favicon-stackoverflow" title="Stack Overflow"></div>
+                  </div>
+                  <div class="flex--item wmn0 ow-break-word">
+                    <a href="https://stackoverflow.com/election" class="fc-danger js-gps-track"
+                      data-ga="[&quot;community bulletin board&quot;,&quot;Upcoming Events&quot;,&quot;https://stackoverflow.com/election&quot;,null,null]"
+                      data-gps-track="communitybulletin.click({ priority: 5, position: 2 })">2024 Community Moderator
+                      Election</a>
+                    <div>ends <span title="2024-03-13 20:00:00Z">March 13</span></div>
+                  </div>
+                </li>
+                <li
+                  class="s-sidebarwidget--header s-sidebarwidget__small-bold-text d-flex fc-black-500 d:fc-black-600 bb bbw1">
+                  Featured on Meta
+                </li>
+                <li class="s-sidebarwidget--item d-flex px16">
+                  <div class="flex--item1 fl-shrink0">
+                    <div class="favicon favicon-stackexchangemeta" title="Meta Stack Exchange"></div>
+                  </div>
+                  <div class="flex--item wmn0 ow-break-word">
+                    <a href="https://meta.stackexchange.com/questions/396924/changing-how-community-leadership-works-on-stack-exchange-a-proposal-and-rough"
+                      class="js-gps-track"
+                      title="Changing how community leadership works on Stack Exchange: a proposal and rough timeline"
+                      data-ga="[&quot;community bulletin board&quot;,&quot;Featured on Meta&quot;,&quot;https://meta.stackexchange.com/questions/396924/changing-how-community-leadership-works-on-stack-exchange-a-proposal-and-rough&quot;,null,null]"
+                      data-gps-track="communitybulletin.click({ priority: 3, position: 3 })">Changing how community
+                      leadership works on Stack Exchange: a proposal and...</a>
+                  </div>
+                </li>
+                <li class="s-sidebarwidget--item d-flex px16">
+                  <div class="flex--item1 fl-shrink0">
+                    <div class="favicon favicon-stackexchangemeta" title="Meta Stack Exchange"></div>
+                  </div>
+                  <div class="flex--item wmn0 ow-break-word">
+                    <a href="https://meta.stackexchange.com/questions/398127/our-partnership-with-google-and-commitment-to-socially-responsible-ai"
+                      class="js-gps-track"
+                      data-ga="[&quot;community bulletin board&quot;,&quot;Featured on Meta&quot;,&quot;https://meta.stackexchange.com/questions/398127/our-partnership-with-google-and-commitment-to-socially-responsible-ai&quot;,null,null]"
+                      data-gps-track="communitybulletin.click({ priority: 3, position: 4 })">Our partnership with Google
+                      and commitment to socially responsible AI</a>
+                  </div>
+                </li>
+                <li class="s-sidebarwidget--item d-flex px16">
+                  <div class="flex--item1 fl-shrink0">
+                    <div class="favicon favicon-stackoverflowmeta" title="Meta Stack Overflow"></div>
+                  </div>
+                  <div class="flex--item wmn0 ow-break-word">
+                    <a href="https://meta.stackoverflow.com/questions/428183/2024-moderator-election-qa-question-collection"
+                      class="js-gps-track"
+                      data-ga="[&quot;community bulletin board&quot;,&quot;Featured on Meta&quot;,&quot;https://meta.stackoverflow.com/questions/428183/2024-moderator-election-qa-question-collection&quot;,null,null]"
+                      data-gps-track="communitybulletin.click({ priority: 6, position: 5 })">2024 Moderator Election
+                      Q&amp;A – Question Collection</a>
+                  </div>
+                </li>
+                <li class="s-sidebarwidget--item d-flex px16">
+                  <div class="flex--item1 fl-shrink0">
+                    <div class="favicon favicon-stackoverflowmeta" title="Meta Stack Overflow"></div>
+                  </div>
+                  <div class="flex--item wmn0 ow-break-word">
+                    <a href="https://meta.stackoverflow.com/questions/421831/temporary-policy-generative-ai-e-g-chatgpt-is-banned"
+                      class="js-gps-track"
+                      data-ga="[&quot;community bulletin board&quot;,&quot;Featured on Meta&quot;,&quot;https://meta.stackoverflow.com/questions/421831/temporary-policy-generative-ai-e-g-chatgpt-is-banned&quot;,null,null]"
+                      data-gps-track="communitybulletin.click({ priority: 6, position: 6 })">Temporary policy:
+                      Generative AI (e.g., ChatGPT) is banned</a>
+                  </div>
+                </li>
+                <li
+                  class="s-sidebarwidget--header s-sidebarwidget__small-bold-text d-flex fc-black-500 d:fc-black-600 bb bbw1">
+                  Hot Meta Posts
+                </li>
+                <li class="s-sidebarwidget--item d-flex px16">
+                  <div class="flex--item1 fl-shrink0">
+                    <span class="fc-black-400" title="Question score (upvotes - downvotes)">3</span>
+                  </div>
+                  <div class="flex--item wmn0 ow-break-word">
+                    <a href="https://meta.stackoverflow.com/questions/429312/discord-py-a-common-setup-issue-with-intents"
+                      class="js-gps-track"
+                      data-ga="[&quot;community bulletin board&quot;,&quot;Hot Meta Posts&quot;,&quot;https://meta.stackoverflow.com/questions/429312/discord-py-a-common-setup-issue-with-intents&quot;,null,null]"
+                      data-gps-track="communitybulletin.click({ priority: 7, position: 7 })">discord.py: a common setup
+                      issue with Intents</a>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+
+            <style>
+            </style>
+            <div class="js-zone-container zone-container-sidebar">
+              <div id="dfp-tsb" class="everyonelovesstackoverflow everyoneloves__top-sidebar"></div>
+              <div class="js-report-ad-button-container " style="width: 300px"></div>
+            </div>
+            <div class="js-zone-container zone-container-sidebar">
+              <div id="dfp-msb" class="everyonelovesstackoverflow everyoneloves__mid-sidebar"></div>
+              <div class="js-report-ad-button-container " style="width: 300px"></div>
+            </div>
+            <div id="hireme"></div>
+            <div class="module sidebar-linked">
+              <h4 id="h-linked">Linked</h4>
+              <div class="linked" data-tracker="lq=1">
+                <div class="spacer js-gps-track"
+                  data-gps-track="linkedquestion.click({ source_post_id: 71691737, target_question_id: 1069666, position: 0 })">
+                  <a href="/q/1069666" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted extra-large">1016</div>
+                  </a>
+                  <a href="/questions/1069666/sorting-object-property-by-values?noredirect=1"
+                    class="question-hyperlink">Sorting object property by values</a>
+                </div>
+                <div class="spacer js-gps-track"
+                  data-gps-track="linkedquestion.click({ source_post_id: 71691737, target_question_id: 63810162, position: 1 })">
+                  <a href="/q/63810162" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted default">0</div>
+                  </a>
+                  <a href="/questions/63810162/converting-nested-arrays-to-objects?noredirect=1"
+                    class="question-hyperlink">Converting nested arrays to objects</a>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+            <div class="module sidebar-related">
+              <h4 id="h-related">Related</h4>
+              <div class="related js-gps-related-questions" data-tracker="rq=3">
+                <div class="spacer" data-question-id="17280096">
+                  <a href="/q/17280096" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted default">1</div>
+                  </a>
+                  <a href="/questions/17280096/how-to-build-nested-properties-from-key-strings"
+                    class="question-hyperlink">How to build nested properties from key strings</a>
+                </div>
+                <div class="spacer" data-question-id="56392294">
+                  <a href="/q/56392294" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted default">1</div>
+                  </a>
+                  <a href="/questions/56392294/filtering-the-keys-and-reducing-into-nested-structure"
+                    class="question-hyperlink">Filtering the keys and reducing into nested structure</a>
+                </div>
+                <div class="spacer" data-question-id="61102367">
+                  <a href="/q/61102367" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted default">2</div>
+                  </a>
+                  <a href="/questions/61102367/how-to-get-all-specific-values-from-an-array-of-objects-with-nested-arrays-of-ob"
+                    class="question-hyperlink">How to get all specific values from an array of objects with nested
+                    arrays of objects?</a>
+                </div>
+                <div class="spacer" data-question-id="64108631">
+                  <a href="/q/64108631" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted default">2</div>
+                  </a>
+                  <a href="/questions/64108631/extracting-values-from-array-of-nested-objects-in-javascript"
+                    class="question-hyperlink">Extracting values from Array of nested Objects in JavaScript</a>
+                </div>
+                <div class="spacer" data-question-id="65868666">
+                  <a href="/q/65868666" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes default">0</div>
+                  </a>
+                  <a href="/questions/65868666/trying-to-get-exact-keys-based-on-the-given-value-in-the-nested-object-javascr"
+                    class="question-hyperlink">Trying to get exact keys based on the given value in the nested object -
+                    Javascript (using recursion)</a>
+                </div>
+                <div class="spacer" data-question-id="66721525">
+                  <a href="/q/66721525" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted default">0</div>
+                  </a>
+                  <a href="/questions/66721525/retrieve-the-lowest-three-values-from-the-array-of-javascript-objects"
+                    class="question-hyperlink">retrieve the lowest three values from the array of javascript objects</a>
+                </div>
+                <div class="spacer" data-question-id="67892335">
+                  <a href="/q/67892335" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted default">1</div>
+                  </a>
+                  <a href="/questions/67892335/creating-nested-object-from-keys" class="question-hyperlink">creating
+                    nested object from keys</a>
+                </div>
+                <div class="spacer" data-question-id="70479392">
+                  <a href="/q/70479392" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted default">1</div>
+                  </a>
+                  <a href="/questions/70479392/how-to-get-the-three-key-value-pairs-with-the-lowest-value-from-an-object"
+                    class="question-hyperlink">How to get the three key/value pairs with the lowest value from an
+                    object?</a>
+                </div>
+                <div class="spacer" data-question-id="72085284">
+                  <a href="/q/72085284" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes answered-accepted default">0</div>
+                  </a>
+                  <a href="/questions/72085284/how-can-i-extract-keys-and-values-from-a-nested-object-of-objects"
+                    class="question-hyperlink">How can I extract keys and values from a nested object of objects?</a>
+                </div>
+                <div class="spacer" data-question-id="73101462">
+                  <a href="/q/73101462" title="Question score (upvotes - downvotes)">
+                    <div class="answer-votes default">1</div>
+                  </a>
+                  <a href="/questions/73101462/creating-a-nested-object-from-array-of-keys-and-target-values"
+                    class="question-hyperlink">Creating a nested object from array of keys and target values</a>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+              $(document).ready(function () {
+                $(".js-gps-related-questions .spacer").click(function () {
+                  fireRelatedEvent($(this).index() + 1, $(this).data('question-id'));
+                });
+
+                function fireRelatedEvent(position, questionId) {
+                  StackExchange.using("gps", function () {
+                    StackExchange.gps.track('related_questions.click',
+                      {
+                        position: position,
+                        originQuestionId: 71691737,
+                        relatedQuestionId: +questionId,
+                        location: 'sidebar',
+                        source: 'Baseline'
+                      });
+                  });
+                }
+              });
+            </script>
+
+
+
+            <div id="hot-network-questions" class="module tex2jax_ignore">
+              <h4>
+                <a href="https://stackexchange.com/questions?tab=hot" class="js-gps-track s-link s-link__inherit"
+                  data-gps-track="posts_hot_network.click({ item_type:1, location:11 })">
+                  Hot Network Questions
+                </a>
+              </h4>
+              <ul>
+                <li>
+                  <div class="favicon favicon-blender" title="Blender Stack Exchange"></div><a
+                    href="https://blender.stackexchange.com/questions/313924/how-to-model-a-spherical-snowflake"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:502 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to model a spherical snowflake?
+                  </a>
+
+                </li>
+                <li>
+                  <div class="favicon favicon-bitcoin" title="Bitcoin Stack Exchange"></div><a
+                    href="https://bitcoin.stackexchange.com/questions/122090/enabling-bitcoin-core-wallet-during-configuration-getting-method-not-found"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:308 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Enabling Bitcoin Core Wallet during configuration? Getting &quot;method not found&quot;
+                  </a>
+
+                </li>
+                <li>
+                  <div class="favicon favicon-philosophy" title="Philosophy Stack Exchange"></div><a
+                    href="https://philosophy.stackexchange.com/questions/110026/could-occams-razor-ever-favor-theism"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:265 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Could Occam&#x27;s Razor ever favor theism?
+                  </a>
+
+                </li>
+                <li>
+                  <div class="favicon favicon-mathematica" title="Mathematica Stack Exchange"></div><a
+                    href="https://mathematica.stackexchange.com/questions/299862/how-can-i-draw-a-random-thickness-curve"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:387 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How can I draw a random thickness curve?
+                  </a>
+
+                </li>
+                <li>
+                  <div class="favicon favicon-cooking" title="Seasoned Advice"></div><a
+                    href="https://cooking.stackexchange.com/questions/127779/what-do-these-mean-on-the-label-of-this-olive-oil-product"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:49 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What do these mean on the label of this olive oil product?
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-mathematica" title="Mathematica Stack Exchange"></div><a
+                    href="https://mathematica.stackexchange.com/questions/299803/recreating-map-from-wolframalpha-with-geographics"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:387 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Recreating map from Wolfram|Alpha with GeoGraphics
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-philosophy" title="Philosophy Stack Exchange"></div><a
+                    href="https://philosophy.stackexchange.com/questions/110012/is-materialism-essential-to-scientific-progress"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:265 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is materialism essential to scientific progress?
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-bicycles" title="Bicycles Stack Exchange"></div><a
+                    href="https://bicycles.stackexchange.com/questions/93498/i-suspect-that-my-carbon-fork-has-a-crack-but-i-cant-really-tell"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:126 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    I suspect that my carbon fork has a crack but I can&#x27;t really tell
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-tex" title="TeX - LaTeX Stack Exchange"></div><a
+                    href="https://tex.stackexchange.com/questions/711907/circling-a-number-on-a-number-line-with-tikz"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:85 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Circling a number on a number line with tikz
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-scifi" title="Science Fiction &amp; Fantasy Stack Exchange"></div><a
+                    href="https://scifi.stackexchange.com/questions/285872/movie-about-an-astronaut-getting-controlled-by-an-alien"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:186 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Movie about an astronaut getting controlled by an alien
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-electronics" title="Electrical Engineering Stack Exchange"></div><a
+                    href="https://electronics.stackexchange.com/questions/704470/has-any-design-successfully-used-rolling-element-bearings-to-conduct-current-rel"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:135 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Has any design successfully used rolling element bearings to conduct current reliably?
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-english" title="English Language &amp; Usage Stack Exchange"></div><a
+                    href="https://english.stackexchange.com/questions/620110/whats-a-pithy-term-to-describe-what-a-spy-does-when-he-she-socializes-with-a-ta"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:97 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What&#x27;s a pithy term to describe what a spy does when he/she socializes with a target to get
+                    information?
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-codegolf" title="Code Golf Stack Exchange"></div><a
+                    href="https://codegolf.stackexchange.com/questions/271363/is-it-a-tetrate-of-two"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:200 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Is it a tetrate of two?
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-scifi" title="Science Fiction &amp; Fantasy Stack Exchange"></div><a
+                    href="https://scifi.stackexchange.com/questions/285841/who-was-bilbos-frodos-mithril-chain-mail-made-for"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:186 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Who was Bilbo&#x27;s / Frodo&#x27;s mithril chain mail made for?
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-blender" title="Blender Stack Exchange"></div><a
+                    href="https://blender.stackexchange.com/questions/313935/geo-node-specify-index-freely"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:502 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    geo node: Specify index freely
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-money" title="Personal Finance &amp; Money Stack Exchange"></div><a
+                    href="https://money.stackexchange.com/questions/161654/cashing-in-personal-retirement-for-real-estate"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:93 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Cashing in personal retirement for real estate
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-rpg" title="Role-playing Games Stack Exchange"></div><a
+                    href="https://rpg.stackexchange.com/questions/210704/how-to-calculate-advantage-disadvantage-with-multiple-dice-e-g-3d6-2d10-etc"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:122 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    How to calculate advantage/disadvantage with multiple dice (e.g. 3d6, 2d10, etc.)
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-biology" title="Biology Stack Exchange"></div><a
+                    href="https://biology.stackexchange.com/questions/114222/what-is-this-arthropod-found-in-lapland-finland"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:375 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What is this arthropod? (found in Lapland - Finland)
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-scifi" title="Science Fiction &amp; Fantasy Stack Exchange"></div><a
+                    href="https://scifi.stackexchange.com/questions/285866/short-science-fiction-story-human-worker-in-peril-on-a-planet-surface-is-cover"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:186 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Short science fiction story. Human worker in peril on a planet. Surface is covered in shallow water.
+                    If he becomes exhausted and lies down, will drown
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-puzzling" title="Puzzling Stack Exchange"></div><a
+                    href="https://puzzling.stackexchange.com/questions/125771/design-a-magic-trick"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:559 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Design a magic trick
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-law" title="Law Stack Exchange"></div><a
+                    href="https://law.stackexchange.com/questions/101014/would-vehicle-insurance-be-valid-if-someone-else-other-than-the-person-whose-na"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:617 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Would vehicle insurance be valid if someone else, other than the person whose name the insurance is
+                    under, drives it?
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-mathoverflow" title="MathOverflow"></div><a
+                    href="https://mathoverflow.net/questions/466199/a-criterion-for-numerically-trivial-line-bundle"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:504 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    A criterion for numerically trivial line bundle
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-retrocomputing" title="Retrocomputing Stack Exchange"></div><a
+                    href="https://retrocomputing.stackexchange.com/questions/29591/did-any-cpus-have-a-special-instruction-for-multiplying-or-dividing-by-ten"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:648 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    Did any CPUs have a special instruction for multiplying or dividing by ten?
+                  </a>
+
+                </li>
+                <li class="dno js-hidden">
+                  <div class="favicon favicon-linguistics" title="Linguistics Stack Exchange"></div><a
+                    href="https://linguistics.stackexchange.com/questions/48398/what-are-difficulties-linguists-have-run-into-with-common-fonts"
+                    class="js-gps-track question-hyperlink mb0"
+                    data-gps-track="site.switch({ item_type:11, target_site:312 }); posts_hot_network.click({ item_type:2, location:11 })">
+                    What are difficulties linguists have run into with common fonts?
+                  </a>
+
+                </li>
+              </ul>
+
+              <a href="#" class="show-more js-show-more js-gps-track"
+                data-gps-track="posts_hot_network.click({ item_type:3, location:11 })">
+                more hot questions
+              </a>
+            </div>
+
+            <div id="feed-link" class="js-feed-link">
+              <a href="/feeds/question/71691737" title="Feed of this question and its answers">
+                <svg aria-hidden="true" class="fc-orange-400 svg-icon iconRss" width="18" height="18"
+                  viewBox="0 0 18 18">
+                  <path
+                    d="M3 1a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H3Zm0 1.5c6.9 0 12.5 5.6 12.5 12.5H13C13 9.55 8.45 5 3 5V2.5Zm0 5c4.08 0 7.5 3.41 7.5 7.5H8c0-2.72-2.28-5-5-5V7.5Zm0 5c1.36 0 2.5 1.14 2.5 2.5H3v-2.5Z" />
+                </svg>
+                Question feed
+              </a>
+            </div>
+            <aside class="s-modal js-feed-link-modal" tabindex="-1" role="dialog" aria-labelledby="feed-modal-title"
+              aria-describedby="feed-modal-description" aria-hidden="true">
+              <div class="s-modal--dialog js-modal-dialog wmx4" role="document" data-controller="se-draggable">
+                <h1 class="s-modal--header fw-bold js-first-tabbable" id="feed-modal-title"
+                  data-se-draggable-target="handle" tabindex="0">
+                  Subscribe to RSS
+                </h1>
+                <div class="d-flex gs4 gsy fd-column">
+                  <div class="flex--item">
+                    <label class="d-block s-label c-default" for="feed-url">
+                      Question feed
+                      <p class="s-description mt2" id="feed-modal-description">To subscribe to this RSS feed, copy and
+                        paste this URL into your RSS reader.</p>
+                    </label>
+                  </div>
+                  <div class="d-flex ps-relative">
+                    <input class="s-input" type="text" name="feed-url" id="feed-url" readonly="readonly"
+                      value="https://stackoverflow.com/feeds/question/71691737" />
+                    <svg aria-hidden="true" class="s-input-icon fc-orange-400 svg-icon iconRss" width="18" height="18"
+                      viewBox="0 0 18 18">
+                      <path
+                        d="M3 1a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H3Zm0 1.5c6.9 0 12.5 5.6 12.5 12.5H13C13 9.55 8.45 5 3 5V2.5Zm0 5c4.08 0 7.5 3.41 7.5 7.5H8c0-2.72-2.28-5-5-5V7.5Zm0 5c1.36 0 2.5 1.14 2.5 2.5H3v-2.5Z" />
+                    </svg>
+                  </div>
+                </div>
+                <a class="s-modal--close s-btn s-btn__muted js-modal-close js-last-tabbable" href="#"
+                  aria-label="Close">
+                  <svg aria-hidden="true" class="svg-icon iconClearSm" width="14" height="14" viewBox="0 0 14 14">
+                    <path
+                      d="M12 3.41 10.59 2 7 5.59 3.41 2 2 3.41 5.59 7 2 10.59 3.41 12 7 8.41 10.59 12 12 10.59 8.41 7 12 3.41Z" />
+                  </svg>
+                </a>
+              </div>
+            </aside>
+
+          </div>
+
+        </div>
+        <script>StackExchange.ready(function () { $.get('/posts/71691737/ivc/5334?prg=40b6efa8-568c-42b1-ba97-2cf311bf11f3'); });</script>
+        <noscript>
+          <div><img src="/posts/71691737/ivc/5334?prg=40b6efa8-568c-42b1-ba97-2cf311bf11f3" class="dno" alt="" width="0"
+              height="0"></div>
+        </noscript>
+        <div style="display:none" id="js-codeblock-lang">lang-js</div>
+      </div>
+
+      <script>
+        $('#wmd-input').one("keypress", function () {
+          $.ajax({
+            url: '/accounts/email-settings-form',
+            cache: false,
+            success: function (data) {
+              $('#submit-button').parent().prepend(data);
+            }
+          });
+        });
+
+      </script>
+
+
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+    var cam = cam || { opt: {} };
+    var clcGamLoaderOptions = cam || { opt: {} };
+    var opt = clcGamLoaderOptions.opt;
+
+    opt.omni = 'BwoLCIi4k5aLrt08EAUQxILzBRjZ25ciIAIoAjADOgx8amF2YXNjcmlwdHxAAEgAS4_h3Vv3YKA0xA';
+    opt.refresh = !1;
+    opt.refreshInterval = 90;
+    opt.sf = !0;
+    opt.hb = !1;
+    opt.ll = !0;
+    opt.tlb_position = 0;
+    opt.personalization_consent = !1;
+    opt.targeting_consent = !1;
+    opt.performance_consent = !1;
+
+    opt.targeting = { Registered: ['true'], Reputation: ['200'], 'so-tag': ['javascript'], 'tag-reportable': ['javascript'], NumberOfAnswers: ['1'], 'ProductVariant': ['Light'] };
+    opt.adReportEnabled = !0;
+    opt.adReportUrl = '/ads/report-ad';
+    opt.adReportText = 'Report this ad';
+    opt.adReportFileTypeErrorMessage = 'Please select a PNG or JPG file.';
+    opt.adReportFileSizeErrorMessage = 'The file must be under 2 MiB.';
+    opt.adReportErrorText = 'Error uploading ad report.';
+    opt.adReportThanksText = 'Thanks for your feedback. We’ll review this against our code of conduct and take action if necessary.';
+    opt.adReportLoginExpiredMessage = 'Your login session has expired, please login and try again.';
+    opt.adReportLoginErrorMessage = 'An error occurred when loading the report form - please try again';
+    opt.adReportModalClass = 'js-ad-report';
+    opt.perRequestGuid = '40b6efa8-568c-42b1-ba97-2cf311bf11f3';
+    opt.responseHash = '1OPlT72H62tuwTzlbUTWUHpaOKPpl/hhHrQ3SiL6lIs=';
+
+
+    opt.targeting.TargetingConsent = ['False_Active'];
+    opt.allowAccountTargetingForThisRequest = !1;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('dfptestads')) {
+      const dfptestads = urlParams.get('dfptestads');
+      opt.targeting.DfpTestAds = dfptestads;
+    }
+  </script>
+  <script></script>
+
+  <footer id="footer" class="site-footer js-footer theme-light__forced" role="contentinfo">
+    <div class="site-footer--container">
+      <div class="site-footer--logo">
+
+        <a href="https://stackoverflow.com" aria-label="Stack Overflow"><svg aria-hidden="true"
+            class="native svg-icon iconLogoGlyphMd" width="32" height="37" viewBox="0 0 32 37">
+            <path d="M26 33v-9h4v13H0V24h4v9h22Z" fill="#BCBBBB" />
+            <path
+              d="m21.5 0-2.7 2 9.9 13.3 2.7-2L21.5 0ZM26 18.4 13.3 7.8l2.1-2.5 12.7 10.6-2.1 2.5ZM9.1 15.2l15 7 1.4-3-15-7-1.4 3Zm14 10.79.68-2.95-16.1-3.35L7 23l16.1 2.99ZM23 30H7v-3h16v3Z"
+              fill="#F48024" />
+          </svg></a>
+      </div>
+      <nav class="site-footer--nav">
+        <div class="site-footer--col">
+          <h5 class="-title"><a href="https://stackoverflow.com" class="js-gps-track"
+              data-gps-track="footer.click({ location: 2, link: 15})">Stack Overflow</a></h5>
+          <ul class="-list js-primary-footer-links">
+            <li><a href="/questions" class="js-gps-track -link"
+                data-gps-track="footer.click({ location: 2, link: 16})">Questions</a></li>
+            <li><a href="/help" class="js-gps-track -link"
+                data-gps-track="footer.click({ location: 2, link: 3 })">Help</a></li>
+          </ul>
+        </div>
+        <div class="site-footer--col">
+          <h5 class="-title"><a href="https://stackoverflow.co/" class="js-gps-track"
+              data-gps-track="footer.click({ location: 2, link: 19 })">Products</a></h5>
+          <ul class="-list">
+            <li><a href="https://stackoverflow.co/teams/" class="js-gps-track -link"
+                data-ga="[&quot;teams traffic&quot;,&quot;footer - site nav&quot;,&quot;stackoverflow.com/teams&quot;,null,{&quot;dimension4&quot;:&quot;teams&quot;}]"
+                data-gps-track="footer.click({ location: 2, link: 29 })">Teams</a></li>
+            <li><a href="https://stackoverflow.co/advertising/" class="js-gps-track -link"
+                data-gps-track="footer.click({ location: 2, link: 21 })">Advertising</a></li>
+            <li><a href="https://stackoverflow.co/collectives/" class="js-gps-track -link"
+                data-gps-track="footer.click({ location: 2, link: 40 })">Collectives</a></li>
+            <li><a href="https://stackoverflow.co/talent/" class="js-gps-track -link"
+                data-gps-track="footer.click({ location: 2, link: 20 })">Talent</a></li>
+          </ul>
+        </div>
+        <div class="site-footer--col">
+          <h5 class="-title"><a class="js-gps-track" data-gps-track="footer.click({ location: 2, link: 1 })"
+              href="https://stackoverflow.co/">Company</a></h5>
+          <ul class="-list">
+            <li><a class="js-gps-track -link" data-gps-track="footer.click({ location: 2, link: 1 })"
+                href="https://stackoverflow.co/">About</a></li>
+            <li><a class="js-gps-track -link" data-gps-track="footer.click({ location: 2, link: 27 })"
+                href="https://stackoverflow.co/company/press/">Press</a></li>
+            <li><a class="js-gps-track -link" data-gps-track="footer.click({ location: 2, link: 9 })"
+                href="https://stackoverflow.co/company/work-here/">Work Here</a></li>
+            <li><a class="js-gps-track -link" data-gps-track="footer.click({ location: 2, link: 7 })"
+                href="https://stackoverflow.com/legal">Legal</a></li>
+            <li><a class="js-gps-track -link" data-gps-track="footer.click({ location: 2, link: 8 })"
+                href="https://stackoverflow.com/legal/privacy-policy">Privacy Policy</a></li>
+            <li><a class="js-gps-track -link" data-gps-track="footer.click({ location: 2, link: 37 })"
+                href="https://stackoverflow.com/legal/terms-of-service/public">Terms of Service</a></li>
+            <li><a class="js-gps-track -link" data-gps-track="footer.click({ location: 2, link: 13 })"
+                href="/contact">Contact Us</a></li>
+            <li class="" id="consent-footer-link"><a class="js-gps-track -link js-cookie-settings"
+                data-gps-track="footer.click({ location: 2, link: 38 })" href="#"
+                data-consent-popup-loader="footer">Cookie Settings</a></li>
+            <li><a class="js-gps-track -link" data-gps-track="footer.click({ location: 2, link: 39 })"
+                href="https://stackoverflow.com/legal/cookie-policy">Cookie Policy</a></li>
+          </ul>
+        </div>
+        <div class="site-footer--col site-footer--categories-nav">
+          <div>
+            <h5 class="-title"><a href="https://stackexchange.com"
+                data-gps-track="footer.click({ location: 2, link: 30 })">Stack Exchange Network</a></h5>
+            <ul class="-list">
+              <li>
+                <a href="https://stackexchange.com/sites#technology" class="-link js-gps-track"
+                  data-gps-track="footer.click({ location: 2, link: 24 })">
+                  Technology
+                </a>
+              </li>
+              <li>
+                <a href="https://stackexchange.com/sites#culturerecreation" class="-link js-gps-track"
+                  data-gps-track="footer.click({ location: 2, link: 24 })">
+                  Culture &amp; recreation
+                </a>
+              </li>
+              <li>
+                <a href="https://stackexchange.com/sites#lifearts" class="-link js-gps-track"
+                  data-gps-track="footer.click({ location: 2, link: 24 })">
+                  Life &amp; arts
+                </a>
+              </li>
+              <li>
+                <a href="https://stackexchange.com/sites#science" class="-link js-gps-track"
+                  data-gps-track="footer.click({ location: 2, link: 24 })">
+                  Science
+                </a>
+              </li>
+              <li>
+                <a href="https://stackexchange.com/sites#professional" class="-link js-gps-track"
+                  data-gps-track="footer.click({ location: 2, link: 24 })">
+                  Professional
+                </a>
+              </li>
+              <li>
+                <a href="https://stackexchange.com/sites#business" class="-link js-gps-track"
+                  data-gps-track="footer.click({ location: 2, link: 24 })">
+                  Business
+                </a>
+              </li>
+
+              <li class="mt16 md:mt0">
+                <a href="https://api.stackexchange.com/" class="-link js-gps-track"
+                  data-gps-track="footer.click({ location: 2, link: 24 })">
+                  API
+                </a>
+              </li>
+
+              <li>
+                <a href="https://data.stackexchange.com/" class="-link js-gps-track"
+                  data-gps-track="footer.click({ location: 2, link: 24 })">
+                  Data
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="site-footer--copyright fs-fine md:mt24">
+        <ul class="-list -social md:mb8">
+          <li><a class="js-gps-track -link" data-gps-track="footer.click({ location: 2, link:4 })"
+              href="https://stackoverflow.blog?blb=1">Blog</a></li>
+          <li><a href="https://www.facebook.com/officialstackoverflow/" class="-link js-gps-track"
+              data-gps-track="footer.click({ location: 2, link: 31 })">Facebook</a></li>
+          <li><a href="https://twitter.com/stackoverflow" class="-link js-gps-track"
+              data-gps-track="footer.click({ location: 2, link: 32 })">Twitter</a></li>
+          <li><a href="https://linkedin.com/company/stack-overflow" class="-link js-gps-track"
+              data-gps-track="footer.click({ location: 2, link: 33 })">LinkedIn</a></li>
+          <li><a href="https://www.instagram.com/thestackoverflow" class="-link js-gps-track"
+              data-gps-track="footer.click({ location: 2, link: 36 })">Instagram</a></li>
+        </ul>
+
+        <p class="md:mb0">
+          Site design / logo &#169; 2024 Stack Exchange Inc; user contributions licensed under <span
+            class='td-underline'><a href="https://stackoverflow.com/help/licensing">CC BY-SA</a></span>. <span
+            id="svnrev">rev&nbsp;2024.3.1.5619</span>
+        </p>
+      </div>
+    </div>
+
+  </footer>
+
+
+
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WCZ03SZFCQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+  </script>
+  <script>
+    StackExchange.ready(function () {
+
+      var ga3Settings = {
+        autoLink: ["stackoverflow.blog", "info.stackoverflowsolutions.com", "stackoverflowsolutions.com"],
+        sendTitles: true,
+        tracker: window.ga,
+        trackingCodes: [
+          'UA-108242619-1'
+        ],
+        checkDimension: 'dimension42'
+      };
+
+      var customGA4Dimensions = {};
+
+
+      customGA4Dimensions["routename"] = "Questions/Show";
+
+
+      customGA4Dimensions["post_id"] = "71691737";
+
+
+      customGA4Dimensions["tags"] = "|javascript|";
+
+
+      var ga4Settings = {
+        tracker: gtag,
+        trackingCodes: [
+          'G-WCZ03SZFCQ'
+        ],
+        consentsToPerformanceCookies: "denied",
+        consentsToTargetingCookies: "denied",
+        eventParameters: customGA4Dimensions,
+        checkForAdBlock: true,
+        sendTitles: true,
+        trackClicks: false,
+      };
+
+      StackExchange.ga.init({ GA3: ga3Settings, GA4: ga4Settings });
+
+      StackExchange.ga.setDimension('dimension1', '12370244');
+
+      StackExchange.ga.setDimension('dimension2', '|javascript|');
+
+
+      StackExchange.ga.setDimension('dimension3', 'Questions/Show');
+
+
+      StackExchange.ga.setDimension('dimension7', "1709379953.1726992502");
+
+      StackExchange.ga.trackPageView();
+    });
+  </script>
+
+  <script src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" charset="UTF-8" data-document-language="false"
+    data-domain-script="c3d9f1e3-55f3-4eba-b268-46cee4c6789c"></script>
+
+
+
+</body>
+
+</html>

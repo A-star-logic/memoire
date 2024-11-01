@@ -5,7 +5,12 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   ...astarEslint,
   {
-    ignores: ['python_env/*', 'dataset/*', '.prettierrc*'],
+    ignores: [
+      'python_env/*',
+      'dataset/*',
+      '.prettierrc*',
+      './files-parsing/tests/sampleFiles/**',
+    ],
   },
   {
     files: ['**/server**', '**/api**'],
