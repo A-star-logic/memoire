@@ -35,7 +35,7 @@ jobs:
           retention-days: 1
           name: dist
           path: |
-            dist/*
+            dist/
 
   # Having multiple jobs allow the equivalent of multi-stage builds in docker; but we can leverage more easily github cache from the action workflow
   build:
@@ -81,9 +81,9 @@ jobs:
           retention-days: 1
           name: build
           path: |
-            **/dist/*
-            node_modules/*
-            docker/*
+            dist/
+            node_modules/
+            docker/
             package.json
 
   deploy-services:
