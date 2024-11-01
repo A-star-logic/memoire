@@ -44,7 +44,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     container: node:20-slim
-    environment: production
     env:
       NODE_ENV: production
     steps:
@@ -73,6 +72,28 @@ jobs:
           find . -name '**/tests/*' -delete
           find . -name '*.tsbuildinfo' -delete
           find . -name '*.md' -delete
+
+      - name: Save build
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          name: build
+          path: |
+            dist/*
+            node_modules/*
+            docker/*
+            package.json
+
+  deploy-services:
+    needs: build
+    name: Deploy service
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Load artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

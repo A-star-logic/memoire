@@ -4,7 +4,11 @@
   "packageManager": "yarn@4.2.2",
   "scripts": {
     "dev": "NODE_ENV=development tsx watch --conditions=development src/index.ts",
-    "build": "tsup"
+    "build": "tsup",
+    "lint": "yarn lint:eslint ; yarn lint:tsc ; yarn lint:prettier",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier . --check --config .prettierrc.js",
+    "lint:tsc": "tsc -p ./tsconfig.json"
   },
   "devDependencies": {
     "@ansearch/config": "^0.0.2",
