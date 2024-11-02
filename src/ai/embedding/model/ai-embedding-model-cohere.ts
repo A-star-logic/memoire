@@ -1,9 +1,8 @@
-import {
-  BedrockRuntimeClient,
-  InvokeModelCommand,
-} from '@aws-sdk/client-bedrock-runtime';
+import { InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 import cl100k from 'tiktoken/encoders/cl100k_base.json';
 import { Tiktoken } from 'tiktoken/lite';
+import { sleep } from '../../../utils/utils-sleep.js';
+import { bedrockClient } from '../ai-emedding-bedrock-client.js';
 // embedding models contracts
 import type {
   EmbeddingModelInput,
@@ -28,6 +27,7 @@ interface CohereEmbeddingBody {
   // specifies the truncate possion if input exceeds token limit, suggested to leave NONE(default) since we handle the tokens
   truncate?: 'END' | 'NONE' | 'START';
 }
+
 /**
  * https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-embed.html
  */
@@ -41,23 +41,7 @@ interface CohereEmbeddingResponse {
   // input texts for the model
   texts: string[];
 }
-if (!process.env.AWS_REGION) {
-  throw new Error('Please set AWS_REGION');
-}
-if (!process.env.AWS_ACCESS_KEY_ID) {
-  throw new Error('Please set AWS_ACCESS_KEY_ID');
-}
-if (!process.env.AWS_SECRET_ACCESS_KEY) {
-  throw new Error('Please set AWS_SECRET_ACCESS_KEY');
-}
 
-const bedrockClient = new BedrockRuntimeClient({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-  },
-});
 /**
  * Verify that the string sent has less tokens than the maximum possible for the model
  * @param root named parameters
@@ -89,7 +73,7 @@ async function invokeCohereEmbedding({
   embeddingTask: CohereEmbeddingBody['input_type'];
   text: string;
 }): Promise<CohereEmbeddingResponse> {
-  await sleep(30); // cohere api call limit is 2000 per min
+  await sleep(30); // cohere api call limit is 2000 per min https://docs.aws.amazon.com/general/latest/gr/bedrock.html
   const command = new InvokeModelCommand({
     body: JSON.stringify({
       // eslint-disable-next-line camelcase
@@ -123,13 +107,13 @@ export async function embedDocument({
       throw new Error('A document was too large');
     }
     const modelResponses = await Promise.all(
-      chunks.map(async (chunk) => {
+      chunks.map(async (chunk, iteration) => {
         const responseBody = await invokeCohereEmbedding({
           embeddingTask: 'search_document',
           text: chunk,
         });
         return {
-          chunkID: responseBody.id,
+          chunkID: iteration,
           chunkText: chunk,
           embedding: responseBody.embeddings[0],
         };
@@ -150,7 +134,7 @@ export async function embedDocument({
  * embed user query with cohere english embedding
  * @param root named params
  * @param root.chunks array of documents witin model toaken iput limit
- * @returns array of chunk id chunk text and its embedding
+ * @returns array of chunk id chunk text and its embedding or undefined
  */
 export async function embedQuery({
   chunks,
@@ -164,13 +148,13 @@ export async function embedQuery({
       throw new Error('A document was too large');
     }
     const modelResponses = await Promise.all(
-      chunks.map(async (chunk) => {
+      chunks.map(async (chunk, iteration) => {
         const responseBody = await invokeCohereEmbedding({
           embeddingTask: 'search_query',
           text: chunk,
         });
         return {
-          chunkID: responseBody.id,
+          chunkID: iteration,
           chunkText: chunk,
           embedding: responseBody.embeddings[0],
         };

@@ -29,8 +29,17 @@ switch (process.env.EMBEDDING_MODEL) {
     break;
   }
 
-  case 'titan': {
-    const titanModel = await import('./ai-embedding-model-titan.js');
+  case 'titanG1': {
+    const titanModel = await import('./ai-embedding-model-titan-g1.js');
+    embedDocumentFunction = titanModel.embedDocument;
+    embedQueryFunction = titanModel.embedDocument;
+    isTooLargeFunction = titanModel.isTooLarge;
+    logger.info('Using Titan model for embedding');
+    break;
+  }
+
+  case 'titanV2': {
+    const titanModel = await import('./ai-embedding-model-titan-v2.js');
     embedDocumentFunction = titanModel.embedDocument;
     embedQueryFunction = titanModel.embedDocument;
     isTooLargeFunction = titanModel.isTooLarge;

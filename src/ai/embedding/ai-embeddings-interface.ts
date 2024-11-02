@@ -38,7 +38,7 @@ export async function autoEmbed({
   document,
 }: {
   document: string;
-}): Promise<EmbeddingModelOutput> {
+}): Promise<EmbeddingModelOutput | undefined> {
   const chunks = await createDocumentChunks({ document });
   const embeddings = await embedDocument({ chunks });
   return embeddings;
@@ -54,7 +54,10 @@ export async function autoEmbedQuery({
   query,
 }: {
   query: string;
-}): Promise<number[]> {
+}): Promise<number[] | undefined> {
   const embeddings = await embedQuery({ chunks: [query] });
+  if (!embeddings) {
+    return undefined;
+  }
   return embeddings[0].embedding;
 }

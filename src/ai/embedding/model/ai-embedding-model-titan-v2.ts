@@ -1,10 +1,9 @@
-import {
-  BedrockRuntimeClient,
-  InvokeModelCommand,
-} from '@aws-sdk/client-bedrock-runtime';
-// embedding models contracts
-import { Tiktoken } from 'tiktoken';
+import { InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 import cl100k from 'tiktoken/encoders/cl100k_base.json';
+import { Tiktoken } from 'tiktoken/lite';
+import { sleep } from '../../../utils/utils-sleep.js';
+import { bedrockClient } from '../ai-emedding-bedrock-client.js';
+// embedding models contracts
 import type {
   EmbeddingModelInput,
   EmbeddingModelOutput,
@@ -13,34 +12,32 @@ import type {
 /**
  * https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-embed-text.html
  */
-interface TitanG1Body {
+interface TitanV2Body {
+  // Desired embedding output dimensions(default 1024)
+  dimensions?: 256 | 512 | 1024;
+  // Embedding type default 'float'.
+  embeddingTypes?: ['binary', 'float'] | ['binary'] | ['float'];
+  // input to br embedded
   inputText: string;
+  //normalize the embeddings(default true)
+  normalize?: boolean;
 }
+
 /**
  * https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-embed-text.html
  */
-interface TitanG1Response {
+interface TitanV2Response {
   // array of embeddings, each embedding with 1024 length
   embedding: number[];
+  // appears always, regarless of type specified
+  embeddingsByType:
+    | { binary: number[]; float: number[] }
+    | { binary: number[] }
+    | { float: number[] };
+  // token count of input
   inputTextTokenCount: number;
 }
-if (!process.env.AWS_REGION) {
-  throw new Error('Please set AWS_REGION');
-}
-if (!process.env.AWS_ACCESS_KEY_ID) {
-  throw new Error('Please set AWS_ACCESS_KEY_ID');
-}
-if (!process.env.AWS_SECRET_ACCESS_KEY) {
-  throw new Error('Please set AWS_SECRET_ACCESS_KEY');
-}
 
-const bedrockClient = new BedrockRuntimeClient({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-  },
-});
 /**
  * Verify that the string sent has less tokens than the maximum possible for the model
  * @param root named parameters
@@ -60,7 +57,7 @@ export function isTooLarge({ text }: IsTooLargeInput): boolean {
 }
 
 /**
- * Calls the Titan G1 embedding model
+ * Calls the Titan V2 embedding model
  * @param root named params
  * @param root.text doc to embed
  * @returns peomises of Titan response
@@ -69,17 +66,17 @@ async function invokeTitanEmbedding({
   text,
 }: {
   text: string;
-}): Promise<TitanG1Response> {
-  await sleep('need to find'); // Titan limit
+}): Promise<TitanV2Response> {
+  await sleep(30); // Titan rate limit 2000 calls/min https://docs.aws.amazon.com/general/latest/gr/bedrock.html
   const command = new InvokeModelCommand({
     body: JSON.stringify({
       inputText: text,
-    } satisfies TitanG1Body),
-    modelId: 'amazon.titan-embed-text-v1',
+    } satisfies TitanV2Body),
+    modelId: 'amazon.titan-embed-text-v2:0',
   });
   const response = await bedrockClient.send(command);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const responseBody: TitanG1Response = JSON.parse(
+  const responseBody: TitanV2Response = JSON.parse(
     Buffer.from(response.body).toString('utf8'),
   );
   return responseBody;
@@ -93,7 +90,7 @@ async function invokeTitanEmbedding({
  */
 export async function embedDocument({
   chunks,
-}: EmbeddingModelInput): Promise<EmbeddingModelOutput> {
+}: EmbeddingModelInput): Promise<EmbeddingModelOutput | undefined> {
   try {
     if (
       chunks.some((chunk) => {
@@ -103,12 +100,12 @@ export async function embedDocument({
       throw new Error('A document was too large');
     }
     const modelResponses = await Promise.all(
-      chunks.map(async (chunk) => {
+      chunks.map(async (chunk, iteration) => {
         const responseBody = await invokeTitanEmbedding({
           text: chunk,
         });
         return {
-          chunkID: 'need to implement an id generator',
+          chunkID: iteration,
           chunkText: chunk,
           embedding: responseBody.embedding,
         };
