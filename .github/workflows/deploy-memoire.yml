@@ -1,7 +1,6 @@
 run-name: Deploy api
 
 on:
-  pull_request:
   push:
     branches: [main]
   workflow_dispatch:

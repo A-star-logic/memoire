@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "packageManager": "yarn@4.2.2",
   "scripts": {
-    "dev": "NODE_ENV=development tsx watch --conditions=development src/index.ts",
+    "dev": "tsx watch --env-file=.env --conditions=development src/index.ts",
     "build": "tsup",
     "lint": "yarn lint:eslint ; yarn lint:tsc ; yarn lint:prettier",
     "lint:eslint": "eslint .",
@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@ansearch/config": "^0.0.2",
+    "@rollup/plugin-typescript": "^12.1.1",
     "@types/luxon": "^3",
     "@types/node": "^22.8.4",
     "@typescript-eslint/parser": "^8.11.0",
@@ -23,6 +24,7 @@
     "license-checker-rseidelsohn": "^4.4.2",
     "pino-pretty": "^11.3.0",
     "prettier": "^3.3.3",
+    "rollup": "^4.24.3",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
@@ -41,7 +43,6 @@
     "@sentry/profiling-node": "^8.36.0",
     "@sinclair/typebox": "^0.33.17",
     "axios": "^1.7.7",
-    "dotenv": "^16.4.5",
     "fastify": "^5.0.0",
     "fastify-plugin": "^5.0.1",
     "http-terminator": "^3.2.0",

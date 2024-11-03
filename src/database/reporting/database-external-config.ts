@@ -4,12 +4,6 @@ import * as Sentry from '@sentry/node';
 import { type DestinationStream, pino } from 'pino';
 import { PostHog } from 'posthog-node';
 
-// utils
-import { loadEnvironment } from '../../utils/utils-environment.js';
-
-// load .env
-loadEnvironment();
-
 if (process.env.POSTHOG_KEY === undefined) {
   throw new Error('Please define POSTHOG_KEY in the env variables');
 }
