@@ -84,11 +84,16 @@ jobs:
             docker/
             package.json
 
-  deploy-services:
+  deploy-ghcr:
     needs: build
-    name: Deploy service
+    name: Deploy image to Github packages
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
     steps:
       - name: Load build artifact
         uses: actions/download-artifact@v4
@@ -105,22 +110,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            a-star-logic/memoire
-          flavor: |
-            latest=auto
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-
       - name: Build and push container image to registry
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ghcr.io/a-star-logic/memoire:latest, ghcr.io/a-star-logic/memoire:${{ github.sha }}
           file: ./docker/Dockerfile.memoire
           context: ./
