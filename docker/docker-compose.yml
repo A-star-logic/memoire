@@ -1,0 +1,12 @@
+# This is an example of how to configure Memoire with docker-compose.
+services:
+  memoire:
+    image: ghcr.io/a-star-logic/memoire:latest
+    container_name: Memoire
+    ports:
+      - 3003:3003
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G

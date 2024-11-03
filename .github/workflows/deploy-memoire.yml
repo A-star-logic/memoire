@@ -113,6 +113,6 @@ jobs:
           file: ./docker/Dockerfile.memoire
           platforms: linux/amd64
           context: ./
-          secrets: |
-            "sentry_dsn=${{ secrets.SENTRY_DSN }}"
-            "posthog_key=${{ secrets.POSTHOG_KEY }}"
+          build-args: |
+            "sentry_dsn=${{ env.SENTRY_DSN }}"
+            "posthog_key=${{ env.POSTHOG_KEY }}"
