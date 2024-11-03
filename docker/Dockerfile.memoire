@@ -14,6 +14,9 @@ COPY --chown=node:node node_modules ./node_modules
 COPY --chown=node:node dist ./dist
 COPY --chown=node:node package.json .
 
+RUN mkdir .memoire
+RUN chown node:node .memoire
+
 USER node
 
 CMD ["node", "--enable-source-maps", "dist/index.js"]
