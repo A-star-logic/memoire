@@ -114,5 +114,5 @@ jobs:
           platforms: linux/amd64
           context: ./
           build-args: |
-            "sentry_dsn=${{ env.SENTRY_DSN }}"
-            "posthog_key=${{ env.POSTHOG_KEY }}"
+            "SENTRY_DSN=${{ env.SENTRY_DSN }}"
+            "POSTHOG_KEY=${{ env.POSTHOG_KEY }}"

@@ -4,10 +4,10 @@ WORKDIR /memoire
 
 ENV NODE_ENV=production
 
-ARG sentry_dsn
-ENV SENTRY_DSN=${sentry_dsn}
-ARG posthog_key
-ENV POSTHOG_KEY=${posthog_key}
+ARG SENTRY_DSN
+ENV SENTRY_DSN=${SENTRY_DSN}
+ARG POSTHOG_KEY
+ENV POSTHOG_KEY=${POSTHOG_KEY}
 
 
 COPY --chown=node:node node_modules ./node_modules
