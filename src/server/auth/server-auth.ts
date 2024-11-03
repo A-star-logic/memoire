@@ -22,21 +22,12 @@ export async function verifyAPIToken({
 }: {
   apiToken: string;
 }): Promise<boolean> {
-  if (
-    apiToken.startsWith('aslp_') ||
-    apiToken.startsWith('asld_') ||
-    apiToken.startsWith('aslm_')
-  ) {
-    const sentToken = Buffer.from(apiToken);
-    const secret = Buffer.from(API_KEY);
-    if (
-      secret.length === sentToken.length &&
-      crypto.timingSafeEqual(secret, sentToken)
-    ) {
-      return true;
-    }
-  }
-  return false;
+  const sentToken = Buffer.from(apiToken);
+  const secret = Buffer.from(API_KEY);
+  return (
+    secret.length === sentToken.length &&
+    crypto.timingSafeEqual(secret, sentToken)
+  );
 }
 
 /**

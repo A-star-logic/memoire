@@ -1,0 +1,19 @@
+FROM node:20-slim
+LABEL org.opencontainers.image.source=https://github.com/A-star-logic/memoire
+WORKDIR /memoire
+
+ENV NODE_ENV=production
+
+ARG SENTRY_DSN
+ENV SENTRY_DSN ${SENTRY_DSN}
+ARG POSTHOG_KEY
+ENV POSTHOG_KEY ${POSTHOG_KEY}
+
+
+COPY --chown=node:node node_modules ./node_modules
+COPY --chown=node:node dist ./dist
+COPY --chown=node:node package.json .
+
+USER node
+
+CMD ["node", "--enable-source-maps", "dist/index.js"]
