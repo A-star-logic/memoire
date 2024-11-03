@@ -4,12 +4,7 @@ on:
   pull_request:
   push:
     branches: [main]
-
   workflow_dispatch:
-
-permissions:
-  id-token: write
-  contents: read
 
 jobs:
   transpile:
@@ -116,4 +111,8 @@ jobs:
           push: true
           tags: ghcr.io/a-star-logic/memoire:latest, ghcr.io/a-star-logic/memoire:${{ github.sha }}
           file: ./docker/Dockerfile.memoire
+          platforms: linux/amd64
           context: ./
+          secrets: |
+            "sentry_dsn=${{ secrets.SENTRY_DSN }}"
+            "posthog_key=${{ secrets.POSTHOG_KEY }}"

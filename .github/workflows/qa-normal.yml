@@ -1,45 +1,59 @@
-# run-name: Quality assurance
+run-name: Quality assurance
 
-# on:
-#   pull_request:
+on:
+  pull_request:
 
-# concurrency:
-#   # cancel any running action on new push
-#   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-#   cancel-in-progress: true
+concurrency:
+  # cancel any running action on new push
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
-# jobs:
-#   transpile:
-#     name: Transpile
-#     runs-on: ubuntu-latest
-#     container: node:20-slim
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
+jobs:
+  transpile:
+    name: Transpile
+    runs-on: ubuntu-latest
+    container: node:20-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-#       - name: Prepare
-#         uses: ./.github/actions/prepare
+      - name: Prepare
+        uses: ./.github/actions/prepare
 
-#       - name: Transpile
-#         run: yarn build
-#         shell: bash
+      - name: Transpile
+        run: yarn build
+        shell: bash
 
-#   lint:
-#     name: Lint
-#     runs-on: ubuntu-latest
-#     container: node:20-slim
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
+  license-check:
+    name: License check
+    runs-on: ubuntu-latest
+    container: node:20-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-#       - name: Prepare
-#         uses: ./.github/actions/prepare
+      - name: Prepare
+        uses: ./.github/actions/prepare
 
-#       - name: ESLint
-#         run: yarn lint:eslint --quiet
+      - name: License check
+        run: yarn lint:licenses
 
-#       - name: Prettier
-#         run: yarn lint:prettier
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    container: node:20-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-#       - name: TSC
-#         run: yarn lint:tsc
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: ESLint
+        run: yarn lint:eslint --quiet
+
+      - name: Prettier
+        run: yarn lint:prettier
+
+      - name: TSC
+        run: yarn lint:tsc

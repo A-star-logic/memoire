@@ -7,6 +7,12 @@ COPY --chown=node:node node_modules ./node_modules
 COPY --chown=node:node dist ./dist
 COPY --chown=node:node package.json .
 
+
+RUN --mount=type=secret,id=sentry_dsn \
+    --mount=type=secret,id=posthog_key \
+    export SENTRY_DSN=$(cat /run/secrets/sentry_dsn) && \
+    export POSTHOG_KEY=$(cat /run/secrets/posthog_key)
+
 USER node
 
 CMD ["node", "--enable-source-maps", "dist/index.js"]

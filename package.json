@@ -1,5 +1,5 @@
 {
-  "name": "Memoire",
+  "name": "@astarlogic/memoire",
   "version": "0.0.0",
   "packageManager": "yarn@4.2.2",
   "scripts": {
@@ -8,7 +8,8 @@
     "lint": "yarn lint:eslint ; yarn lint:tsc ; yarn lint:prettier",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier . --check --config .prettierrc.js",
-    "lint:tsc": "tsc -p ./tsconfig.json"
+    "lint:tsc": "tsc -p ./tsconfig.json",
+    "lint:licenses": "yarn license-checker-rseidelsohn --onlyAllow 'MIT; MIT OR X11; BSD; ISC; Apache-2.0; Python-2.0; Unlicense; CC0-1.0; MPL-2.0; BlueOak-1.0.0; CC-BY-3.0; CC-BY-4.0' --excludePackagesStartingWith '@astarlogic/;eslint-plugin-sonarjs;flatbuffers' --summary --unknown"
   },
   "devDependencies": {
     "@ansearch/config": "^0.0.2",
@@ -19,6 +20,7 @@
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
+    "license-checker-rseidelsohn": "^4.4.2",
     "pino-pretty": "^11.3.0",
     "prettier": "^3.3.3",
     "tsx": "^4.19.2",
