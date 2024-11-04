@@ -2,6 +2,10 @@ run-name: Quality assurance
 
 on:
   pull_request:
+    paths:
+      - 'src/**'
+      - 'docker/Dockerfile.memoire'
+      - 'package.json'
 
 concurrency:
   # cancel any running action on new push
