@@ -23,7 +23,7 @@ export function isTooLarge({ chunk }: { chunk: string }): boolean {
   const encoding = get_encoding('cl100k_base');
   const tokens = encoding.encode(chunk);
   encoding.free();
-  return tokens.length >= 3072;
+  return tokens.length >= 512;
 }
 
 /**
