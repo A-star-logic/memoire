@@ -1,6 +1,13 @@
 // libs
 import { describe, expect, test } from 'vitest';
-import { largeText, testChunks, testdocument } from './test-variables.js';
+import {
+  arraysEqual,
+  largeText,
+  testChunks,
+  testdocument,
+  testEmbeddingText,
+  titanV2TestEmbedding,
+} from './test-variables.js';
 
 // test function
 import {
@@ -13,12 +20,24 @@ describe('invoked Titan V2 embedding model', async () => {
     const response = await embedDocument({ chunks: testdocument });
     expect(response).toBeDefined();
     expect(response!.length).toBe(testdocument.length);
+    expect(response![0].embedding.length).toBe(1024);
   });
 
   test('multiple document will give multiple embeddings', async () => {
     const response = await embedDocument({ chunks: testChunks });
     expect(response).toBeDefined();
     expect(response!.length).toBe(testChunks.length);
+    expect(response![0].embedding.length).toBe(1024);
+  });
+
+  test('embedding of same statments are equal', async () => {
+    const response = await embedDocument({ chunks: [testEmbeddingText] });
+    expect(response).toBeDefined();
+    expect(response!.length).toBe(1);
+    expect(response![0].embedding.length).toBe(1024);
+    expect(arraysEqual(response![0].embedding, titanV2TestEmbedding)).toBe(
+      true,
+    );
   });
 });
 
