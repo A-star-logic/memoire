@@ -601,7 +601,7 @@ __metadata:
   linkType: hard
 
 "@aws-sdk/util-user-agent-node@npm:3.682.0":
-  version: 3.682.0
+  version: 0.0.0-use.local
   resolution: "@aws-sdk/util-user-agent-node@npm:3.682.0"
   dependencies:
     "@aws-sdk/middleware-user-agent": "npm:3.682.0"
@@ -615,8 +615,8 @@ __metadata:
     aws-crt:
       optional: true
   checksum: 10c0/fcc9cb8d4f4bacaa057ad2bc1c26dc9e10ebe88a3d1334ac4ca9fd531e5ba4ef56167305b912db383b11e7700e6779c1f1fb6ba062e448d23b0d46ae493cb72e
-  languageName: node
-  linkType: hard
+  languageName: unknown
+  linkType: soft
 
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.24.7, @babel/code-frame@npm:^7.25.9":
   version: 7.26.2
