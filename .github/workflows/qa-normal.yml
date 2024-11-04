@@ -1,0 +1,63 @@
+run-name: Quality assurance
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'docker/Dockerfile.memoire'
+      - 'package.json'
+
+concurrency:
+  # cancel any running action on new push
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  transpile:
+    name: Transpile
+    runs-on: ubuntu-latest
+    container: node:20-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Transpile
+        run: yarn build
+        shell: bash
+
+  license-check:
+    name: License check
+    runs-on: ubuntu-latest
+    container: node:20-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: License check
+        run: yarn lint:licenses
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    container: node:20-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: ESLint
+        run: yarn lint:eslint --quiet
+
+      - name: Prettier
+        run: yarn lint:prettier
+
+      - name: TSC
+        run: yarn lint:tsc

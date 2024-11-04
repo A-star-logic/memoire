@@ -1,0 +1,17 @@
+# This is an example of how to configure Memoire with docker-compose.
+services:
+  memoire:
+    image: ghcr.io/a-star-logic/memoire:latest
+    container_name: Memoire
+    ports:
+      - 3003:3003
+    environment:
+      - API_KEY=my_key # an API key is required, make it secure (ex: use `openssl rand -hex 32`)
+      # - EMBEDDING_MODEL=cohere | openai | titan (optional) choose between multiple embedding models (leave empty to default to a local model)
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    volumes:
+      - ../.memoire:/memoire/.memoire

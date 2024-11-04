@@ -1,6 +1,7 @@
 python_env
 dataset
 .memoire
+dist.old
 
 # Logs
 logs
