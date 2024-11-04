@@ -2,13 +2,14 @@ import { InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 import cl100k from 'tiktoken/encoders/cl100k_base.json';
 import { Tiktoken } from 'tiktoken/lite';
 import { sleep } from '../../../utils/utils-sleep.js';
-import { bedrockClient } from '../ai-emedding-bedrock-client.js';
+import { bedrockClient } from '../ai-embedding-bedrock-client.js';
 // embedding models contracts
 import type {
   EmbeddingModelInput,
   EmbeddingModelOutput,
   IsTooLargeInput,
 } from './ai-embedding-model-contracts.js';
+import { errorReport } from '../../../database/reporting/database-interface-reporting.ee.js';
 /**
  * https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-embed-text.html
  */
@@ -29,7 +30,7 @@ interface TitanV2Body {
 interface TitanV2Response {
   // array of embeddings, each embedding with 1024 length
   embedding: number[];
-  // appears always, regarless of type specified
+  // appears always, regardless of type specified
   embeddingsByType:
     | { binary: number[]; float: number[] }
     | { binary: number[] }
@@ -60,7 +61,7 @@ export function isTooLarge({ text }: IsTooLargeInput): boolean {
  * Calls the Titan V2 embedding model
  * @param root named params
  * @param root.text doc to embed
- * @returns peomises of Titan response
+ * @returns promises of Titan response
  */
 async function invokeTitanEmbedding({
   text,
@@ -85,12 +86,12 @@ async function invokeTitanEmbedding({
 /**
  * embed user query with Titan G1 embedding
  * @param root named params
- * @param root.chunks array of documents witin model toaken iput limit
+ * @param root.chunks array of documents within model token input limit
  * @returns array of chunk id chunk text and its embedding
  */
 export async function embedDocument({
   chunks,
-}: EmbeddingModelInput): Promise<EmbeddingModelOutput | undefined> {
+}: EmbeddingModelInput): Promise<EmbeddingModelOutput> {
   try {
     if (
       chunks.some((chunk) => {
@@ -114,10 +115,7 @@ export async function embedDocument({
     return modelResponses;
   } catch (error) {
     const message = 'The embedding function had an error';
-    // eslint-disable-next-line no-console
-    console.error({
-      error,
-      message,
-    });
+    await errorReport({ error, message });
+    throw error;
   }
 }

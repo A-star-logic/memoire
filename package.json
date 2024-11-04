@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env --conditions=development src/index.ts",
     "build": "tsup",
+    "test": "vitest --coverage --coverage.all=false --coverage.skipFull",
     "lint": "yarn lint:eslint ; yarn lint:tsc ; yarn lint:prettier",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier . --check --config .prettierrc.js",
@@ -16,6 +17,7 @@
     "@types/luxon": "^3",
     "@types/node": "^22.8.4",
     "@typescript-eslint/parser": "^8.11.0",
+    "@vitest/coverage-v8": "2.1.4",
     "@xenova/transformers": "^2.17.2",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
@@ -23,8 +25,10 @@
     "license-checker-rseidelsohn": "^4.4.2",
     "pino-pretty": "^11.3.0",
     "prettier": "^3.3.3",
+    "tsup": "^8.3.5",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
   },
   "type": "module",
   "dependencies": {
@@ -50,8 +54,6 @@
     "mammoth": "^1.8.0",
     "pino": "^9.5.0",
     "posthog-node": "^4.2.1",
-    "tiktoken": "^1.0.17",
-    "tsup": "^8.3.5",
-    "vitest": "^2.1.4"
+    "tiktoken": "^1.0.17"
   }
 }

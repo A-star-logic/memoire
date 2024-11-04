@@ -5,7 +5,7 @@ export const arraysEqual = (array1: number[], array2: number[]): boolean => {
     return value === array2[index];
   });
 };
-export const testdocument = [' test document'];
+export const testDocument = [' test document'];
 export const testChunks = ['test', 'document'];
 export const largeText = `According to Tech Jury, despite a number of cool apps and tips for successful time management, only 17% of people track their time. 50% of people have never thought about time waste, even though they are always late and running out of time. Time management is a skill. It helps people handle their daily duties without burnout and severe exhaustion. The N.I.L.C. includes time management on the list of top ten demanded soft skills that employees require in 2022. Why is it so important to manage one’s time correctly? Stephen Covey once said, “The key is not spending time, but in investing it”. It means that proper timing guarantees a person’s success in many life areas.
 

@@ -4,7 +4,7 @@ import { get_encoding } from 'tiktoken';
 
 // embedding models contracts
 import type {
-  EmbeddingModelInput,
+  // EmbeddingModelInput,
   EmbeddingModelOutput,
   IsTooLargeInput,
 } from './ai-embedding-model-contracts.js';
@@ -25,13 +25,8 @@ export function isTooLarge({ text }: IsTooLargeInput): boolean {
 /**
  * Call the embedding model
  * https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#responses-1
- * @param root named parameters
- * @param root.chunks A document, or a list of chunks from a document to embed
  * @returns an object with the averaged embedding an an array of chunk embeddings
  */
-export async function embedDocument({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  chunks,
-}: EmbeddingModelInput): Promise<EmbeddingModelOutput> {
+export async function embedDocument(): Promise<EmbeddingModelOutput> {
   throw new Error('OpenAI is not implemented');
 }

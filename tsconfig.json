@@ -24,6 +24,6 @@
     //"esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["**/*.ts", "**/*.vue"],
+  "include": ["**/*.ts", "**/*.vue", "vitest.config.js"],
   "exclude": ["node_modules/*", "**/dist/*"]
 }

@@ -2,13 +2,14 @@ import { InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 import cl100k from 'tiktoken/encoders/cl100k_base.json';
 import { Tiktoken } from 'tiktoken/lite';
 import { sleep } from '../../../utils/utils-sleep.js';
-import { bedrockClient } from '../ai-emedding-bedrock-client.js';
+import { bedrockClient } from '../ai-embedding-bedrock-client.js';
 // embedding models contracts
 import type {
   EmbeddingModelInput,
   EmbeddingModelOutput,
   IsTooLargeInput,
 } from './ai-embedding-model-contracts.js';
+import { errorReport } from '../../../database/reporting/database-interface-reporting.ee.js';
 
 /**
  * https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-embed.html
@@ -18,13 +19,13 @@ interface CohereEmbeddingBody {
   embedding_types?: string[];
   // Differentiate each type from one another. You should not mix different types together
   input_type:
-    | 'classification' // for text classifiation tasks
+    | 'classification' // for text classification tasks
     | 'clustering' // for text clustering tasks
-    | 'search_document' // To embed serach doc in database
+    | 'search_document' // To embed search doc in database
     | 'search_query'; // To embed query
   // Array of strings to embed
   texts: string[];
-  // specifies the truncate possion if input exceeds token limit, suggested to leave NONE(default) since we handle the tokens
+  // specifies the truncate position if input exceeds token limit, suggested to leave NONE(default) since we handle the tokens
   truncate?: 'END' | 'NONE' | 'START';
 }
 
@@ -64,7 +65,7 @@ export function isTooLarge({ text }: IsTooLargeInput): boolean {
  * @param root named params
  * @param root.documents documents to be embedded
  * @param root.embeddingTask task the embedding needed for
- * @returns peomises of cohere responses
+ * @returns promises of cohere responses
  */
 async function invokeCohereEmbedding({
   documents,
@@ -92,12 +93,12 @@ async function invokeCohereEmbedding({
 /**
  * embed document with cohere english embedding
  * @param root named params
- * @param root.chunks array of documents witin model toaken iput limit
+ * @param root.chunks array of documents within model token input limit
  * @returns array of chunk id chunk text and its embedding
  */
 export async function embedDocument({
   chunks,
-}: EmbeddingModelInput): Promise<EmbeddingModelOutput | undefined> {
+}: EmbeddingModelInput): Promise<EmbeddingModelOutput> {
   try {
     if (
       chunks.some((chunk) => {
@@ -119,23 +120,20 @@ export async function embedDocument({
     });
   } catch (error) {
     const message = 'The embedding function had an error';
-    // eslint-disable-next-line no-console
-    console.error({
-      error,
-      message,
-    });
+    await errorReport({ error, message });
+    throw error;
   }
 }
 
 /**
  * embed user query with cohere english embedding
  * @param root named params
- * @param root.chunks array of documents witin model toaken iput limit
+ * @param root.chunks array of documents within model token input limit
  * @returns array of chunk id chunk text and its embedding or undefined
  */
 export async function embedQuery({
   chunks,
-}: EmbeddingModelInput): Promise<EmbeddingModelOutput | undefined> {
+}: EmbeddingModelInput): Promise<EmbeddingModelOutput> {
   try {
     if (
       chunks.some((chunk) => {
@@ -157,10 +155,7 @@ export async function embedQuery({
     });
   } catch (error) {
     const message = 'The embedding function had an error';
-    // eslint-disable-next-line no-console
-    console.error({
-      error,
-      message,
-    });
+    await errorReport({ error, message });
+    throw error;
   }
 }

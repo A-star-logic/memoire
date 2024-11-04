@@ -6,7 +6,7 @@ import {
   arraysEqual,
   largeText,
   testChunks,
-  testdocument,
+  testDocument,
   testEmbeddingText,
   xenovaLocalTestEmbedding,
 } from './test-variables.js';
@@ -16,9 +16,9 @@ import { embedDocument, isTooLarge } from '../../ai-embedding-model-local.js';
 
 describe('invoked local xenova embedding model', async () => {
   test('calling model with a doc will embed a document ', async () => {
-    const response = await embedDocument({ chunks: testdocument });
+    const response = await embedDocument({ chunks: testDocument });
     expect(response).toBeDefined();
-    expect(response.length).toBe(testdocument.length);
+    expect(response.length).toBe(testDocument.length);
     expect(response[0].embedding.length).toBe(384);
   });
 
@@ -29,7 +29,7 @@ describe('invoked local xenova embedding model', async () => {
     expect(response[0].embedding.length).toBe(384);
   });
 
-  test('embedding of same statments are equal', async () => {
+  test('embedding of the same statements are equal', async () => {
     const response = await embedDocument({ chunks: [testEmbeddingText] });
     expect(response).toBeDefined();
     expect(response.length).toBe(1);
@@ -41,7 +41,7 @@ describe('invoked local xenova embedding model', async () => {
 });
 
 describe('isTooLarge', async () => {
-  test('returned flase for small text', async () => {
+  test('returned false for small text', async () => {
     const result = isTooLarge({ text: 'mini text' });
     expect(result).toBeDefined();
     expect(result).toBe(false);
