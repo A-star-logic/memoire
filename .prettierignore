@@ -1,5 +1,12 @@
 node_modules
 .yarn
+.yarnrc.yml
+.prettierrc.js
 **/sampleFiles/*
 **/.output/*
 **/.nuxt/*
+dataset
+python_env
+.memoire
+dist
+.vscode

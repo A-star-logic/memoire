@@ -1,0 +1,121 @@
+run-name: Deploy api
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'docker/Dockerfile.memoire'
+      - 'package.json'
+  workflow_dispatch:
+
+jobs:
+  transpile:
+    name: Transpile
+    runs-on: ubuntu-latest
+    container: node:20-slim
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Transpile
+        run: yarn build
+        shell: bash
+
+      - name: Save artifact
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          compression-level: 0
+          retention-days: 1
+          name: dist
+          path: |
+            dist/
+
+  # Having multiple jobs allow the equivalent of multi-stage builds in docker; but we can leverage more easily github cache from the action workflow
+  build:
+    needs: transpile
+    name: Build
+    runs-on: ubuntu-latest
+    container: node:20-slim
+    env:
+      NODE_ENV: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Load artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Use cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+
+      - name: Install Production packages
+        run: yarn workspaces focus -A --production
+        shell: bash
+
+      - name: Clean TS, build, test files...
+        run: |
+          find . -name '*.ts' -delete
+          find . -name '**/test/*' -delete
+          find . -name '**/tests/*' -delete
+          find . -name '*.tsbuildinfo' -delete
+          find . -name '*.md' -delete
+
+      - name: Save build
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          compression-level: 0
+          name: build
+          path: |
+            dist/
+            node_modules/
+            docker/
+            package.json
+
+  deploy-ghcr:
+    needs: build
+    name: Deploy image to Github packages
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Load build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ghcr.io/a-star-logic/memoire:latest, ghcr.io/a-star-logic/memoire:${{ github.sha }}
+          file: ./docker/Dockerfile.memoire
+          platforms: linux/amd64
+          context: ./
+          build-args: |
+            "SENTRY_DSN=${{ vars.SENTRY_DSN }}"
+            "POSTHOG_KEY=${{ vars.POSTHOG_KEY }}"
