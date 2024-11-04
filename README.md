@@ -4,8 +4,9 @@ Memoire is a text search/RAG solution. It handles for you all the details of mak
 
 ## Features
 
-- **Don't worry**: do you know about hybrid search? structRag? Agentic chunking? Context extraction in messages? Scaling to millions of documents? it's ok, we do it for you.
-- **Send us links**: forget about parsing word, pdfs and the gazillion document types out there, just send us a link: we download, parse and index documents for you.
+- **Perfected document retrieval**: hybrid search, structRag, Agentic chunking, Context extraction in messages, and many more done for you.
+- **Easy API**: Send us texts, or send us link to downloadable documents, we handle the rest.
+- **Document parsing**: forget about parsing html, xml, docx, pdfs and the gazillion document types out there, just send us a link: we download, parse and index documents for you.
 - **Open source**: you can see everything we do, our company is transparent.
 
 ## Github, contributing & issues
@@ -21,9 +22,9 @@ If you are facing issues with Memoire, depending on which plan you have:
 
 ## Self hosted deployment
 
-Run docker pull ghcr.io/a-star-logic/memoire:latest
+Run `docker pull ghcr.io/a-star-logic/memoire:latest`
 
-Or you can look at our docker-compose for inspiration
+Or you can [look at our docker-compose for inspiration](docker/docker-compose.yml)
 
 ## API documentation
 
