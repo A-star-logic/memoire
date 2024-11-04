@@ -3,6 +3,10 @@ run-name: Deploy api
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - 'docker/Dockerfile.memoire'
+      - 'package.json'
   workflow_dispatch:
 
 jobs:
