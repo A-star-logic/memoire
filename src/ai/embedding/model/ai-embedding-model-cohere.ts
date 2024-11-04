@@ -62,23 +62,23 @@ export function isTooLarge({ text }: IsTooLargeInput): boolean {
 /**
  * Calls the cohere embedding model
  * @param root named params
- * @param root.text doc to embed
+ * @param root.documents documents to be embedded
  * @param root.embeddingTask task the embedding needed for
  * @returns peomises of cohere responses
  */
 async function invokeCohereEmbedding({
+  documents,
   embeddingTask,
-  text,
 }: {
+  documents: string[];
   embeddingTask: CohereEmbeddingBody['input_type'];
-  text: string;
 }): Promise<CohereEmbeddingResponse> {
   await sleep(30); // cohere api call limit is 2000 per min https://docs.aws.amazon.com/general/latest/gr/bedrock.html
   const command = new InvokeModelCommand({
     body: JSON.stringify({
       // eslint-disable-next-line camelcase
       input_type: embeddingTask,
-      texts: [text],
+      texts: documents,
     } satisfies CohereEmbeddingBody),
     modelId: 'cohere.embed-english-v3',
   });
@@ -106,20 +106,17 @@ export async function embedDocument({
     ) {
       throw new Error('A document was too large');
     }
-    const modelResponses = await Promise.all(
-      chunks.map(async (chunk, iteration) => {
-        const responseBody = await invokeCohereEmbedding({
-          embeddingTask: 'search_document',
-          text: chunk,
-        });
-        return {
-          chunkID: iteration,
-          chunkText: chunk,
-          embedding: responseBody.embeddings[0],
-        };
-      }),
-    );
-    return modelResponses;
+    const modelResponse = await invokeCohereEmbedding({
+      documents: chunks,
+      embeddingTask: 'search_document',
+    });
+    return modelResponse.embeddings.map((embedding, iteration) => {
+      return {
+        chunkID: iteration,
+        chunkText: modelResponse.texts[iteration],
+        embedding: embedding,
+      };
+    });
   } catch (error) {
     const message = 'The embedding function had an error';
     // eslint-disable-next-line no-console
@@ -147,20 +144,17 @@ export async function embedQuery({
     ) {
       throw new Error('A document was too large');
     }
-    const modelResponses = await Promise.all(
-      chunks.map(async (chunk, iteration) => {
-        const responseBody = await invokeCohereEmbedding({
-          embeddingTask: 'search_query',
-          text: chunk,
-        });
-        return {
-          chunkID: iteration,
-          chunkText: chunk,
-          embedding: responseBody.embeddings[0],
-        };
-      }),
-    );
-    return modelResponses;
+    const modelResponse = await invokeCohereEmbedding({
+      documents: chunks,
+      embeddingTask: 'search_query',
+    });
+    return modelResponse.embeddings.map((embedding, iteration) => {
+      return {
+        chunkID: iteration,
+        chunkText: modelResponse.texts[iteration],
+        embedding: embedding,
+      };
+    });
   } catch (error) {
     const message = 'The embedding function had an error';
     // eslint-disable-next-line no-console
