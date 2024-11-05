@@ -13,19 +13,19 @@ Before you begin, ensure you have the following:
 
 1. **Sign in to the Amazon Bedrock Console**: Go to the [Amazon Bedrock Console](https://aws.amazon.com/bedrock).
 <p align="center">
-    <img src="figs/bedrock_console.png">
+    <img src="figs/bedrock_console.png" width="300px">
     <em>Figure 1.1: AWS console bedrock search</em>
 </p>
 
 2. **Navigate to Model Access**: In the left navigation pane, under _Bedrock Configurations_, click on _Model Access_.
 <p align="center">
-    <img src="figs/model_access.png">
+    <img src="figs/model_access.png" width="300px">
     <em>Figure 1.2: Bedrock model access navigation</em>
 </p>
 
 3. **Select the Model**: choose the model that you want to proceed with, and click on _Request model access_.
 <p align="center">
-    <img src="figs/model_select.png">
+    <img src="figs/model_select.png" width="300px">
     <em>Figure 1.3: Selecting the model</em>
 </p>
 
@@ -41,18 +41,18 @@ These access keys will be used as your env variables.
    - Click _Next: Permissions_.
 
 <p align="center">
-    <img src="figs/IAM_users_navigation.png">
+    <img src="figs/IAM_users_navigation.png" width="300px">
     <em>Figure 2.1.1: press on create user</em>
 </p>
 <p align="center">
-    <img src="figs/create_user.png">
+    <img src="figs/create_user.png" width="300px">
     <em>Figure 2.1.2: press on create user</em>
 </p>
 
 3. **Set Permissions**: Choose _Attach existing policies directly_. Select a policy `AmazonBedrockFullAccess`
 
 <p align="center">
-    <img src="figs/attach_policy.png">
+    <img src="figs/attach_policy.png" width="300px">
     <em>Figure 2.2: Select policy</em>
 </p>
 
@@ -62,13 +62,13 @@ These access keys will be used as your env variables.
    - Download the CSV file containing the access key ID and secret access key. Save this file securely.
 
 <p align="center">
-    <img src="figs/generate_key.png">
+    <img src="figs/generate_key.png", width="300px">
     <em>Figure 2.2: create the key</em>
 </p>
 
 7. **Seting up the environment variables**: Finally, set up the environament variables in the root dir as follows:
-   '''
+   ```
    AWS_REGION= # Should be the same region that you requested model access
    AWS_SECRET_ACCESS_KEY= # Secret access key generated for the user
    AWS_ACCESS_KEY_ID= # Access key generated for the user
-   '''
+   ```
