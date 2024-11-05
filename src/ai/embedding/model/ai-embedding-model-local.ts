@@ -16,12 +16,12 @@ const model = new HuggingFaceTransformersEmbeddings({
 /**
  * Verify that the string sent has less tokens than the maximum possible for the model
  * @param root named parameters
- * @param root.chunk the chunk to verify
+ * @param root.text the document to verify
  * @returns true or false
  */
-export function isTooLarge({ chunk }: { chunk: string }): boolean {
+export function isTooLarge({ text }: { text: string }): boolean {
   const encoding = get_encoding('cl100k_base');
-  const tokens = encoding.encode(chunk);
+  const tokens = encoding.encode(text);
   encoding.free();
   return tokens.length >= 512;
 }
