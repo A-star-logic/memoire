@@ -1,15 +1,20 @@
 import { InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
-import cl100k from 'tiktoken/encoders/cl100k_base.json';
-import { Tiktoken } from 'tiktoken/lite';
+// eslint-disable-next-line camelcase
+import { get_encoding } from 'tiktoken';
+
+// utils
 import { sleep } from '../../../utils/utils-sleep.js';
-import { bedrockClient } from '../ai-embedding-bedrock-client.js';
-// embedding models contracts
+
+// database
+import { errorReport } from '../../../database/reporting/database-interface-reporting.ee.js';
+
+// embeddings
 import type {
   EmbeddingModelInput,
   EmbeddingModelOutput,
   IsTooLargeInput,
 } from './ai-embedding-model-contracts.js';
-import { errorReport } from '../../../database/reporting/database-interface-reporting.ee.js';
+import { bedrockClient } from '../ai-embedding-bedrock-client.js';
 
 /**
  * https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-embed.html
@@ -50,11 +55,7 @@ interface CohereEmbeddingResponse {
  * @returns true or false
  */
 export function isTooLarge({ text }: IsTooLargeInput): boolean {
-  const encoding = new Tiktoken(
-    cl100k.bpe_ranks,
-    cl100k.special_tokens,
-    cl100k.pat_str,
-  );
+  const encoding = get_encoding('cl100k_base');
   const tokens = encoding.encode(text);
   encoding.free();
   // cohere input token limit = 512
