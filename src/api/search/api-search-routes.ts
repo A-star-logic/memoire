@@ -15,8 +15,12 @@ import {
 } from '../../database/search/database-search-fts.js';
 
 // core
-import { extractFromUrl } from '../../core/extractor.js';
-import { addDocument, search } from '../../core/search.js';
+import { extractFromUrl } from '../../core/core-extractor.js';
+import {
+  addDocument,
+  deleteDocuments,
+  search,
+} from '../../core/core-search.js';
 
 // database
 import { errorReport } from '../../database/reporting/database-interface-reporting.ee.js';
@@ -117,14 +121,11 @@ Support:
           200: basicResponseSchema,
         },
         security: [{ bearerAuth: [] }],
-        summary: 'Send a downloadable link of your document to be indexed',
-        tags: ['Search'],
       },
     },
     async (request, _reply): Promise<Static<typeof basicResponseSchema>> => {
       const { documents } = request.body;
 
-      // verify the IDs are valid
       for (const document of documents) {
         try {
           await secureVerifyDocumentID({ documentID: document.documentID });
@@ -216,8 +217,6 @@ Note:
           200: searchResponseSchema,
         },
         security: [{ bearerAuth: [] }],
-        summary: 'Search for similar documents',
-        tags: ['Search'],
       },
     },
     async (request, _reply): Promise<Static<typeof searchResponseSchema>> => {
@@ -225,6 +224,48 @@ Note:
       return {
         results: await search({ maxResults, query }),
       };
+    },
+  );
+
+  const searchDeleteBodySchema = Type.Object(
+    {
+      documentIDs: Type.Array(Type.String(), {
+        examples: [['document1', 'abc-123']],
+      }),
+    },
+    { additionalProperties: false },
+  );
+  app.delete<{
+    Body: Static<typeof searchDeleteBodySchema>;
+    Reply: Static<typeof basicResponseSchema>;
+  }>(
+    '/documents',
+    {
+      onRequest: [app.token_auth],
+      schema: {
+        body: searchDeleteBodySchema,
+        description:
+          'Delete a list of documents from the search using their IDs',
+        response: {
+          200: basicResponseSchema,
+        },
+        security: [{ bearerAuth: [] }],
+      },
+    },
+    async (request, _reply) => {
+      const { documentIDs } = request.body;
+      for (const documentID of documentIDs) {
+        try {
+          await secureVerifyDocumentID({ documentID });
+        } catch {
+          throw {
+            message: 'Forbidden characters found in document ID: ' + documentID,
+            statusCode: 422,
+          };
+        }
+      }
+
+      await deleteDocuments({ documentIDs });
     },
   );
 };

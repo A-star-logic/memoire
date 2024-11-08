@@ -67,6 +67,10 @@ jobs:
     runs-on: ubuntu-latest
     container: node:20-slim
     environment: cicd
+    permissions:
+      # Required to put a comment into the pull-request
+      pull-requests: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -75,11 +79,16 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Test
-        run: yarn test
+        run: yarn test:ci
         env:
           NODE_ENV: test
+          GITHUB_ACTIONS: true # enable github actions reporter for vitest
+          API_KEY: secret
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_REGION: us-east-1
           POSTHOG_KEY: secret
           SENTRY_DSN: secret
+
+      - name: 'Report Coverage'
+        uses: davelosert/vitest-coverage-report-action@v2

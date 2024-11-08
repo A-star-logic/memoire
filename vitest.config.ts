@@ -10,8 +10,11 @@ export default defineConfig({
       clean: true,
       cleanOnRerun: true,
       exclude: ['**/mocks/**', '**/__mocks__/**', '**/migrations/**'],
-      reporter: ['lcov'], // cSpell: disable-line
+      reporter: ['text', 'json-summary', 'json'], // cSpell: disable-line
     },
     clearMocks: true,
+    env: {
+      NODE_ENV: 'test',
+    },
   },
 });
