@@ -12,7 +12,7 @@ describe('delete document', async () => {
   test('The endpoint is protected by an API key', async () => {
     const response = await app.inject({
       method: 'DELETE',
-      url: '/search',
+      url: '/search/documents',
     });
     expect(response.statusCode).toBe(401);
   });
