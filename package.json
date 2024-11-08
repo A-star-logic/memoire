@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env --conditions=development src/index.ts",
     "build": "tsup",
-    "test": "vitest --coverage --coverage.all=false --coverage.skipFull",
+    "test": "vitest",
+    "test:ci": "vitest run --coverage --coverage.skipFull",
     "lint": "yarn lint:eslint ; yarn lint:tsc ; yarn lint:prettier",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier . --check --config .prettierrc.js",
@@ -47,6 +48,7 @@
     "@sentry/profiling-node": "^8.36.0",
     "@sinclair/typebox": "^0.33.17",
     "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
     "fastify": "^5.0.0",
     "fastify-plugin": "^5.0.1",
     "http-terminator": "^3.2.0",

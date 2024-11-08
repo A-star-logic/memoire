@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
 
 interface SourceDocument {
@@ -78,4 +78,27 @@ export async function getSourceDocuments({
     documents[documentID] = await loadSourceDocument({ documentID });
   }
   return documents;
+}
+
+/**
+ * Delete a document from the sources. It will skip any document that do not exist
+ * @param root named parameters
+ * @param root.documentID the document ID
+ */
+export async function deleteSourceDocument({
+  documentID,
+}: {
+  documentID: string;
+}): Promise<void> {
+  try {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    await unlink(
+      `.memoire/sources/${await secureVerifyDocumentID({ documentID })}.json`,
+    );
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('ENOENT')) {
+      return;
+    }
+    throw error;
+  }
 }
