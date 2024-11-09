@@ -1,5 +1,5 @@
 // node
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 
 // utils
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
@@ -15,18 +15,22 @@ const documentsData: {
   };
 } = {};
 
+const basePath =
+  process.env.NODE_ENV === 'test' ? '.testMemoire/vector' : '.memoire/vector';
+
 /**
  * Load the index from disk
  */
 export async function loadVectorIndexFromDisk(): Promise<void> {
   try {
-    const files = await readdir('.memoire/vector', { recursive: true });
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    const files = await readdir(basePath, { recursive: true });
     if (files.length > 0) {
       for (const file of files) {
         if (file.endsWith('.json')) {
           const documentData = JSON.parse(
             // eslint-disable-next-line security/detect-non-literal-fs-filename
-            await readFile(`.memoire/vector/${file}`, { encoding: 'utf8' }),
+            await readFile(`${basePath}/${file}`, { encoding: 'utf8' }),
           ) as (typeof documentsData)[string];
           documentsData[documentData.documentID] = documentData;
         }
@@ -36,8 +40,7 @@ export async function loadVectorIndexFromDisk(): Promise<void> {
       `${Object.keys(documentsData).length} documents loaded in vector index`,
     );
   } catch (error) {
-    // @ts-expect-error fix later, not a problem right now
-    if (error.code === 'ENOENT') {
+    if (error instanceof Error && error.message.includes('ENOENT')) {
       logger.info('No Vector index found');
     } else {
       await errorReport({
@@ -52,12 +55,14 @@ export async function loadVectorIndexFromDisk(): Promise<void> {
  * Save the index to disk
  */
 export async function saveVectorIndexToDisk(): Promise<void> {
-  await mkdir('.memoire/vector', { recursive: true });
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  await mkdir(basePath, { recursive: true });
   for (const documentID of Object.keys(documentsData)) {
     if (documentID !== 'undefined') {
       // eslint-disable-next-line security/detect-non-literal-fs-filename
       await writeFile(
-        '.memoire/vector/' +
+        basePath +
+          '/' +
           (await secureVerifyDocumentID({ documentID })) +
           '.json',
         JSON.stringify({
@@ -91,6 +96,7 @@ export async function bulkAddVectorChunks({
       embedding,
     };
   }
+  logger.debug(`Added ${embeddings.length} chunks for document ${documentID}`);
 }
 
 /**
@@ -107,10 +113,11 @@ export async function vectorSearch({
   embedding: number[];
   maxResults: number;
 }): Promise<{ chunkID: number; documentID: string; score: number }[]> {
-  const result: Awaited<ReturnType<typeof vectorSearch>> = [];
+  logger.debug(`Searching in ${Object.keys(documentsData).length} documents`);
+  const scored: Awaited<ReturnType<typeof vectorSearch>> = [];
   // todo: can be optimised to limit results size to maxResult instead of slicing it at the end
   for (const chunk of Object.values(documentsData)) {
-    result.push({
+    scored.push({
       chunkID: chunk.chunkID,
       documentID: chunk.documentID,
       score: await calculateSimilarity({
@@ -119,27 +126,36 @@ export async function vectorSearch({
       }),
     });
   }
-  result.sort((a, b) => {
+  scored.sort((a, b) => {
     return b.score - a.score;
   });
-  return result.slice(0, maxResults + 1);
+  const results = scored.slice(0, maxResults + 1);
+  logger.debug(`Found ${results.length} results in the vector store`);
+  return results;
 }
 
-// /**
-//  * Delete all the chunks related to a document
-//  * @param root named parameters
-//  * @param root.documentID the id of the document
-//  */
-// export async function deleteVectorChunks({
-//   documentID,
-// }: {
-//   documentID: string;
-// }): Promise<void> {
-//   const keys = Object.keys(documentsData).filter((key) => {
-//     return key.startsWith(`${documentID}@`);
-//   });
-//   for (const key of keys) {
-//     // eslint-disable-next-line fp/no-delete
-//     delete documentsData[key]; // todo transform to a set
-//   }
-// }
+/**
+ * Delete all the chunks related to a document
+ * @param root named parameters
+ * @param root.documentID the id of the document
+ */
+export async function deleteVectorChunks({
+  documentID,
+}: {
+  documentID: string;
+}): Promise<void> {
+  const keys = Object.keys(documentsData).filter((key) => {
+    return key.startsWith(`${documentID}@`);
+  });
+  for (const key of keys) {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete, fp/no-delete
+    delete documentsData[key];
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    await unlink(
+      basePath +
+        '/' +
+        (await secureVerifyDocumentID({ documentID: key })) +
+        '.json',
+    );
+  }
+}

@@ -5,9 +5,12 @@ import {
 } from '../ai/embedding/ai-embeddings-interface.js';
 import {
   addFTSDocument,
+  calculateIDF,
   FTSSearch,
   loadFTSIndexFromDisk,
+  saveFTSIndexToDisk,
 } from '../database/search/database-search-fts.js';
+import { deleteDocument } from '../database/search/database-search-interface.js';
 import {
   getSourceDocuments,
   saveSourceDocument,
@@ -123,4 +126,21 @@ export async function search({
   }
 
   return results;
+}
+
+/**
+ * Delete a list of from the search, and re-calculate the IDF
+ * @param root named parameters
+ * @param root.documentIDs the document IDs
+ */
+export async function deleteDocuments({
+  documentIDs,
+}: {
+  documentIDs: string[];
+}): Promise<void> {
+  for (const documentID of documentIDs) {
+    await deleteDocument({ documentID });
+  }
+  await calculateIDF();
+  await saveFTSIndexToDisk();
 }

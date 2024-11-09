@@ -1,5 +1,5 @@
 // node
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 
 // utils
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
@@ -22,6 +22,9 @@ let termsData: {
     inverseDocumentFrequency: number;
   };
 } = {};
+
+const basePath =
+  process.env.NODE_ENV === 'test' ? '.testMemoire/fts' : '.memoire/fts';
 
 /**
  * Load the index from disk
@@ -68,13 +71,16 @@ export async function loadFTSIndexFromDisk(): Promise<void> {
  * Save the index to disk
  */
 export async function saveFTSIndexToDisk(): Promise<void> {
-  await mkdir('.memoire/fts', { recursive: true });
-  await writeFile('.memoire/fts/termsData.json', JSON.stringify(termsData));
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  await mkdir(basePath, { recursive: true });
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  await writeFile(basePath + '/termsData.json', JSON.stringify(termsData));
   for (const documentID of Object.keys(documentsData)) {
     if (documentID !== 'undefined') {
       // eslint-disable-next-line security/detect-non-literal-fs-filename
       await writeFile(
-        '.memoire/fts/' +
+        basePath +
+          '/' +
           (await secureVerifyDocumentID({ documentID })) +
           '.json',
         JSON.stringify({
@@ -224,4 +230,34 @@ export async function FTSSearch({
     results.push({ documentID, score });
   }
   return results.slice(0, maxResults + 1);
+}
+
+/**
+ * Remove a document from the full text search index.
+ * Note: this will still require a post-processing sync to disk
+ * @param root named parameters
+ * @param root.documentID the id of the document to remove
+ */
+export async function deleteFTSDocument({
+  documentID,
+}: {
+  documentID: string;
+}): Promise<void> {
+  const document = documentsData[documentID];
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (document) {
+    delete documentsData[documentID];
+
+    for (const term of Object.keys(document.termFrequency)) {
+      const termData = termsData[term];
+      termData.documentFrequency =
+        termData.documentFrequency - document.termFrequency[term];
+      termsData[term] = termData;
+    }
+
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    await unlink(
+      basePath + '/' + (await secureVerifyDocumentID({ documentID })) + '.json',
+    );
+  }
 }
