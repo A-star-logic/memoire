@@ -78,7 +78,7 @@ export async function createAgenticChunking({
       // our configuration will always have a single choice
       const response = result.choices[0].message?.content;
       if (response === null || response === undefined) {
-        throw new Error('OpenAI returned null or undefined for summaries');
+        throw new Error('openAI agentic chunking returned null or undefined');
       }
       const agenticChunks = JSON.parse(response) as string[];
       return agenticChunks;
