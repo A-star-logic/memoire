@@ -14,8 +14,6 @@ if (process.env.OPENAI_KEY === undefined) {
   throw new Error('please set the env variable OPENAI_KEY');
 }
 
-const modelName = 'gpt-35-turbo-16k'; // gpt-35-turbo version 1106.
-
 const openAIClient = new OpenAIClient(
   process.env.OPENAI_URL,
   new AzureKeyCredential(process.env.OPENAI_KEY),
@@ -27,7 +25,7 @@ const openAIClient = new OpenAIClient(
  * @param root.text the text to verify
  * @returns true or false
  */
-export function isTooLarge({ text }: { text: string }): boolean {
+function isTooLarge({ text }: { text: string }): boolean {
   const encoding = get_encoding('cl100k_base');
   const tokens = encoding.encode(text);
   encoding.free();
@@ -74,7 +72,10 @@ export async function createAgenticChunking({
         },
         { content: `Decompose the following:\\n ${chunk}`, role: 'user' },
       ];
-      const result = await openAIClient.getChatCompletions(modelName, prompt);
+      const result = await openAIClient.getChatCompletions(
+        'gpt-35-turbo-16k',
+        prompt,
+      );
       // our configuration will always have a single choice
       const response = result.choices[0].message?.content;
       if (response === null || response === undefined) {
