@@ -8,8 +8,8 @@ import fastifySwaggerUi from '@fastify/swagger-ui';
 import { setupServer } from '../server/server-init.js';
 
 // api
-import { searchRouter } from './search/api-search-routes.js';
 import { logger } from '../database/reporting/database-external-config.js';
+import { searchRouter } from './search/api-search-routes.js';
 
 // server
 export const app = await setupServer();
