@@ -9,6 +9,7 @@ import { setupServer } from '../server/server-init.js';
 
 // api
 import { searchRouter } from './search/api-search-routes.js';
+import { logger } from '../database/reporting/database-external-config.js';
 
 // server
 export const app = await setupServer();
@@ -35,6 +36,7 @@ if (process.env.NODE_ENV === 'development' || process.env.SHOW_DOC === 'true') {
 await app.register(searchRouter, { prefix: '/search' });
 
 // documentation (dev only)
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.SHOW_DOC === 'true') {
+  logger.info('Documentation endpoint enabled');
   await app.register(fastifySwaggerUi, { routePrefix: '/docs' });
 }
