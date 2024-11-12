@@ -20,12 +20,46 @@ If you are facing issues with Memoire, depending on which plan you have:
 - **You are a subscriber**: you should contact our team immediately, you already have our whatsapp. I will respond as soon as possible during working hours
 - **You are not a subscriber**: please open a new issue, and tag @mael-abgrall, the maintainer of the repository
 
-## Self hosted deployment
+### License & running the app
 
-Run `docker pull ghcr.io/a-star-logic/memoire:latest`
+We are not open source yet. We have our [own license you can read here](./LICENSE), the TLDR is:
 
-Or you can [look at our docker-compose for inspiration](docker/docker-compose.yml)
+- We want to generate revenue quickly and become default alive.
+- Once we are, the major portion of the code will become MIT licensed (open core).
+- Today, you can use freely the software for hobby or educational purpose, but you need to pay a small fee to deploy to production.
 
-## API documentation
+## Get started
 
+### Installing the app
+
+You will need to use docker, the easiest will be to [copy and paste our docker-compose](docker/docker-compose.yml)
+
+### Requirements
+
+Memoire is written using typescript and run on a single core. We tried and tested and it can load around 100k documents on 1Gb of ram when using 768 dimensions.
+The docker compose has been set to limit the resources to 1 core and 1Gb of ram, so you can see how your dataset uses the container.
+
+### Env variables
+
+To work, the container require a few environment variables:
+
+mandatory:
+
+- `API_KEY`: this will be used to communicate with Memoire, the API_KEY needs to be present in the requests headers:
+
+```bash
+curl http://localhost:3003/endpoint -H "Authorization: Bearer my_API_KEY"
+```
+
+optional:
+
+- `SHOW_DOC='true'`: enable the documentation endpoint at `http://localhost:3003/docs`
+- `EMBEDDING_MODEL`: the embedding model you want to use, leave empty to use a CPU, local model
+- `AWS_SECRET_ACCESS_KEY`: if you are using a cohere or titan model from bedrock
+- `AWS_ACCESS_KEY_ID`: if you are using a cohere or titan model from bedrock
+- `AWS_REGION`: if you are using a cohere or titan model from bedrock
+
+### API documentation
+
+You can either read the documentation using the environment variable SHOW_DOC,
 [Read our API documentation here](https://memoire.apidocumentation.com/)
