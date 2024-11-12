@@ -14,7 +14,7 @@ import { searchRouter } from './search/api-search-routes.js';
 export const app = await setupServer();
 
 // documentation (dev only)
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.SHOW_DOC === 'true') {
   await app.register(fastifySwagger, {
     openapi: {
       components: {
