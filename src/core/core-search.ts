@@ -6,6 +6,7 @@ import {
 import {
   addFTSDocument,
   calculateIDF,
+  exists,
   FTSSearch,
   loadFTSIndexFromDisk,
   saveFTSIndexToDisk,
@@ -17,6 +18,7 @@ import {
 } from '../database/search/database-search-source.js';
 import {
   bulkAddVectorChunks,
+  deleteVectorChunks,
   loadVectorIndexFromDisk,
   vectorSearch,
 } from '../database/search/database-search-vector.js';
@@ -44,9 +46,9 @@ export async function addDocument({
   metadata: object;
   title: string | undefined;
 }): Promise<void> {
-  // if (await exists({ documentID })) {
-  //   await deleteVectorChunks({ documentID });
-  // }
+  if (await exists({ documentID })) {
+    await deleteVectorChunks({ documentID });
+  }
 
   const autoEmbedPromise = autoEmbed({ document: content });
 

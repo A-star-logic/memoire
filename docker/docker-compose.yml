@@ -11,7 +11,7 @@ services:
       # - AWS_SECRET_ACCESS_KEY= (optional) needed if you want to use cohere or titan from AWS bedrock
       # - AWS_ACCESS_KEY_ID= (optional) needed if you want to use cohere or titan from AWS bedrock
       # - AWS_REGION= (optional) needed if you want to use cohere or titan from AWS bedrock
-      - SHOW_DOC=true
+      # - SHOW_DOC=true (optional) enable the documentation endpoint at http://localhost:3003/docs
     deploy:
       resources:
         limits:
