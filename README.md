@@ -35,7 +35,7 @@ To work, the container require a few environment variables:
 
 mandatory:
 
-- `API_KEY`: this will be used to communicate with Memoire, the API_KEY needs to be present in the requests headers:
+- `API_KEY`: this will be used to communicate with Memoire. Make it secure (ex: use `openssl rand -hex 32`). The API_KEY needs to be present in the requests headers:
 
 ```bash
 curl http://localhost:3003/endpoint -H "Authorization: Bearer my_API_KEY"
@@ -48,6 +48,8 @@ optional:
 - `AWS_SECRET_ACCESS_KEY`: if you are using a cohere or titan model from bedrock
 - `AWS_ACCESS_KEY_ID`: if you are using a cohere or titan model from bedrock
 - `AWS_REGION`: if you are using a cohere or titan model from bedrock
+- `OPENAI_KEY`: if you are using OpenAI models (Azure or not)
+- `OPENAI_DEPLOYMENT`: if you are using Azure open AI models (leave empty to use OpenAI's servers)
 
 ### API documentation
 
