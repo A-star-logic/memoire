@@ -37,10 +37,6 @@ export async function apiUsageReport({
   timing: number;
   url: string;
 }): Promise<void> {
-  /** The server memory usage in MB */ // todo not the right place to do this (put it in the ingestion pipeline instead) + send warnings when server starts to get overloaded
-  // const memoryUsage =
-  //   Math.round((process.memoryUsage.rss() / 1024 / 1024) * 100) / 100;
-
   // filter out liveness and doc requests
   if (url.includes('liveness') || url.includes('/docs/')) return;
   posthogClient.capture({
@@ -53,6 +49,33 @@ export async function apiUsageReport({
       method,
       timing,
       url,
+    },
+  });
+}
+
+/**
+ * Generate an application performance monitoring report
+ * @param root named parameters
+ * @param root.event the event name
+ * @param root.properties the properties to associate with the event
+ */
+export async function apmReport({
+  event,
+  properties,
+}: {
+  event: string;
+  properties: {
+    [key: string]: unknown;
+  };
+}): Promise<void> {
+  logger.debug(properties, `APM event: ${event}`);
+  posthogClient.capture({
+    distinctId: 'anonymous',
+    event,
+    properties: {
+      // eslint-disable-next-line camelcase
+      $process_person_profile: false,
+      ...properties,
     },
   });
 }

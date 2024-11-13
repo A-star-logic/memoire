@@ -12,6 +12,7 @@ import type {
 import {
   calculateIDF,
   saveFTSIndexToDisk,
+  usageStatsFTS,
 } from '../../database/search/database-search-fts.js';
 
 // core
@@ -23,10 +24,17 @@ import {
 } from '../../core/core-search.js';
 
 // database
-import { errorReport } from '../../database/reporting/database-interface-reporting.ee.js';
-import { saveVectorIndexToDisk } from '../../database/search/database-search-vector.js';
+import {
+  apmReport,
+  errorReport,
+} from '../../database/reporting/database-interface-reporting.ee.js';
+import {
+  saveVectorIndexToDisk,
+  usageStatsVector,
+} from '../../database/search/database-search-vector.js';
 
 // utils
+import { getTotalMemoryUsage } from '../../utils/utils-apm.js';
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
 
 const basicResponseSchema = Type.Object({
@@ -149,6 +157,19 @@ Support:
           title: document.title,
         });
       }
+
+      const { totalDocuments: totalVectors } = await usageStatsVector();
+      const { totalDocuments, totalTerms } = await usageStatsFTS();
+      await apmReport({
+        event: 'ingest',
+        properties: {
+          addedDocuments: documents.length,
+          memoryUsage: await getTotalMemoryUsage(),
+          totalDocuments,
+          totalTerms,
+          totalVectors,
+        },
+      });
 
       return { message: 'ok' };
     },
