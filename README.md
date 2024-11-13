@@ -43,7 +43,7 @@ curl http://localhost:3003/endpoint -H "Authorization: Bearer my_API_KEY"
 
 optional:
 
-- `SHOW_DOC='true'`: enable the documentation endpoint at `http://localhost:3003/docs`
+- `SHOW_DOC=true`: enable the documentation endpoint at `http://localhost:3003/docs`
 - `EMBEDDING_MODEL`: the embedding model you want to use, leave empty to use a CPU, local model
 - `AWS_SECRET_ACCESS_KEY`: if you are using a cohere or titan model from bedrock
 - `AWS_ACCESS_KEY_ID`: if you are using a cohere or titan model from bedrock

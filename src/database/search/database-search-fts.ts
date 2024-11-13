@@ -2,10 +2,16 @@
 import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 
 // utils
+import { SpeedMonitor } from '../../utils/utils-apm.js';
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
 import { prepareForBM25 } from '../../utils/utils-text-processing.js';
 import { logger } from '../reporting/database-external-config.js';
-import { errorReport } from '../reporting/database-interface-reporting.ee.js';
+
+// database
+import {
+  apmReport,
+  errorReport,
+} from '../reporting/database-interface-reporting.ee.js';
 
 const b = 0.75;
 const k1 = 1.5;
@@ -167,6 +173,8 @@ export async function addFTSDocument({
   documentID: string;
   text: string;
 }): Promise<void> {
+  const speedMonitor = new SpeedMonitor();
+
   const normalizedText = await prepareForBM25({ text });
   // calculate the TF of this document
   const documentTermFrequency: { [key: string]: number } = {};
@@ -192,6 +200,18 @@ export async function addFTSDocument({
 
     termsData.set(term, termData);
   }
+
+  const executionTime = await speedMonitor.finishMonitoring();
+  const totalDocuments = documentsData.size;
+  const totalTerms = termsData.size;
+  await apmReport({
+    event: 'addFTSDocument',
+    properties: {
+      executionTime,
+      totalDocuments,
+      totalTerms,
+    },
+  });
 }
 
 /**
@@ -223,6 +243,7 @@ export async function FTSSearch({
   maxResults: number;
   query: string;
 }): Promise<{ documentID: string; score: number }[]> {
+  const speedMonitor = new SpeedMonitor();
   const normalizedQuery = await prepareForBM25({ text: query });
 
   let totalWordsLength = 0;
@@ -244,6 +265,19 @@ export async function FTSSearch({
   results.sort((a, b) => {
     return b.score - a.score;
   });
+
+  const executionTime = await speedMonitor.finishMonitoring();
+  const totalDocuments = documentsData.size;
+  const totalTerms = termsData.size;
+  await apmReport({
+    event: 'FTSSearch',
+    properties: {
+      executionTime,
+      totalDocuments,
+      totalTerms,
+    },
+  });
+
   return results.slice(0, maxResults);
 }
 
@@ -291,4 +325,18 @@ export async function deleteFTSDocument({
       throw error;
     }
   }
+}
+
+/**
+ * Generate a report of the usage statistics of the FTS index
+ * @returns totalDocuments and totalTerms
+ */
+export async function usageStatsFTS(): Promise<{
+  totalDocuments: number;
+  totalTerms: number;
+}> {
+  return {
+    totalDocuments: documentsData.size,
+    totalTerms: termsData.size,
+  };
 }
