@@ -2,10 +2,16 @@
 import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 
 // utils
+import { SpeedMonitor } from '../../utils/utils-apm.js';
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
 import { calculateSimilarity } from '../../utils/utils-similarity.js';
 import { logger } from '../reporting/database-external-config.js';
-import { errorReport } from '../reporting/database-interface-reporting.ee.js';
+
+// database
+import {
+  apmReport,
+  errorReport,
+} from '../reporting/database-interface-reporting.ee.js';
 
 const documentsData: {
   [documentIDatChunkID: string]: {
@@ -89,6 +95,8 @@ export async function bulkAddVectorChunks({
   documentID: string;
   embeddings: { chunkID: number; embedding: number[] }[];
 }): Promise<void> {
+  const speedMonitor = new SpeedMonitor();
+
   for (const { chunkID, embedding } of embeddings) {
     documentsData[`${documentID}@${chunkID}`] = {
       chunkID,
@@ -96,6 +104,16 @@ export async function bulkAddVectorChunks({
       embedding,
     };
   }
+
+  await apmReport({
+    event: 'bulkAddVectorChunks',
+    properties: {
+      chunks: embeddings.length,
+      executionTime: speedMonitor.finishMonitoring(),
+      totalDocuments: Object.keys(documentsData).length,
+    },
+  });
+
   logger.debug(`Added ${embeddings.length} chunks for document ${documentID}`);
 }
 
@@ -113,7 +131,8 @@ export async function vectorSearch({
   embedding: number[];
   maxResults: number;
 }): Promise<{ chunkID: number; documentID: string; score: number }[]> {
-  logger.debug(`Searching in ${Object.keys(documentsData).length} documents`);
+  const speedMonitor = new SpeedMonitor();
+
   const scored: Awaited<ReturnType<typeof vectorSearch>> = [];
   // todo: can be optimised to limit results size to maxResult instead of slicing it at the end
   for (const chunk of Object.values(documentsData)) {
@@ -130,7 +149,15 @@ export async function vectorSearch({
     return b.score - a.score;
   });
   const results = scored.slice(0, maxResults + 1);
-  logger.debug(`Found ${results.length} results in the vector store`);
+
+  await apmReport({
+    event: 'vectorSearch',
+    properties: {
+      executionTime: await speedMonitor.finishMonitoring(),
+      totalDocuments: Object.keys(documentsData).length,
+    },
+  });
+
   return results;
 }
 
@@ -158,4 +185,16 @@ export async function deleteVectorChunks({
         '.json',
     );
   }
+}
+
+/**
+ * Generate a report of the usage statistics of the vector index
+ * @returns totalDocuments and totalTerms
+ */
+export async function usageStatsVector(): Promise<{
+  totalDocuments: number;
+}> {
+  return {
+    totalDocuments: Object.keys(documentsData).length,
+  };
 }
