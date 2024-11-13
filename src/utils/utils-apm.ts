@@ -28,9 +28,9 @@ export class SpeedMonitor {
 }
 
 /**
- * Return the total memory usage of the app (including the process and runtime usage)
+ * Return the memory usage of the app (only the heap used)
  * @returns the memory usage in `MB`
  */
 export async function getTotalMemoryUsage(): Promise<number> {
-  return Math.round((process.memoryUsage.rss() / 1024 / 1024) * 100) / 100;
+  return Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100;
 }
