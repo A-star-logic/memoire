@@ -10,3 +10,4 @@ python_env
 .memoire
 dist
 .vscode
+benchmark/**.json
