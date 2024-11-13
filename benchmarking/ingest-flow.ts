@@ -48,10 +48,10 @@ for (const filePath of files) {
         documentID: filePath.replaceAll('.json', ''),
         text: chunk.text,
       });
-      // await bulkAddVectorChunks({
-      //   documentID: filePath.replaceAll('.json', ''),
-      //   embeddings: [{ chunkID: 0, embedding: chunk.embedding }],
-      // });
+      await bulkAddVectorChunks({
+        documentID: filePath.replaceAll('.json', ''),
+        embeddings: [{ chunkID: 0, embedding: chunk.embedding }],
+      });
     }
   }
 }
