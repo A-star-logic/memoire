@@ -45,16 +45,16 @@ optional:
 
 - `SHOW_DOC=true`: enable the documentation endpoint at `http://localhost:3003/docs`
 - `EMBEDDING_MODEL`: the embedding model you want to use, leave empty to use a CPU, local model
-- `AWS_SECRET_ACCESS_KEY`: if you are using a cohere or titan model from bedrock
-- `AWS_ACCESS_KEY_ID`: if you are using a cohere or titan model from bedrock
-- `AWS_REGION`: if you are using a cohere or titan model from bedrock
+- `AWS_SECRET_ACCESS_KEY`: if you are using bedrock ([see our tutorial here to get it](./docs/aws_bedrock.md))
+- `AWS_ACCESS_KEY_ID`: if you are using bedrock ([see our tutorial here to get it](./docs/aws_bedrock.md))
+- `AWS_REGION`: if you are using bedrock ([see our tutorial here to get it](./docs/aws_bedrock.md))
 - `OPENAI_KEY`: if you are using OpenAI models (Azure or not)
 - `OPENAI_DEPLOYMENT`: if you are using Azure open AI models (leave empty to use OpenAI's servers)
 
 ### API documentation
 
-You can either read the documentation using the environment variable SHOW_DOC,
-[Read our API documentation here](https://memoire.apidocumentation.com/)
+You can either read the documentation using the environment variable SHOW_DOC, or
+[read it online here](https://memoire.apidocumentation.com/)
 
 ## Github, contributing & issues
 
