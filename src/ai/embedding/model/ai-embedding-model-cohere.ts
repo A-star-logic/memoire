@@ -1,5 +1,10 @@
+/* eslint-disable camelcase */
 import { InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
-// eslint-disable-next-line camelcase
+import {
+  CharacterTextSplitter,
+  TokenTextSplitter,
+} from '@langchain/textsplitters';
+
 import { get_encoding } from 'tiktoken';
 
 // utils
@@ -58,9 +63,48 @@ export function isTooLarge({ text }: IsTooLargeInput): boolean {
   const encoding = get_encoding('cl100k_base');
   const tokens = encoding.encode(text);
   encoding.free();
-  // cohere input token limit = 512
-  return tokens.length > 512;
+  // cohere input token limit = 512 and charecter limit is 2048
+  return tokens.length > 512 && text.length > 2048;
 }
+/**
+ * Split a document into chunks for cohere model based on it's limitation. This is a simple way of creating chunks and not context-aware
+ * @param root named parameters
+ * @param root.document the document to split into chunks
+ * @returns a list of chunks
+ */
+export async function createDocumentChunks({
+  document,
+}: {
+  document: string;
+}): Promise<string[]> {
+  const tokenSplitter = new TokenTextSplitter({
+    chunkOverlap: 0,
+    chunkSize: 512,
+    encodingName: 'cl100k_base',
+  });
+  const characterSplitter = new CharacterTextSplitter({
+    chunkOverlap: 3,
+    chunkSize: 2048,
+    separator: ' ',
+  });
+
+  const cleanedDocument = document.replaceAll('\n', ' ');
+  // trim and remove duplicate whitespace
+  const trimmedDocument = cleanedDocument.replaceAll(/\s+/g, ' ').trim();
+
+  //initall splitting based on token limit of cohere
+  const tokenChunks = await tokenSplitter.splitText(trimmedDocument);
+
+  //further splitting based on charecter limit of cohere
+  let resultChunks: string[] = [];
+  for (const chunk of tokenChunks) {
+    const characterChunks = await characterSplitter.splitText(chunk);
+    resultChunks = [...resultChunks, ...characterChunks];
+  }
+
+  return resultChunks;
+}
+
 /**
  * Calls the cohere embedding model
  * @param root named params
@@ -78,7 +122,6 @@ async function invokeCohereEmbedding({
   await sleep(30); // cohere api call limit is 2000 per min https://docs.aws.amazon.com/general/latest/gr/bedrock.html
   const command = new InvokeModelCommand({
     body: JSON.stringify({
-      // eslint-disable-next-line camelcase
       input_type: embeddingTask,
       texts: documents,
     } satisfies CohereEmbeddingBody),
