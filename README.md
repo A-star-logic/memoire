@@ -45,24 +45,29 @@ optional:
 
 - `SHOW_DOC=true`: enable the documentation endpoint at `http://localhost:3003/docs`
 - `EMBEDDING_MODEL`: the embedding model you want to use, leave empty to use a CPU, local model
-- `AWS_SECRET_ACCESS_KEY`: if you are using a cohere or titan model from bedrock
-- `AWS_ACCESS_KEY_ID`: if you are using a cohere or titan model from bedrock
-- `AWS_REGION`: if you are using a cohere or titan model from bedrock
+- `AWS_SECRET_ACCESS_KEY`: if you are using bedrock ([see our tutorial here to get it](./docs/aws_bedrock.md))
+- `AWS_ACCESS_KEY_ID`: if you are using bedrock ([see our tutorial here to get it](./docs/aws_bedrock.md))
+- `AWS_REGION`: if you are using bedrock ([see our tutorial here to get it](./docs/aws_bedrock.md))
 - `OPENAI_KEY`: if you are using OpenAI models (Azure or not)
 - `OPENAI_DEPLOYMENT`: if you are using Azure open AI models (leave empty to use OpenAI's servers)
 
 ### API documentation
 
-You can either read the documentation using the environment variable SHOW_DOC,
-[Read our API documentation here](https://memoire.apidocumentation.com/)
+You can either read the documentation using the environment variable SHOW_DOC, or
+[read it online here](https://memoire.apidocumentation.com/)
 
 ## Github, contributing & issues
 
 You are welcome to contribute to the repository, just look for open issues.
 
-### Problems?
+## Problems?
 
 If you are facing issues with Memoire, depending on which plan you have:
 
 - **You are a subscriber**: you should contact our team immediately, you already have our whatsapp. I will respond as soon as possible during working hours
 - **You are not a subscriber**: please open a new issue, and tag @mael-abgrall, the maintainer of the repository
+
+### Common issues
+
+- I get a 401 error -> make sure your environment variable in docker has no space and no quotes, make sure you are sending the right header.
+- bedrock or cohere models throw an error "`undefined Message: Invalid URL`" -> make sure your environment variable in docker has no space and no quotes.

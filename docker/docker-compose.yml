@@ -18,4 +18,5 @@ services:
           cpus: '1'
           memory: 1G
     volumes:
-      - ../.memoire:/memoire/.memoire
+      - .memoire:/memoire/.memoire
+      # or - your/local/path:/memoire/.memoire
