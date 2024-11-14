@@ -38,6 +38,9 @@ import {
   searchResponseSchema,
 } from './api-search-schemas.js';
 
+// parser
+import { isFileSupported } from '../../parser/parser.ee.js';
+
 // /**
 //  * The post reply hook, that will:
 //  * - ingest the documents // todo do this later, when we have a stronger architecture that can catch errors and self-correct
@@ -97,6 +100,12 @@ Support:
             message:
               'Forbidden characters found in document ID: ' +
               document.documentID,
+            statusCode: 422,
+          };
+        }
+        if (!(await isFileSupported({ filename: document.url }))) {
+          throw {
+            message: 'Unsupported document type: ' + document.url,
             statusCode: 422,
           };
         }

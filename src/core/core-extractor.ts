@@ -1,5 +1,8 @@
-import axios from 'axios';
-import mammoth from 'mammoth';
+// utils
+import { downloadDocument } from '../utils/utils-downloader.js';
+
+// parser
+import { parseStream } from '../parser/parser.ee.js';
 
 /**
  * Download a document from the given url
@@ -12,22 +15,11 @@ export async function extractFromUrl({
 }: {
   url: string;
 }): Promise<string> {
-  const extension = url.split('.').pop();
-  const fileType = extension?.split('?')[0];
-  if (fileType === 'docx' || fileType === 'txt') {
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    const documentBuffer = Buffer.from(response.data);
-
-    if (fileType === 'docx') {
-      const result = await mammoth.extractRawText({
-        buffer: documentBuffer,
-      });
-      return result.value;
-    } else {
-      return documentBuffer.toString('utf8');
-    }
-  } else {
-    return 'file type not supported';
-  }
+  const buffer = await downloadDocument({ url });
+  const content = await parseStream({
+    binaryStream: buffer,
+    documentName: url,
+    mimeType: undefined,
+  });
+  return content;
 }
