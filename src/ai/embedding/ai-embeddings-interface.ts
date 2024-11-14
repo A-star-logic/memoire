@@ -1,32 +1,9 @@
 // libs
-import { TokenTextSplitter } from '@langchain/textsplitters'; /* cSpell: disable-line */
 import type { EmbeddingModelOutput } from './model/ai-embedding-model-contracts.js';
+import { createDocumentChunks } from '../chunking/ai-chunking-fixed-size.js';
 import { embedDocument, embedQuery } from './model/index.js';
 
 export { isTooLarge } from './model/index.js';
-
-/**
- * Split a document into chunks. This is a simple way of creating chunks and not context-aware
- * @param root named parameters
- * @param root.document the document to split into chunks
- * @returns a list of chunks
- */
-async function createDocumentChunks({
-  document,
-}: {
-  document: string;
-}): Promise<string[]> {
-  const textSplitter = new TokenTextSplitter({
-    chunkOverlap: 0,
-    chunkSize: 512,
-    encodingName: 'cl100k_base',
-  });
-
-  const cleanedDocument = document.replaceAll('\n', ' ');
-  // trim and remove duplicate whitespace
-  const trimmedDocument = cleanedDocument.replaceAll(/\s+/g, ' ').trim();
-  return textSplitter.splitText(trimmedDocument);
-}
 
 /**
  * Automatically embed a document
