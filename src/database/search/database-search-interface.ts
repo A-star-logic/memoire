@@ -1,6 +1,17 @@
-import { deleteFTSDocument, exists } from './database-search-fts.js';
-import { deleteSourceDocument } from './database-search-source.js';
-import { deleteVectorChunks } from './database-search-vector.js';
+import type { EmbeddingModelOutput } from '../../ai/embedding/model/ai-embedding-model-contracts.js';
+import {
+  addFTSDocument,
+  deleteFTSDocument,
+  exists,
+} from './database-search-fts.js';
+import {
+  deleteSourceDocument,
+  saveSourceDocument,
+} from './database-search-source.js';
+import {
+  bulkAddVectorChunks,
+  deleteVectorChunks,
+} from './database-search-vector.js';
 
 /**
  * Delete a document from the various indexes
@@ -18,4 +29,50 @@ export async function deleteDocument({
     const sourcePromise = deleteSourceDocument({ documentID });
     await Promise.all([ftsPromise, vectorPromise, sourcePromise]);
   }
+}
+
+/**
+ * add a document to the database
+ * @param root named parameters
+ * @param root.content the content of the document
+ * @param root.documentID the document ID
+ * @param root.embedOutput the output of autoEmbed
+ * @param root.metadata the metadata of the document
+ * @param root.title the title of the document
+ */
+export async function addDocument({
+  content,
+  documentID,
+  embedOutput,
+  metadata,
+  title = undefined,
+}: {
+  content: string;
+  documentID: string;
+  embedOutput: EmbeddingModelOutput;
+  metadata: object;
+  title: string | undefined;
+}): Promise<void> {
+  const documentExist = await exists({ documentID });
+
+  if (documentExist) {
+    await deleteVectorChunks({ documentID });
+  }
+
+  await addFTSDocument({
+    documentID,
+    text: title ? title + content : content,
+  });
+
+  await bulkAddVectorChunks({
+    documentID,
+    embeddings: embedOutput,
+  });
+
+  await saveSourceDocument({
+    chunkedContent: embedOutput,
+    documentID,
+    metadata,
+    title,
+  });
 }

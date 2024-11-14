@@ -24,7 +24,6 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
     "license-checker-rseidelsohn": "^4.4.2",
-    "pino-pretty": "^12.1.0",
     "prettier": "^3.3.3",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
@@ -54,6 +53,7 @@
     "luxon": "^3.5.0",
     "mammoth": "^1.8.0",
     "pino": "^9.5.0",
+    "pino-pretty": "^13.0.0",
     "posthog-node": "^4.2.1",
     "tiktoken": "^1.0.17"
   }
