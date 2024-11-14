@@ -28,6 +28,12 @@ if (process.env.NODE_ENV === 'development' || process.env.SHOW_DOC === 'true') {
         },
       },
       openapi: '3.0.0',
+      servers: [
+        {
+          description: 'Docker local',
+          url: 'http://localhost:3003',
+        },
+      ],
     },
   });
 }
