@@ -83,13 +83,13 @@ describe('Add document links', async () => {
             documentID: '123',
             metadata: { meta: 'data' },
             title: 'title',
-            url: 'test.url',
+            url: 'test.txt',
           },
           {
             documentID: '456',
             metadata: undefined,
             title: undefined,
-            url: 'test.url2',
+            url: 'test1.txt',
           },
         ],
       } satisfies DocumentLinkBody,
@@ -127,6 +127,30 @@ describe('Add document links', async () => {
     expect(response.json().message).toBe(
       'Forbidden characters found in document ID: ../test',
     );
+
+    expect(coreSearchModule.addDocuments).not.toHaveBeenCalled();
+  });
+
+  test('The endpoint will reject invalid document types', async () => {
+    const response = await app.inject({
+      body: {
+        documents: [
+          {
+            documentID: 'test',
+            metadata: { meta: 'data' },
+            title: 'title',
+            url: 'test.url',
+          },
+        ],
+      } satisfies DocumentLinkBody,
+      headers: {
+        authorization: 'Bearer testToken',
+      },
+      method: 'POST',
+      url: '/search/ingest/document-links',
+    });
+    expect(response.statusCode).toBe(422);
+    expect(response.json().message).toBe('Unsupported document type: test.url');
 
     expect(coreSearchModule.addDocuments).not.toHaveBeenCalled();
   });
