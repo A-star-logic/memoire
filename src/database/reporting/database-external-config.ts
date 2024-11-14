@@ -37,7 +37,10 @@ export const posthogClient = new PostHog(process.env.POSTHOG_KEY, {
  * @returns a transport object
  */
 function setTransport(): DestinationStream | undefined {
-  if (process.env.NODE_ENV === 'development') {
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.env.SHOW_DOC === 'true'
+  ) {
     return pino.transport({
       options: { destination: 1 },
       target: 'pino-pretty',

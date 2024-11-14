@@ -78,7 +78,7 @@ __metadata:
     luxon: "npm:^3.5.0"
     mammoth: "npm:^1.8.0"
     pino: "npm:^9.5.0"
-    pino-pretty: "npm:^12.1.0"
+    pino-pretty: "npm:^13.0.0"
     posthog-node: "npm:^4.2.1"
     prettier: "npm:^3.3.3"
     tiktoken: "npm:^1.0.17"
@@ -10206,9 +10206,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-pretty@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "pino-pretty@npm:12.1.0"
+"pino-pretty@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "pino-pretty@npm:13.0.0"
   dependencies:
     colorette: "npm:^2.0.7"
     dateformat: "npm:^4.6.3"
@@ -10220,13 +10220,12 @@ __metadata:
     on-exit-leak-free: "npm:^2.1.0"
     pino-abstract-transport: "npm:^2.0.0"
     pump: "npm:^3.0.0"
-    readable-stream: "npm:^4.0.0"
     secure-json-parse: "npm:^2.4.0"
     sonic-boom: "npm:^4.0.1"
     strip-json-comments: "npm:^3.1.1"
   bin:
     pino-pretty: bin.js
-  checksum: 10c0/76518ced4e6612ff29918288acd0cd3a89f9b3e81024b2e2f364ccd6547c2f8977d41875c005da10ee9c9bdd7b020dfdca0917f3c2f8b003d2e42e60696626c6
+  checksum: 10c0/015dac25006c1b9820b9e01fccb8a392a019e12b30e6bfc3f3f61ecca8dbabcd000a8f3f64410b620b7f5d08579ba85e6ef137f7fbeaad70d46397a97a5f75ea
   languageName: node
   linkType: hard
 
@@ -10692,7 +10691,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^4.0.0, readable-stream@npm:^4.5.2":
+"readable-stream@npm:^4.5.2":
   version: 4.5.2
   resolution: "readable-stream@npm:4.5.2"
   dependencies:

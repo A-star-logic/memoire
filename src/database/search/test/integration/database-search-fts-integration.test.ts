@@ -98,6 +98,17 @@ describe('Search will search and sort the results', async () => {
     const results = await FTSSearch({ maxResults: 1, query: '2' });
     expect(results.length).toBe(1);
   });
+
+  test('Search can work with never seen before words', async () => {
+    await addFTSDocument(mockDocument1);
+    await addFTSDocument(mockDocument2);
+    await calculateIDF();
+    const results = await FTSSearch({
+      maxResults: 100,
+      query: 'azertyuiop' /* cSpell: disable-line */,
+    });
+    expect(results.length).toBe(2);
+  });
 });
 
 describe('deleteFTSDocument', async () => {
