@@ -60,9 +60,14 @@ You can either read the documentation using the environment variable SHOW_DOC,
 
 You are welcome to contribute to the repository, just look for open issues.
 
-### Problems?
+## Problems?
 
 If you are facing issues with Memoire, depending on which plan you have:
 
 - **You are a subscriber**: you should contact our team immediately, you already have our whatsapp. I will respond as soon as possible during working hours
 - **You are not a subscriber**: please open a new issue, and tag @mael-abgrall, the maintainer of the repository
+
+### Common issues
+
+- I get a 401 error -> make sure your environment variable in docker has no space and no quotes, make sure you are sending the right header.
+- bedrock or cohere models throw an error "`undefined Message: Invalid URL`" -> make sure your environment variable in docker has no space and no quotes.
