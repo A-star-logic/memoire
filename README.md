@@ -71,3 +71,4 @@ If you are facing issues with Memoire, depending on which plan you have:
 
 - I get a 401 error -> make sure your environment variable in docker has no space and no quotes, make sure you are sending the right header.
 - bedrock or cohere models throw an error "`undefined Message: Invalid URL`" -> make sure your environment variable in docker has no space and no quotes.
+- I get an error `Error code: undefined Message: EACCES: permission denied, mkdir '.memoire/sources'` -> This is a linux permission issue. In the cloud -> make sure the volume attached has the user node:node; In docker compose, you can add `user: 1001:1001`

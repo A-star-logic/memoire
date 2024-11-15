@@ -82,6 +82,8 @@ Support:
 
 - **raw text**: txt, csv, md
 - **office**: docx
+
+*Note: The example urls are fully working, feel free to copy paste them!*
 `,
         response: {
           200: basicResponseSchema,

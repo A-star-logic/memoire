@@ -15,7 +15,6 @@ export const documentLinkBodySchema = Type.Object(
           documentID: Type.String({
             description:
               'The ID of the document. **Note** This id can only support letters, numbers, dashes (-) and underscores (_)',
-            examples: ['abc-123', 'document1'],
           }),
           metadata: Type.Optional(
             Type.Object(
@@ -23,17 +22,15 @@ export const documentLinkBodySchema = Type.Object(
               {
                 description:
                   'Any metadata related to the document. This is not used for the search of filtering',
-                examples: [{ meta: 'data' }],
               },
             ),
           ),
           title: Type.Optional(
             Type.String({
               description: 'The title of the document, if any',
-              examples: ['My Document'],
             }),
           ),
-          url: Type.String({ examples: ['https://example.com'] }),
+          url: Type.String({}),
         },
         {
           description: 'An array of document to ingest.',
@@ -41,7 +38,25 @@ export const documentLinkBodySchema = Type.Object(
       ),
     ),
   },
-  { additionalProperties: false },
+  {
+    additionalProperties: false,
+    examples: [
+      {
+        documents: [
+          {
+            documentID: 'abc-123',
+            metadata: { meta: 'data' },
+            title: 'A test txt file',
+            url: 'https://raw.githubusercontent.com/A-star-logic/memoire/refs/heads/main/src/parser/tests/sampleFiles/test.txt',
+          },
+          {
+            documentID: 'def-456',
+            url: 'https://github.com/A-star-logic/memoire/raw/refs/heads/main/src/parser/tests/sampleFiles/test.docx',
+          },
+        ],
+      },
+    ],
+  },
 );
 export type DocumentLinkBody = Static<typeof documentLinkBodySchema>;
 
