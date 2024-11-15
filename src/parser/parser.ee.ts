@@ -18,6 +18,9 @@ export async function isFileSupported({
   if (filename.endsWith('.txt')) {
     return true;
   }
+  if (filename.endsWith('.csv')) {
+    return true;
+  }
 
   // OOXML
   // eslint-disable-next-line sonarjs/prefer-single-boolean-return
@@ -41,6 +44,9 @@ async function getMimeType({ documentName }: { documentName: string }) {
   }
   if (documentName.endsWith('.txt')) {
     return 'text/plain';
+  }
+  if (documentName.endsWith('.csv')) {
+    return 'text/csv';
   }
   if (documentName.endsWith('.docx')) {
     return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
@@ -81,6 +87,7 @@ export async function parseStream({
     }
 
     // raw text
+    case 'text/csv':
     case 'text/markdown':
     case 'text/plain': {
       return binaryStream.toString('utf8');
