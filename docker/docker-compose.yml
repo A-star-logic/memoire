@@ -7,6 +7,7 @@ services:
       - 3003:3003
     environment:
       - API_KEY=abc123 # an API key is required, make it secure (ex: use `openssl rand -hex 32`)
+      - SHOW_DOC=true
     deploy:
       resources:
         limits:
