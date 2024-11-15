@@ -1,6 +1,5 @@
 // eslint-disable-next-line camelcase
 import { get_encoding } from 'tiktoken';
-import { largeText } from '../model/tests/integration/test-variables.js';
 
 /**
  * Split a document into chunks based on fixed size of charecter and tokens
