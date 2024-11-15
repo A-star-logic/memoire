@@ -5,7 +5,7 @@ import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { SpeedMonitor } from '../../utils/utils-apm.js';
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
 import { prepareForBM25 } from '../../utils/utils-text-processing.js';
-import { logger } from '../reporting/database-external-config.js';
+import { logger, Sentry } from '../reporting/database-external-config.js';
 
 // database
 import {
@@ -142,14 +142,24 @@ async function bm25({
   const document = documentsData.get(documentID);
   if (!document) throw new Error(`Document ${documentID} not found`);
   const { termFrequency, wordLength } = document;
+
   for (const term of normalizedQuery) {
     if (term in termFrequency) {
       const freq = termFrequency[term];
-      const idf = termsData.get(term)?.inverseDocumentFrequency;
-      if (!idf)
-        throw new Error(
-          `IDF of ${term} not found (this usually indicates the calculateIDF was not run)`,
+      let idf = termsData.get(term)?.inverseDocumentFrequency;
+      if (!idf) {
+        logger.warn(`IDF of ${term} not found`);
+        Sentry.captureMessage(
+          'IDF of term not found (this usually indicates the calculateIDF was not run or incorrect indexes)',
         );
+        await calculateIDF();
+        idf = termsData.get(term)?.inverseDocumentFrequency;
+        if (!idf) {
+          throw new Error(
+            `IDF of ${term} not found even after self-healing. Our team has been notified with this issue.`,
+          );
+        }
+      }
       const numerator = idf * freq * (k1 + 1);
       const denominator =
         freq + k1 * (1 - b + (b * wordLength) / averageDocumentLength);

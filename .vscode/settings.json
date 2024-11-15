@@ -79,8 +79,11 @@
     "nocheck",
     "nuxt",
     "odata",
+    "officedocument",
+    "OOXML",
     "openai",
     "openapi",
+    "openxmlformats",
     "pinia",
     "pino",
     "posthog",
@@ -103,6 +106,7 @@
     "vars",
     "vuejs",
     "whateverprefix",
+    "wordprocessingml",
     "Xenova",
     "YYYMMDD"
   ]

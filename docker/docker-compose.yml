@@ -6,12 +6,7 @@ services:
     ports:
       - 3003:3003
     environment:
-      - API_KEY=my_key # an API key is required, make it secure (ex: use `openssl rand -hex 32`)
-      # - EMBEDDING_MODEL=cohere | openai | titanG1 | titanV2 (optional) choose between multiple embedding models (leave empty to default to a local model)
-      # - AWS_SECRET_ACCESS_KEY= (optional) needed if you want to use cohere or titan from AWS bedrock
-      # - AWS_ACCESS_KEY_ID= (optional) needed if you want to use cohere or titan from AWS bedrock
-      # - AWS_REGION= (optional) needed if you want to use cohere or titan from AWS bedrock
-      # - SHOW_DOC=true (optional) enable the documentation endpoint at http://localhost:3003/docs
+      - API_KEY=abc123 # an API key is required, make it secure (ex: use `openssl rand -hex 32`)
     deploy:
       resources:
         limits:
