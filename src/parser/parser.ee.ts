@@ -86,16 +86,8 @@ export async function parseStream({
       return result.value;
     }
 
-    case 'text/csv': {
-      const hexString = binaryStream.toString('hex');
-      const linesHex = hexString.split('0a');
-      const lines = linesHex.map((lineHex) => {
-        return Buffer.from(lineHex, 'hex').toString('utf8');
-      });
-      return lines.join('\n');
-    }
-
     // raw text
+    case 'text/csv':
     case 'text/markdown':
     case 'text/plain': {
       return binaryStream.toString('utf8');
