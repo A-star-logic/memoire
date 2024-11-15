@@ -53,6 +53,10 @@ export const documentLinkBodySchema = Type.Object(
             documentID: 'def-456',
             url: 'https://github.com/A-star-logic/memoire/raw/refs/heads/main/src/parser/tests/sampleFiles/test.docx',
           },
+          {
+            documentID: 'def-789',
+            url: 'https://github.com/A-star-logic/memoire/raw/refs/heads/main/src/parser/tests/sampleFiles/test.csv',
+          },
         ],
       },
     ],
