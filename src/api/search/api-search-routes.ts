@@ -80,8 +80,8 @@ Send a list of downloadable link of documents to be ingested.
 
 Support:
 
-- raw text: txt, csv, md
-- office: docx
+- **raw text**: txt, csv, md
+- **office**: docx
 `,
         response: {
           200: basicResponseSchema,
