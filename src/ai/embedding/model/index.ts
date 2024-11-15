@@ -5,12 +5,10 @@
  */
 
 import { logger } from '../../../database/reporting/database-external-config.js';
-import { createDocumentChunks } from '../ai-chunking-fixed-size.js';
 
 let embedDocumentFunction;
 let embedQueryFunction;
 let isTooLargeFunction;
-let createDocumentChunkFunction;
 
 switch (process.env.EMBEDDING_MODEL) {
   case 'cohere': {
@@ -18,7 +16,6 @@ switch (process.env.EMBEDDING_MODEL) {
     embedDocumentFunction = cohereModel.embedDocument;
     embedQueryFunction = cohereModel.embedQuery;
     isTooLargeFunction = cohereModel.isTooLarge;
-    createDocumentChunkFunction = cohereModel.createDocumentChunks;
     logger.info('Using Cohere model for embedding');
     break;
   }
@@ -28,7 +25,6 @@ switch (process.env.EMBEDDING_MODEL) {
     embedDocumentFunction = openaiModel.embedDocument;
     embedQueryFunction = openaiModel.embedDocument;
     isTooLargeFunction = openaiModel.isTooLarge;
-    createDocumentChunkFunction = createDocumentChunks;
     logger.info('Using OpenAI model for embedding');
     break;
   }
@@ -38,7 +34,6 @@ switch (process.env.EMBEDDING_MODEL) {
     embedDocumentFunction = titanModel.embedDocument;
     embedQueryFunction = titanModel.embedDocument;
     isTooLargeFunction = titanModel.isTooLarge;
-    createDocumentChunkFunction = createDocumentChunks;
     logger.info('Using Titan model for embedding');
     break;
   }
@@ -48,7 +43,6 @@ switch (process.env.EMBEDDING_MODEL) {
     embedDocumentFunction = titanModel.embedDocument;
     embedQueryFunction = titanModel.embedDocument;
     isTooLargeFunction = titanModel.isTooLarge;
-    createDocumentChunkFunction = createDocumentChunks;
     logger.info('Using Titan model for embedding');
     break;
   }
@@ -58,7 +52,6 @@ switch (process.env.EMBEDDING_MODEL) {
     embedDocumentFunction = localModel.embedDocument;
     embedQueryFunction = localModel.embedDocument;
     isTooLargeFunction = localModel.isTooLarge;
-    createDocumentChunkFunction = createDocumentChunks;
     logger.info('Using local model for embedding');
     break;
   }
@@ -67,4 +60,3 @@ switch (process.env.EMBEDDING_MODEL) {
 export const embedDocument = embedDocumentFunction;
 export const embedQuery = embedQueryFunction;
 export const isTooLarge = isTooLargeFunction;
-export const createChunks = createDocumentChunkFunction;

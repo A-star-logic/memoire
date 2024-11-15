@@ -1,6 +1,7 @@
 // libs
 import type { EmbeddingModelOutput } from './model/ai-embedding-model-contracts.js';
-import { createChunks, embedDocument, embedQuery } from './model/index.js';
+import { createLengthBasedChunks } from './chunking/ai-chunking-fixed-size.js';
+import { embedDocument, embedQuery } from './model/index.js';
 
 export { isTooLarge } from './model/index.js';
 
@@ -15,7 +16,7 @@ export async function autoEmbed({
 }: {
   document: string;
 }): Promise<EmbeddingModelOutput> {
-  const chunks = await createChunks({ document });
+  const chunks = createLengthBasedChunks({ document });
   const embeddings = await embedDocument({ chunks });
   return embeddings;
 }

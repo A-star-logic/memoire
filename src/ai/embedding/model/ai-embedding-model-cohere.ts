@@ -1,9 +1,5 @@
 /* eslint-disable camelcase */
 import { InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
-import {
-  CharacterTextSplitter,
-  TokenTextSplitter,
-} from '@langchain/textsplitters';
 
 import { get_encoding } from 'tiktoken';
 
@@ -65,44 +61,6 @@ export function isTooLarge({ text }: IsTooLargeInput): boolean {
   encoding.free();
   // cohere input token limit = 512 and charecter limit is 2048
   return tokens.length > 512 && text.length > 2048;
-}
-/**
- * Split a document into chunks for cohere model based on it's limitation. This is a simple way of creating chunks and not context-aware
- * @param root named parameters
- * @param root.document the document to split into chunks
- * @returns a list of chunks
- */
-export async function createDocumentChunks({
-  document,
-}: {
-  document: string;
-}): Promise<string[]> {
-  const tokenSplitter = new TokenTextSplitter({
-    chunkOverlap: 0,
-    chunkSize: 512,
-    encodingName: 'cl100k_base',
-  });
-  const characterSplitter = new CharacterTextSplitter({
-    chunkOverlap: 3,
-    chunkSize: 2048,
-    separator: ' ',
-  });
-
-  const cleanedDocument = document.replaceAll('\n', ' ');
-  // trim and remove duplicate whitespace
-  const trimmedDocument = cleanedDocument.replaceAll(/\s+/g, ' ').trim();
-
-  //initall splitting based on token limit of cohere
-  const tokenChunks = await tokenSplitter.splitText(trimmedDocument);
-
-  //further splitting based on charecter limit of cohere
-  let resultChunks: string[] = [];
-  for (const chunk of tokenChunks) {
-    const characterChunks = await characterSplitter.splitText(chunk);
-    resultChunks = [...resultChunks, ...characterChunks];
-  }
-
-  return resultChunks;
 }
 
 /**

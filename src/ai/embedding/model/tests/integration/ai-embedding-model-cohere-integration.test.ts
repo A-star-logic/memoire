@@ -5,7 +5,6 @@ import { describe, expect, test } from 'vitest';
 import { calculateSimilarity } from '../../../../../utils/utils-similarity.js';
 
 import {
-  cohereTestChunks,
   cohereTestDocumentEmbedding,
   cohereTestQueryEmbedding,
   largeText,
@@ -16,7 +15,6 @@ import {
 
 // test function
 import {
-  createDocumentChunks,
   embedDocument,
   embedQuery,
   isTooLarge,
@@ -88,21 +86,5 @@ describe('isTooLarge', async () => {
     const result = isTooLarge({ text: largeText });
     expect(result).toBeDefined();
     expect(result).toBe(true);
-  });
-});
-
-describe('createDocumentChunks', async () => {
-  test('chunking the same document returns same chunks', async () => {
-    const chunks = await createDocumentChunks({ document: largeText });
-    expect(chunks.length).toBe(cohereTestChunks.length);
-    expect(chunks).toStrictEqual(cohereTestChunks);
-  });
-  test('Chunking a small text should still return chunks', async () => {
-    const miniText = 'return this as a list of one ele';
-    const chunks = await createDocumentChunks({
-      document: miniText,
-    });
-    expect(chunks.length).toBe(1);
-    expect(chunks).toStrictEqual([miniText]);
   });
 });
