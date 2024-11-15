@@ -8,6 +8,7 @@ describe('createDocumentChunks', async () => {
     expect(chunks.length).toBe(testLengthBasedChunks.length);
     expect(chunks).toStrictEqual(testLengthBasedChunks);
   });
+
   test('Chunking a small text should still return chunks', async () => {
     const miniText = 'return this as a list of one ele';
     const chunks = createLengthBasedChunks({

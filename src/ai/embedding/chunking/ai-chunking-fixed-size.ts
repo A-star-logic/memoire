@@ -2,40 +2,41 @@
 import { get_encoding } from 'tiktoken';
 
 /**
- * Split a document into chunks based on fixed size of charecter and tokens
+ * Split a document into chunks based on fixed size of characters and tokens
  * @param root named parameters
  * @param root.document the document to split into chunks
- * @param root.separator a string such as \n or ' ' to seperate the chunk, default ' '
- * @param root.tokenLimit maximum token length of the chunk, default 512
+ * @param root.maxChars maximum character length of the chunk, default 2048
+ * @param root.maxTokens maximum token length of the chunk, default 512
  * @returns a list of chunks
  */
 export function createLengthBasedChunks({
   document,
-  separator = ' ',
-  tokenLimit = 512,
+  maxChars = 2048,
+  maxTokens = 512,
 }: {
   document: string;
-  separator?: string;
-  tokenLimit?: number;
+  maxChars?: number;
+  maxTokens?: number;
 }): string[] {
   const chunks: string[] = [];
-  const baseSplit = document.split(separator);
+  const splitDocument = document.split(' ');
   const encoding = get_encoding('cl100k_base');
   let currentChunkBuffer = '';
-  for (const baseChunk of baseSplit) {
-    if (
-      (currentChunkBuffer + baseChunk).length <= 2048 &&
-      encoding.encode(currentChunkBuffer + baseChunk).length <= tokenLimit
-    ) {
-      currentChunkBuffer += baseChunk + separator;
+
+  for (const text of splitDocument) {
+    const charLength = (currentChunkBuffer + text).length;
+    const tokensLength = encoding.encode(currentChunkBuffer + text).length;
+
+    if (charLength <= maxChars && tokensLength <= maxTokens) {
+      currentChunkBuffer += text + ' ';
     } else {
       chunks.push(currentChunkBuffer);
-      currentChunkBuffer = baseChunk + separator;
+      currentChunkBuffer = text + ' ';
     }
   }
-  if (currentChunkBuffer) {
-    chunks.push(currentChunkBuffer);
-  }
+  chunks.push(currentChunkBuffer);
+
+  encoding.free();
 
   return chunks;
 }
