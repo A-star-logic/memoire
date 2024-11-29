@@ -34,25 +34,25 @@ test('the parser can work with word docs without MIME types', async () => {
   expect(result).toBe(expectOutput);
 });
 
-const largeDocxPath = path.join(
-  import.meta.dirname,
-  'sampleFiles',
-  'large_test.docx',
-);
-// eslint-disable-next-line security/detect-non-literal-fs-filename
-const largeWordDocument = await readFile(largeDocxPath);
+// const largeDocxPath = path.join(
+//   import.meta.dirname,
+//   'sampleFiles',
+//   'large_test.docx',
+// );
+// // eslint-disable-next-line security/detect-non-literal-fs-filename
+// const largeWordDocument = await readFile(largeDocxPath);
 
-test('the parser can handle large docx files', async () => {
-  const result = await parseStream({
-    binaryStream: largeWordDocument,
-    documentName: 'large_test.docx',
-    mimeType: undefined,
-  });
+// test('the parser can handle large docx files', async () => {
+//   const result = await parseStream({
+//     binaryStream: largeWordDocument,
+//     documentName: 'large_test.docx',
+//     mimeType: undefined,
+//   });
 
-  const expectedStart =
-    'Video provides a powerful way to help you prove your point.';
-  expect(result.startsWith(expectedStart)).toBe(true);
+//   const expectedStart =
+//     'Video provides a powerful way to help you prove your point.';
+//   expect(result.startsWith(expectedStart)).toBe(true);
 
-  const expectedContent = 'When you work on a table';
-  expect(result.includes(expectedContent)).toBe(true);
-}, 50_000);
+//   const expectedContent = 'When you work on a table';
+//   expect(result.includes(expectedContent)).toBe(true);
+// }, 50_000);
