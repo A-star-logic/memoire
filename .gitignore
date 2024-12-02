@@ -1,7 +1,7 @@
 python_env
 dataset
 .memoire
-dist.old
+.ipynb_checkpoints
 
 # Logs
 logs
