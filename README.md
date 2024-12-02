@@ -4,10 +4,9 @@ Memoire is a text search/RAG solution. It handles for you all the details of mak
 
 ## Features
 
-- **Perfected document retrieval**: hybrid search, structRag, Agentic chunking, Context extraction in messages, and many more done for you.
-- **Easy API**: Send us texts, or send us link to downloadable documents, we handle the rest.
-- **Document parsing**: forget about parsing html, xml, docx, pdfs and the gazillion document types out there, just send us a link: we download, parse and index documents for you.
-- **Open source**: you can see everything we do, our company is transparent.
+- **Deploy in one day**: We made our API as intuitive as possible, so you can get a working RAG in a few minutes instead of months.
+- **State of the art retrieval**: Benefit from the latest and best algorithms of retrieval such as hybrid search, agentic chunking and many more.
+- **Auto document parsing**: Forget about parsing html, xml, docx, pdfs and the gazillion document types out there. Memoire already does it for you.
 
 ### License & running the app
 
@@ -15,8 +14,8 @@ We are not open source yet. We have our [own source-available license you can re
 
 - Today, you can use freely the software for hobby or educational purpose, but you need to pay a fee to deploy to production (we can negotiate this fee).
 - Our goal is become default alive as quickly as possible.
-- Once we are, the major portion of the code will become MIT licensed (open core).
-- To buy a license, [contact me on linkedin (please send a message as well) or ping me on github](https://www.linkedin.com/in/mael-abgrall/)
+- Once we are, the code will become open core.
+- To buy a license, [book a call on our website](https://astarlogic.com?utm_source=github&utm_medium=readme)
 
 ## Get started
 
