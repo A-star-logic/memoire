@@ -32,7 +32,7 @@ export async function autoEmbedQuery({
 }: {
   query: string;
 }): Promise<number[]> {
-  // todo: implemet to improve vector retrival. ref: https://medium.com/prompt-engineering/hyde-revolutionising-search-with-hypothetical-document-embeddings-3474df795af8
+  // todo: implemet HYDE to improve vector retrival. ref: https://medium.com/prompt-engineering/hyde-revolutionising-search-with-hypothetical-document-embeddings-3474df795af8
   const embeddings = await embedQuery({ chunks: [query] });
   return embeddings[0].embedding;
 }

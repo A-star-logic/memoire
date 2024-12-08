@@ -10,8 +10,8 @@ type ReRankOutput = {
 /**
  * Calculate the RRF score
  * @param root named params
- * @param root.searchRank  number represents rank of the search result1 search metod to reduce emphasis on the position.
- * @param root.serchWeightage weight you wanna give to search method, you may aslo use search score as a weight
+ * @param root.searchRank  number represents rank of the search result1
+ * @param root.serchWeightage weight to search method reduce emphasis on the position.
  * @param root.smoothingConstant smoothing constant for re-ranking, usually 60
  * @returns a number representing rrf score
  */
