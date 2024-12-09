@@ -1,4 +1,5 @@
-import mammoth from 'mammoth';
+import { extractOfficeDocument } from './parser-office.ee.js';
+import { unzipDocument } from './parser-unzip.ee.js';
 
 /**
  * Check if the file is supported
@@ -23,8 +24,23 @@ export async function isFileSupported({
   }
 
   // OOXML
-  // eslint-disable-next-line sonarjs/prefer-single-boolean-return
   if (filename.endsWith('.docx')) {
+    return true;
+  }
+  if (filename.endsWith('xlsx')) {
+    return true;
+  }
+  if (filename.endsWith('.odt')) {
+    return true;
+  }
+  if (filename.endsWith('ods')) {
+    return true;
+  }
+  if (filename.endsWith('odp')) {
+    return true;
+  }
+  // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+  if (filename.endsWith('.pptx')) {
     return true;
   }
 
@@ -50,6 +66,21 @@ async function getMimeType({ documentName }: { documentName: string }) {
   }
   if (documentName.endsWith('.docx')) {
     return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  }
+  if (documentName.endsWith('.pptx')) {
+    return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+  }
+  if (documentName.endsWith('xlsx')) {
+    return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  }
+  if (documentName.endsWith('.odt')) {
+    return 'application/vnd.oasis.opendocument.text';
+  }
+  if (documentName.endsWith('.ods')) {
+    return 'application/vnd.oasis.opendocument.spreadsheet';
+  }
+  if (documentName.endsWith('odp')) {
+    return 'application/vnd.oasis.opendocument.presentation';
   }
   throw new Error('Unsupported document type ' + documentName);
 }
@@ -79,11 +110,40 @@ export async function parseStream({
 
   switch (resolvedMimeType) {
     // OOXML
+    case 'application/vnd.oasis.opendocument.presentation':
+    case 'application/vnd.oasis.opendocument.spreadsheet':
+    case 'application/vnd.oasis.opendocument.text': {
+      const mainDocument = await unzipDocument(
+        binaryStream,
+        ['content'],
+        'Open format document',
+      );
+      return extractOfficeDocument(mainDocument);
+    }
+    case 'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
+      const mainDocument = await unzipDocument(
+        binaryStream,
+        ['ppt/slides/slide'],
+        'PowerPoint',
+      );
+      return extractOfficeDocument(mainDocument);
+    }
+    case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+      const mainDocument = await unzipDocument(
+        binaryStream,
+        ['xl/sharedStrings'],
+        'Excel',
+      );
+      return extractOfficeDocument(mainDocument);
+    }
+
     case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
-      const result = await mammoth.extractRawText({
-        buffer: binaryStream,
-      });
-      return result.value;
+      const mainDocument = await unzipDocument(
+        binaryStream,
+        ['word/document'],
+        'Word',
+      );
+      return extractOfficeDocument(mainDocument);
     }
 
     // raw text
