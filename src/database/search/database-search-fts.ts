@@ -2,26 +2,38 @@
 import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 
 // utils
+import { SpeedMonitor } from '../../utils/utils-apm.js';
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
 import { prepareForBM25 } from '../../utils/utils-text-processing.js';
-import { logger } from '../reporting/database-external-config.js';
-import { errorReport } from '../reporting/database-interface-reporting.ee.js';
+import { logger, Sentry } from '../reporting/database-external-config.js';
+
+// database
+import {
+  apmReport,
+  errorReport,
+} from '../reporting/database-interface-reporting.ee.js';
 
 const b = 0.75;
 const k1 = 1.5;
 
-const documentsData: {
-  [documentID: string]: {
-    termFrequency: { [key: string]: number };
-    wordLength: number;
-  };
-} = {};
-let termsData: {
-  [term: string]: {
-    documentFrequency: number;
-    inverseDocumentFrequency: number;
-  };
-} = {};
+interface DocumentData {
+  termFrequency: { [key: string]: number };
+  wordLength: number;
+}
+/** The document's data, with the key being the document ID */
+const documentsData = new Map<string, DocumentData>();
+
+interface TermsData {
+  documentFrequency: number;
+  inverseDocumentFrequency: number;
+}
+/**
+ * Terms data is a KV store with terms as keys
+ */
+let termsData = new Map<
+  string, // the term
+  TermsData
+>();
 
 const basePath =
   process.env.NODE_ENV === 'test' ? '.testMemoire/fts' : '.memoire/fts';
@@ -31,27 +43,27 @@ const basePath =
  */
 export async function loadFTSIndexFromDisk(): Promise<void> {
   try {
-    const files = await readdir('.memoire/fts', { recursive: true });
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    const files = await readdir(basePath, { recursive: true });
     if (files.length > 0) {
       for (const file of files) {
         if (file.endsWith('.json') && file !== 'termsData.json') {
           const documentData = JSON.parse(
             // eslint-disable-next-line security/detect-non-literal-fs-filename
-            await readFile(`.memoire/fts/${file}`, { encoding: 'utf8' }),
-          ) as (typeof documentsData)[string];
-          documentsData[file.replace('.json', '')] = documentData;
+            await readFile(`${basePath}/${file}`, { encoding: 'utf8' }),
+          ) as DocumentData;
+          documentsData.set(file.replace('.json', ''), documentData);
         }
       }
-      logger.info(
-        `${Object.keys(documentsData).length} documents loaded in FTS index`,
-      );
+      logger.info(`${documentsData.size} documents loaded in FTS index`);
       if (files.includes('termsData.json')) {
-        termsData = JSON.parse(
-          await readFile('.memoire/fts/termsData.json', { encoding: 'utf8' }),
-        ) as typeof termsData;
-        logger.info(
-          `${Object.keys(termsData).length} terms loaded in FTS index`,
+        termsData = new Map(
+          JSON.parse(
+            // eslint-disable-next-line security/detect-non-literal-fs-filename
+            await readFile(basePath + '/termsData.json', { encoding: 'utf8' }),
+          ) as typeof termsData,
         );
+        logger.info(`${termsData.size} terms loaded in FTS index`);
       }
     }
   } catch (error) {
@@ -74,8 +86,9 @@ export async function saveFTSIndexToDisk(): Promise<void> {
   // eslint-disable-next-line security/detect-non-literal-fs-filename
   await mkdir(basePath, { recursive: true });
   // eslint-disable-next-line security/detect-non-literal-fs-filename
-  await writeFile(basePath + '/termsData.json', JSON.stringify(termsData));
-  for (const documentID of Object.keys(documentsData)) {
+  await writeFile(basePath + '/termsData.json', JSON.stringify([...termsData]));
+  logger.debug('termsData saved to ' + basePath + '/termsData.json');
+  for (const [documentID, documentData] of documentsData) {
     if (documentID !== 'undefined') {
       // eslint-disable-next-line security/detect-non-literal-fs-filename
       await writeFile(
@@ -83,10 +96,10 @@ export async function saveFTSIndexToDisk(): Promise<void> {
           '/' +
           (await secureVerifyDocumentID({ documentID })) +
           '.json',
-        JSON.stringify({
-          termFrequency: documentsData[documentID].termFrequency,
-          wordLength: documentsData[documentID].wordLength,
-        } satisfies (typeof documentsData)[string]),
+        JSON.stringify(documentData),
+      );
+      logger.debug(
+        'document saved to ' + basePath + '/' + documentID + '.json',
       );
     }
   }
@@ -105,7 +118,7 @@ export async function exists({
 }: {
   documentID: string;
 }): Promise<boolean> {
-  return documentID in documentsData;
+  return documentsData.has(documentID);
 }
 
 /**
@@ -126,15 +139,30 @@ async function bm25({
   normalizedQuery: string[];
 }): Promise<number> {
   let score = 0;
-  const documentLength = documentsData[documentID].wordLength;
-  const documentTermFrequency = documentsData[documentID].termFrequency;
+  const document = documentsData.get(documentID);
+  if (!document) throw new Error(`Document ${documentID} not found`);
+  const { termFrequency, wordLength } = document;
+
   for (const term of normalizedQuery) {
-    if (term in documentTermFrequency) {
-      const freq = documentTermFrequency[term];
-      const idf = termsData[term].inverseDocumentFrequency;
+    if (term in termFrequency) {
+      const freq = termFrequency[term];
+      let idf = termsData.get(term)?.inverseDocumentFrequency;
+      if (!idf) {
+        logger.warn(`IDF of ${term} not found`);
+        Sentry.captureMessage(
+          'IDF of term not found (this usually indicates the calculateIDF was not run or incorrect indexes)',
+        );
+        await calculateIDF();
+        idf = termsData.get(term)?.inverseDocumentFrequency;
+        if (!idf) {
+          throw new Error(
+            `IDF of ${term} not found even after self-healing. Our team has been notified with this issue.`,
+          );
+        }
+      }
       const numerator = idf * freq * (k1 + 1);
       const denominator =
-        freq + k1 * (1 - b + (b * documentLength) / averageDocumentLength);
+        freq + k1 * (1 - b + (b * wordLength) / averageDocumentLength);
       score += numerator / denominator;
     }
   }
@@ -155,6 +183,8 @@ export async function addFTSDocument({
   documentID: string;
   text: string;
 }): Promise<void> {
+  const speedMonitor = new SpeedMonitor();
+
   const normalizedText = await prepareForBM25({ text });
   // calculate the TF of this document
   const documentTermFrequency: { [key: string]: number } = {};
@@ -164,34 +194,48 @@ export async function addFTSDocument({
       ? documentTermFrequency[word] + 1
       : 1;
   }
-  documentsData[documentID] = {
+  documentsData.set(documentID, {
     termFrequency: documentTermFrequency,
     wordLength: normalizedText.length,
-  };
+  });
 
   // calculate the document frequency and IDF of each terms from this document
   for (const [term, frequency] of Object.entries(documentTermFrequency)) {
-    const termData: (typeof termsData)[string] = termsData[term] ?? {};
+    const termData: TermsData = termsData.get(term) ?? {
+      documentFrequency: 0,
+      inverseDocumentFrequency: Number.NaN,
+    };
 
-    termData.documentFrequency = termData.documentFrequency
-      ? termData.documentFrequency + frequency
-      : frequency;
+    termData.documentFrequency = termData.documentFrequency + frequency;
 
-    termsData[term] = termData;
+    termsData.set(term, termData);
   }
+
+  const executionTime = await speedMonitor.finishMonitoring();
+  const totalDocuments = documentsData.size;
+  const totalTerms = termsData.size;
+  await apmReport({
+    event: 'addFTSDocument',
+    properties: {
+      executionTime,
+      totalDocuments,
+      totalTerms,
+    },
+  });
 }
 
 /**
  * Calculate the IDF of the index; must be run after ingesting documents and before searching
  */
 export async function calculateIDF(): Promise<void> {
-  const totalDocuments = Object.keys(documentsData).length;
-  for (const termData of Object.values(termsData)) {
+  const totalDocuments = documentsData.size;
+  for (const [term, termData] of termsData) {
     termData.inverseDocumentFrequency = Math.log(
       (totalDocuments - termData.documentFrequency + 0.5) /
         (termData.documentFrequency + 0.5) +
         1,
     );
+    termsData.set(term, termData);
   }
 }
 
@@ -209,19 +253,18 @@ export async function FTSSearch({
   maxResults: number;
   query: string;
 }): Promise<{ documentID: string; score: number }[]> {
+  const speedMonitor = new SpeedMonitor();
   const normalizedQuery = await prepareForBM25({ text: query });
-  const totalWordsLength = Object.values(documentsData).reduce(
-    (sum, currentData) => {
-      return sum + currentData.wordLength;
-    },
-    0,
-  );
-  const averageDocumentLength =
-    totalWordsLength / Object.keys(documentsData).length;
+
+  let totalWordsLength = 0;
+  for (const document of documentsData.values()) {
+    totalWordsLength += document.wordLength;
+  }
+  const averageDocumentLength = totalWordsLength / documentsData.size;
 
   const results: Awaited<ReturnType<typeof FTSSearch>> = [];
   // todo: can be optimised to limit results size to maxResult instead of splicing it at the end
-  for (const documentID of Object.keys(documentsData)) {
+  for (const documentID of documentsData.keys()) {
     const score = await bm25({
       averageDocumentLength,
       documentID,
@@ -229,7 +272,23 @@ export async function FTSSearch({
     });
     results.push({ documentID, score });
   }
-  return results.slice(0, maxResults + 1);
+  results.sort((a, b) => {
+    return b.score - a.score;
+  });
+
+  const executionTime = await speedMonitor.finishMonitoring();
+  const totalDocuments = documentsData.size;
+  const totalTerms = termsData.size;
+  await apmReport({
+    event: 'FTSSearch',
+    properties: {
+      executionTime,
+      totalDocuments,
+      totalTerms,
+    },
+  });
+
+  return results.slice(0, maxResults);
 }
 
 /**
@@ -243,21 +302,51 @@ export async function deleteFTSDocument({
 }: {
   documentID: string;
 }): Promise<void> {
-  const document = documentsData[documentID];
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const document = documentsData.get(documentID);
   if (document) {
-    delete documentsData[documentID];
+    documentsData.delete(documentID);
 
     for (const term of Object.keys(document.termFrequency)) {
-      const termData = termsData[term];
+      const termData = termsData.get(term);
+      if (!termData) {
+        continue;
+      }
       termData.documentFrequency =
         termData.documentFrequency - document.termFrequency[term];
-      termsData[term] = termData;
+      if (termData.documentFrequency <= 0) {
+        termsData.set(term, termData);
+      } else {
+        termsData.delete(term);
+      }
     }
 
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    await unlink(
-      basePath + '/' + (await secureVerifyDocumentID({ documentID })) + '.json',
-    );
+    try {
+      // eslint-disable-next-line security/detect-non-literal-fs-filename
+      await unlink(
+        basePath +
+          '/' +
+          (await secureVerifyDocumentID({ documentID })) +
+          '.json',
+      );
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('ENOENT')) {
+        return;
+      }
+      throw error;
+    }
   }
+}
+
+/**
+ * Generate a report of the usage statistics of the FTS index
+ * @returns totalDocuments and totalTerms
+ */
+export async function usageStatsFTS(): Promise<{
+  totalDocuments: number;
+  totalTerms: number;
+}> {
+  return {
+    totalDocuments: documentsData.size,
+    totalTerms: termsData.size,
+  };
 }

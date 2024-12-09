@@ -1,5 +1,6 @@
 /* v8 ignore start */
 import { defineConfig } from 'vitest/config';
+import { loadEnv } from 'vite';
 
 export default defineConfig({
   test: {
@@ -9,12 +10,16 @@ export default defineConfig({
       provider: 'v8',
       clean: true,
       cleanOnRerun: true,
-      exclude: ['**/mocks/**', '**/__mocks__/**', '**/migrations/**'],
+      exclude: [
+        '**/mocks/**',
+        '**/__mocks__/**',
+        '**/migrations/**',
+        '**/test/**',
+        '**/tests/**',
+      ],
       reporter: ['text', 'json-summary', 'json'], // cSpell: disable-line
     },
     clearMocks: true,
-    env: {
-      NODE_ENV: 'test',
-    },
+    env: loadEnv('', process.cwd(), ''),
   },
 });

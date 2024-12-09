@@ -1,72 +1,59 @@
+// AI
 import { rerank } from '../ai/ai-reranker.js';
 import {
   autoEmbed,
   autoEmbedQuery,
 } from '../ai/embedding/ai-embeddings-interface.js';
+
+// schemas
+import type { DocumentLinkBody } from '../api/search/api-search-schemas.js';
+
+// Database
 import {
-  addFTSDocument,
   calculateIDF,
   FTSSearch,
   loadFTSIndexFromDisk,
   saveFTSIndexToDisk,
 } from '../database/search/database-search-fts.js';
-import { deleteDocument } from '../database/search/database-search-interface.js';
 import {
-  getSourceDocuments,
-  saveSourceDocument,
-} from '../database/search/database-search-source.js';
+  addDocument,
+  deleteDocument,
+} from '../database/search/database-search-interface.js';
+import { getSourceDocuments } from '../database/search/database-search-source.js';
 import {
-  bulkAddVectorChunks,
   loadVectorIndexFromDisk,
+  saveVectorIndexToDisk,
   vectorSearch,
 } from '../database/search/database-search-vector.js';
+
+// core
+import { extractFromUrl } from './core-extractor.js';
 
 await loadVectorIndexFromDisk();
 await loadFTSIndexFromDisk();
 
 /**
- * Add a document for search.
- * **Note**: This function does not calculate the IDF, this needs to be done after ingesting documents
+ * Add documents to the search index, save them to disk and calculate the IDF
  * @param root named parameters
- * @param root.content the content of the document
- * @param root.documentID the document ID
- * @param root.metadata the metadata of the document
- * @param root.title the document title
+ * @param root.documents the documents to add
  */
-export async function addDocument({
-  content,
-  documentID,
-  metadata,
-  title = undefined,
-}: {
-  content: string;
-  documentID: string;
-  metadata: object;
-  title: string | undefined;
-}): Promise<void> {
-  // if (await exists({ documentID })) {
-  //   await deleteVectorChunks({ documentID });
-  // }
-
-  const autoEmbedPromise = autoEmbed({ document: content });
-
-  await addFTSDocument({
-    documentID,
-    text: title ? title + content : content,
-  });
-
-  const autoEmbedResult = await autoEmbedPromise;
-  await bulkAddVectorChunks({
-    documentID,
-    embeddings: autoEmbedResult,
-  });
-
-  await saveSourceDocument({
-    chunkedContent: autoEmbedResult,
-    documentID,
-    metadata,
-    title,
-  });
+export async function addDocuments({
+  documents,
+}: DocumentLinkBody): Promise<void> {
+  for (const document of documents) {
+    const content = await extractFromUrl({ url: document.url });
+    const autoEmbedResult = await autoEmbed({ document: content });
+    await addDocument({
+      content,
+      documentID: document.documentID,
+      embedOutput: autoEmbedResult,
+      metadata: document.metadata ?? {},
+      title: document.title,
+    });
+  }
+  await calculateIDF();
+  await saveFTSIndexToDisk();
+  await saveVectorIndexToDisk();
 }
 
 /**

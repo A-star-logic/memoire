@@ -8,13 +8,14 @@ import fastifySwaggerUi from '@fastify/swagger-ui';
 import { setupServer } from '../server/server-init.js';
 
 // api
+import { logger } from '../database/reporting/database-external-config.js';
 import { searchRouter } from './search/api-search-routes.js';
 
 // server
 export const app = await setupServer();
 
 // documentation (dev only)
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.SHOW_DOC === 'true') {
   await app.register(fastifySwagger, {
     openapi: {
       components: {
@@ -27,6 +28,12 @@ if (process.env.NODE_ENV === 'development') {
         },
       },
       openapi: '3.0.0',
+      servers: [
+        {
+          description: 'Docker local',
+          url: 'http://localhost:3003',
+        },
+      ],
     },
   });
 }
@@ -35,6 +42,7 @@ if (process.env.NODE_ENV === 'development') {
 await app.register(searchRouter, { prefix: '/search' });
 
 // documentation (dev only)
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' || process.env.SHOW_DOC === 'true') {
+  logger.info('Documentation endpoint enabled');
   await app.register(fastifySwaggerUi, { routePrefix: '/docs' });
 }

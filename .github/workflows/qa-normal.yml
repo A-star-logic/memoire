@@ -91,6 +91,9 @@ jobs:
           OPENAI_URL: ${{secrets.OPENAI_URL}}
           POSTHOG_KEY: secret
           SENTRY_DSN: secret
+          OPENAI_DEPLOYMENT: ${{ secrets.OPENAI_DEPLOYMENT }}
+          OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          OPENAI_KEY_OVERRIDE: ${{ secrets.OPENAI_KEY_OVERRIDE }}
 
       - name: 'Report Coverage'
         uses: davelosert/vitest-coverage-report-action@v2
