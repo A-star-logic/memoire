@@ -11,17 +11,20 @@ type ReRankOutput = {
  * Calculate the RRF score
  * @param root named params
  * @param root.searchRank  number represents rank of the search result
+ * @param root.searchWeight weight to search method reduce emphasis on the position.
  * @param root.smoothingConstant smoothing constant for re-ranking, usually 60
  * @returns a number representing rrf score
  */
 async function calculateRRF({
   searchRank,
+  searchWeight = 1,
   smoothingConstant = 60,
 }: {
   searchRank: number;
+  searchWeight?: number;
   smoothingConstant?: number;
 }): Promise<number> {
-  return 1 / (smoothingConstant + (searchRank + 1));
+  return searchWeight / (smoothingConstant + (searchRank + 1));
 }
 
 /**
@@ -50,19 +53,46 @@ export async function rerank({
   if (keywordResults.length === 0) {
     return vectorResults;
   }
+  //filtering low score value, 0.3 is suggested for vector search without HyDE logic
+  const filterdVectoResults = vectorResults.filter((vectorResult) => {
+    return vectorResult.score >= 0.3;
+  });
+  const vectorRRFPromise = filterdVectoResults.map(async (result, position) => {
+    return {
+      ...result,
+      score: await calculateRRF({ searchRank: position, searchWeight: 0.6 }),
+    };
+  });
+  const keywordScores = keywordResults.map((keywordResult) => {
+    return keywordResult.score;
+  });
 
-  const vectorRRFPromise = vectorResults.map(async (result, position) => {
-    return {
-      ...result,
-      score: await calculateRRF({ searchRank: position }),
-    };
-  });
-  const keywordRRFPromise = keywordResults.map(async (result, position) => {
-    return {
-      ...result,
-      score: await calculateRRF({ searchRank: position }),
-    };
-  });
+  //Normalizing the keywordscore and filtering scores below 0.3
+  const keywordMinScore = Math.min(...keywordScores);
+  const keywordMaxScore = Math.max(...keywordScores);
+  const normalizedkeywordResults = keywordResults
+    .map((keywordResult) => {
+      return {
+        ...keywordResult,
+        score:
+          (keywordResult.score - keywordMinScore) /
+          (keywordMaxScore - keywordMinScore),
+      };
+    })
+    .filter((result) => {
+      return result.score >= 0.3;
+    });
+  const keywordRRFPromise = normalizedkeywordResults.map(
+    async (result, position) => {
+      return {
+        ...result,
+        score: await calculateRRF({
+          searchRank: position,
+          searchWeight: 0.4,
+        }),
+      };
+    },
+  );
   const vectorRRF = await Promise.all(vectorRRFPromise);
   const keywordRRF = await Promise.all(keywordRRFPromise);
 
