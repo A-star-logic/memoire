@@ -10,21 +10,21 @@ type ReRankOutput = {
 /**
  * Calculate the RRF score
  * @param root named params
- * @param root.searchRank  number represents rank of the search result1
- * @param root.serchWeightage weight to search method reduce emphasis on the position.
+ * @param root.searchRank  number represents rank of the search result
+ * @param root.searchWeight weight to search method reduce emphasis on the position.
  * @param root.smoothingConstant smoothing constant for re-ranking, usually 60
  * @returns a number representing rrf score
  */
 async function calculateRRF({
   searchRank,
-  serchWeightage = 1,
+  searchWeight = 1,
   smoothingConstant = 60,
 }: {
   searchRank: number;
-  serchWeightage?: number;
+  searchWeight?: number;
   smoothingConstant?: number;
 }): Promise<number> {
-  return serchWeightage / (smoothingConstant + (searchRank + 1));
+  return searchWeight / (smoothingConstant + (searchRank + 1));
 }
 
 /**
@@ -60,7 +60,7 @@ export async function rerank({
   const vectorRRFPromise = filterdVectoResults.map(async (result, position) => {
     return {
       ...result,
-      score: await calculateRRF({ searchRank: position, serchWeightage: 0.6 }),
+      score: await calculateRRF({ searchRank: position, searchWeight: 0.6 }),
     };
   });
   const keywordScores = keywordResults.map((keywordResult) => {
@@ -88,7 +88,7 @@ export async function rerank({
         ...result,
         score: await calculateRRF({
           searchRank: position,
-          serchWeightage: 0.4,
+          searchWeight: 0.4,
         }),
       };
     },
