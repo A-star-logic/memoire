@@ -59,6 +59,10 @@ optional:
 You can either read the documentation using the environment variable SHOW_DOC, or
 [read it online here](https://memoire.apidocumentation.com/)
 
+### Telemetry disclaimer
+
+To improve our product, understand how it is used and any issues you might face, we collect anonymous data, which is sent to Posthog and Sentry. There is no way to disable it for now (sorry, it's on our [roadmap](https://github.com/orgs/A-star-logic/projects/3/views/1)), in the meantime you can block their domains if this is an issue for you.
+
 ## Github, contributing & issues
 
 You are welcome to contribute to the repository, just look for open issues.

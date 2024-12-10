@@ -19,4 +19,11 @@ export default tseslint.config(
       '@typescript-eslint/only-throw-error': 0,
     },
   },
+  {
+    rules: {
+      // to change whenever possible
+      'perfectionist/sort-imports': 1,
+      'perfectionist/sort-modules': 1,
+    },
+  },
 );
