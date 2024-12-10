@@ -31,7 +31,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@aws-sdk/client-bedrock-runtime": "^3.687.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.693.0",
     "@fastify/compress": "^8.0.1",
     "@fastify/cors": "^10.0.1",
     "@fastify/helmet": "^12.0.1",
