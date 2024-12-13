@@ -67,7 +67,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.18.0"
     "@vitest/coverage-v8": "npm:2.1.8"
     "@xenova/transformers": "npm:^2.17.2"
-    axios: "npm:^1.7.7"
+    axios: "npm:^1.7.9"
     eslint: "npm:^9.16.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-import-resolver-typescript: "npm:^3.7.0"
@@ -5189,7 +5189,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.7.4, axios@npm:^1.7.7":
+"axios@npm:^1.7.4, axios@npm:^1.7.9":
   version: 1.7.9
   resolution: "axios@npm:1.7.9"
   dependencies:
