@@ -9,11 +9,19 @@ import {
 } from '@azure/openai';
 
 if (process.env.AZURE_OPENAI_URL === undefined) {
-  throw new Error('please set the env variable OPENAI_URL');
+  throw new Error('please set the env variable AZURE_OPENAI_URL');
 }
 if (process.env.AZURE_OPENAI_KEY === undefined) {
-  throw new Error('please set the env variable OPENAI_KEY');
+  throw new Error('please set the env variable AZURE_OPENAI_KEY');
 }
+
+const modelNameRegex = process.env.AZURE_OPENAI_URL.match(
+  /deployments\/([^\/]+)/,
+); // https://regex101.com/r/M3flvm/1
+if (modelNameRegex == null) {
+  throw new Error('Please set the valid env variable for AZURE_OPENAI_URL');
+}
+const modelName = modelNameRegex[0];
 
 const openAIClient = new OpenAIClient(
   process.env.AZURE_OPENAI_URL,
@@ -66,7 +74,7 @@ export async function autoEmbedQuery({
     ];
 
     const response = await openAIClient.getChatCompletions(
-      'gpt-4o',
+      modelName,
       generateAnswerPrompt,
     );
     const hypotheticalAnswer = response.choices[0].message?.content;
