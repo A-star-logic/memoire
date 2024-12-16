@@ -50,7 +50,7 @@ export async function autoEmbedQuery({
   useHyde = true,
 }: {
   query: string;
-  useHyde: boolean;
+  useHyde?: boolean;
 }): Promise<number[]> {
   if (useHyde) {
     const generateAnswerPrompt: ChatRequestMessageUnion[] = [
