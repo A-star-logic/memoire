@@ -66,6 +66,12 @@ export type DocumentLinkBody = Static<typeof documentLinkBodySchema>;
 
 export const searchBodySchema = Type.Object(
   {
+    enhanceSimilarity: Type.Optional(
+      Type.Boolean({
+        default: false,
+        description: 'Enhance the semantic search',
+      }),
+    ),
     maxResults: Type.Optional(
       Type.Number({
         default: 100,

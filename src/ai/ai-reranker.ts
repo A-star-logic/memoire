@@ -54,23 +54,25 @@ export async function rerank({
     return vectorResults;
   }
   //filtering low score value, 0.3 is suggested for vector search without HyDE logic
-  const filterdVectoResults = vectorResults.filter((vectorResult) => {
+  const filteredVectorResults = vectorResults.filter((vectorResult) => {
     return vectorResult.score >= 0.3;
   });
-  const vectorRRFPromise = filterdVectoResults.map(async (result, position) => {
-    return {
-      ...result,
-      score: await calculateRRF({ searchRank: position, searchWeight: 0.6 }),
-    };
-  });
+  const vectorRRFPromise = filteredVectorResults.map(
+    async (result, position) => {
+      return {
+        ...result,
+        score: await calculateRRF({ searchRank: position, searchWeight: 0.6 }),
+      };
+    },
+  );
   const keywordScores = keywordResults.map((keywordResult) => {
     return keywordResult.score;
   });
 
-  //Normalizing the keywordscore and filtering scores below 0.3
+  //Normalizing the keywordScore and filtering scores below 0.3
   const keywordMinScore = Math.min(...keywordScores);
   const keywordMaxScore = Math.max(...keywordScores);
-  const normalizedkeywordResults = keywordResults
+  const normalizedKeywordResults = keywordResults
     .map((keywordResult) => {
       return {
         ...keywordResult,
@@ -82,7 +84,7 @@ export async function rerank({
     .filter((result) => {
       return result.score >= 0.3;
     });
-  const keywordRRFPromise = normalizedkeywordResults.map(
+  const keywordRRFPromise = normalizedKeywordResults.map(
     async (result, position) => {
       return {
         ...result,

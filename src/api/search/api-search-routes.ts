@@ -156,9 +156,9 @@ Note:
       },
     },
     async (request, _reply): Promise<SearchResponse> => {
-      const { maxResults, query } = request.body;
+      const { enhanceSimilarity, maxResults, query } = request.body;
       return {
-        results: await search({ maxResults, query }),
+        results: await search({ enhanceSimilarity, maxResults, query }),
       };
     },
   );
