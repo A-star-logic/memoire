@@ -56,7 +56,7 @@ __metadata:
     "@fastify/swagger-ui": "npm:^5.2.0"
     "@fastify/type-provider-typebox": "npm:^5.1.0"
     "@fastify/under-pressure": "npm:^9.0.1"
-    "@langchain/community": "npm:^0.3.17"
+    "@langchain/community": "npm:^0.3.19"
     "@langchain/core": "npm:^0.3.22"
     "@langchain/textsplitters": "npm:^0.1.0"
     "@sentry/node": "npm:^8.43.0"
@@ -2729,9 +2729,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@langchain/community@npm:^0.3.17":
-  version: 0.3.17
-  resolution: "@langchain/community@npm:0.3.17"
+"@langchain/community@npm:^0.3.19":
+  version: 0.3.19
+  resolution: "@langchain/community@npm:0.3.19"
   dependencies:
     "@langchain/openai": "npm:>=0.2.0 <0.4.0"
     binary-extensions: "npm:^2.2.0"
@@ -3110,7 +3110,7 @@ __metadata:
       optional: true
     youtubei.js:
       optional: true
-  checksum: 10c0/cc240ca938e39c75248224484c9b5aeb6be9619758c9ffa174f3100ea63b5aa7397a39ac92c14e13a682156001b91483c09d602623c710d436dea17ad5faf78d
+  checksum: 10c0/294b0bb13a2ebe8f5115248233c14340d6ed79378303332daebe098a2033dfa7c3a466695f89ba90f040bfec71aa93e85aafd9b40da9923058bd6e877deafdf5
   languageName: node
   linkType: hard
 
