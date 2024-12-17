@@ -1,4 +1,5 @@
-import mammoth from 'mammoth';
+import { extractOfficeDocument } from './parser-office.ee.js';
+import { unzipDocument } from './parser-unzip.ee.js';
 
 /**
  * Check if the file is supported
@@ -11,47 +12,41 @@ export async function isFileSupported({
 }: {
   filename: string;
 }): Promise<boolean> {
-  // raw text
-  if (filename.endsWith('.md')) {
+  // Open Office XML
+  if (filename.endsWith('odp')) {
     return true;
   }
-  if (filename.endsWith('.txt')) {
+  if (filename.endsWith('ods')) {
     return true;
   }
-  if (filename.endsWith('.csv')) {
+  if (filename.endsWith('.odt')) {
     return true;
   }
 
   // OOXML
-  // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+  if (filename.endsWith('.pptx')) {
+    return true;
+  }
+  if (filename.endsWith('xlsx')) {
+    return true;
+  }
   if (filename.endsWith('.docx')) {
     return true;
   }
 
-  return false;
-}
+  // raw text
+  if (filename.endsWith('.csv')) {
+    return true;
+  }
+  if (filename.endsWith('.md')) {
+    return true;
+  }
+  // eslint-disable-next-line sonarjs/prefer-single-boolean-return
+  if (filename.endsWith('.txt')) {
+    return true;
+  }
 
-/**
- * Extract the mime type from the document name
- * @param root named parameters
- * @param root.documentName the full url of the file with the file name
- * @returns the mime type
- */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-async function getMimeType({ documentName }: { documentName: string }) {
-  if (documentName.endsWith('.md')) {
-    return 'text/markdown';
-  }
-  if (documentName.endsWith('.txt')) {
-    return 'text/plain';
-  }
-  if (documentName.endsWith('.csv')) {
-    return 'text/csv';
-  }
-  if (documentName.endsWith('.docx')) {
-    return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-  }
-  throw new Error('Unsupported document type ' + documentName);
+  return false;
 }
 
 /**
@@ -78,12 +73,43 @@ export async function parseStream({
   const resolvedMimeType = mimeType ?? (await getMimeType({ documentName }));
 
   switch (resolvedMimeType) {
+    // Open Office XML
+    case 'application/vnd.oasis.opendocument.presentation':
+    case 'application/vnd.oasis.opendocument.spreadsheet':
+    case 'application/vnd.oasis.opendocument.text': {
+      const mainDocument = await unzipDocument(
+        binaryStream,
+        ['content'],
+        'Open format document',
+      );
+      return extractOfficeDocument(mainDocument);
+    }
+
     // OOXML
+    case 'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
+      const mainDocument = await unzipDocument(
+        binaryStream,
+        ['ppt/slides/slide'],
+        'PowerPoint',
+      );
+      return extractOfficeDocument(mainDocument);
+    }
+    case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+      const mainDocument = await unzipDocument(
+        binaryStream,
+        ['xl/sharedStrings'],
+        'Excel',
+      );
+      return extractOfficeDocument(mainDocument);
+    }
+
     case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
-      const result = await mammoth.extractRawText({
-        buffer: binaryStream,
-      });
-      return result.value;
+      const mainDocument = await unzipDocument(
+        binaryStream,
+        ['word/document'],
+        'Word',
+      );
+      return extractOfficeDocument(mainDocument);
     }
 
     // raw text
@@ -97,4 +123,42 @@ export async function parseStream({
       throw new Error('Unsupported document type');
     }
   }
+}
+
+/**
+ * Extract the mime type from the document name
+ * @param root named parameters
+ * @param root.documentName the full url of the file with the file name
+ * @returns the mime type
+ */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function getMimeType({ documentName }: { documentName: string }) {
+  if (documentName.endsWith('odp')) {
+    return 'application/vnd.oasis.opendocument.presentation';
+  }
+  if (documentName.endsWith('.ods')) {
+    return 'application/vnd.oasis.opendocument.spreadsheet';
+  }
+  if (documentName.endsWith('.odt')) {
+    return 'application/vnd.oasis.opendocument.text';
+  }
+  if (documentName.endsWith('.pptx')) {
+    return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+  }
+  if (documentName.endsWith('xlsx')) {
+    return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+  }
+  if (documentName.endsWith('.docx')) {
+    return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  }
+  if (documentName.endsWith('.csv')) {
+    return 'text/csv';
+  }
+  if (documentName.endsWith('.md')) {
+    return 'text/markdown';
+  }
+  if (documentName.endsWith('.txt')) {
+    return 'text/plain';
+  }
+  throw new Error('Unsupported document type ' + documentName);
 }
