@@ -22,18 +22,19 @@ export function extractOfficeDocument(documents: {
     removeNSPrefix: true,
   });
 
-  let combinedText = '';
+  const combinedTexts: string[] = [];
 
   for (const content of Object.values(documents)) {
     const parsed = parser.parse(
       new TextDecoder('utf8').decode(content),
     ) as XMLNode;
 
-    const extractedText = recursiveXMLParsedExtract(parsed, '');
-    combinedText += `${formatText(extractedText)}\n`;
-  }
+    recursiveXMLParsedExtract({ accumulator: combinedTexts, source: parsed });
 
-  return combinedText.trim();
+    combinedTexts.push('\n');
+  }
+  // remove extra spaces before line breaks(https://regex101.com/r/BMJTLr/1)
+  return formatText(combinedTexts.join(' ').replaceAll(' \n', '\n'));
 }
 
 /**
@@ -49,21 +50,27 @@ function formatText(text: string): string {
 
 /**
  * This function takes an unknown source, and will recursively try to extract text from it.
- * @param source an object or a list to extract text from.
- * @param extracted a string to concatenate with the result of this function.
- * @returns the extracted text as a concatenated string.
+ * @param root0 named params
+ * @param root0.accumulator a string to concatenate with the result of this function.
+ * @param root0.source an object or a list to extract text from.
  */
-function recursiveXMLParsedExtract(
-  source: null | XMLNode,
-  extracted = '',
-): string {
+function recursiveXMLParsedExtract({
+  accumulator,
+  source,
+}: {
+  accumulator: string[];
+  source: null | XMLNode;
+}): void {
   if (source === null) {
-    return extracted;
+    return;
   }
 
   if (typeof source === 'string') {
     const cleanedText = source.trim();
-    return extracted + (extracted && cleanedText ? ' ' : '') + cleanedText;
+    if (cleanedText) {
+      accumulator.push(cleanedText);
+    }
+    return;
   }
 
   // the xml parser will indicate text with #text, so we only need to seek those tags and concat them
@@ -73,38 +80,32 @@ function recursiveXMLParsedExtract(
     source['#text'].length > 0
   ) {
     const cleanedText = source['#text'].trim();
-    extracted += (extracted ? ' ' : '') + cleanedText;
-    return extracted;
+    if (cleanedText) accumulator.push(cleanedText);
+    return;
   }
 
   // there is an issue with this tag from MS office 2007 that contains text, although it's an ID
   if ('tableStyleId' in source) {
-    return extracted;
+    return;
   }
 
   // if this is a p tag (microsoft & open formats) this indicate a paragraph.
   if ('p' in source) {
-    extracted = recursiveXMLParsedExtract(source.p, extracted);
-    if (extracted.length > 0) {
-      extracted = extracted.trim() + '\n';
-    }
-    return extracted;
+    recursiveXMLParsedExtract({ accumulator, source: source.p });
+    accumulator.push('\n');
+    return;
   }
 
   // if this is a a h tag (open format), this indicate a header
   if ('h' in source) {
-    extracted = recursiveXMLParsedExtract(source.h, extracted);
-    if (extracted.length > 0) {
-      extracted = extracted.trim() + '\n';
-    }
-    return extracted;
+    recursiveXMLParsedExtract({ accumulator, source: source.h });
+    accumulator.push('\n');
+    return;
   }
 
   // if there is no #text, dig deeper in the object
   const values = Object.values(source);
   for (const value of values) {
-    extracted = recursiveXMLParsedExtract(value, extracted);
+    recursiveXMLParsedExtract({ accumulator, source: value });
   }
-
-  return extracted;
 }
