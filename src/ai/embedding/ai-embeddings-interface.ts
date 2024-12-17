@@ -1,10 +1,14 @@
 // libs
 import type { EmbeddingModelOutput } from './model/ai-embedding-model-contracts.js';
 import { createLengthBasedChunks } from './chunking/ai-chunking-fixed-size.js';
+import { createAgenticChunking } from '../chunking/ai-chunking-agentic.js';
 import { embedDocument, embedQuery } from './model/index.js';
 
 export { isTooLarge } from './model/index.js';
 
+if (process.env.CHUNKING !== 'agentic' || process.env.CHUNKING !== undefined) {
+  throw new Error('env variable CHUNKING ia not valid');
+}
 /**
  * Automatically embed a document
  * @param root named parameters
@@ -16,7 +20,9 @@ export async function autoEmbed({
 }: {
   document: string;
 }): Promise<EmbeddingModelOutput> {
-  const chunks = createLengthBasedChunks({ document });
+  const chunks = process.env.CHUNKING
+    ? await createAgenticChunking({ document })
+    : createLengthBasedChunks({ document });
   const embeddings = await embedDocument({ chunks });
   return embeddings;
 }

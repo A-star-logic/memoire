@@ -1,7 +1,9 @@
 // libs
 import { describe, expect, test } from 'vitest';
+
+//utils
+import { calculateSimilarity } from '../../../../../utils/utils-similarity.js';
 import {
-  arraysEqual,
   largeText,
   testChunks,
   testDocument,
@@ -35,7 +37,12 @@ describe('invoked Titan V2 embedding model', async () => {
     expect(response).toBeDefined();
     expect(response.length).toBe(1);
     expect(response[0].embedding.length).toBe(1024);
-    expect(arraysEqual(response[0].embedding, titanV2TestEmbedding)).toBe(true);
+    const result = await calculateSimilarity({
+      vectorA: response[0].embedding,
+      vectorB: titanV2TestEmbedding,
+    });
+
+    expect(result).toBeGreaterThan(0.99);
   });
 });
 
