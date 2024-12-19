@@ -31,7 +31,7 @@
 ## Features
 
 - **Deploy in one day**: We made our API as intuitive as possible, so you can get a working RAG in a few minutes instead of months.
-- **State of the art retrieval**: Benefit from the latest and best algorithms of retrieval such as hybrid search, agentic chunking and many more.
+- **State of the art retrieval**: Benefit from the latest and best algorithms of retrieval such as hybrid search, agentic chunking, HyDE and many more.
 - **Auto document parsing**: Forget about parsing html, xml, docx, pdfs and the gazillion document types out there. Memoire already does it for you.
 
 <p align="center">
