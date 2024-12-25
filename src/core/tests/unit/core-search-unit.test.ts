@@ -54,7 +54,7 @@ describe('deleteDocuments', async () => {
 describe('addDocuments', async () => {
   test('addDocuments will do the pre-process and post-processing of the documents to ingest', async () => {
     databaseSearchInterface.addDocument = vi.fn().mockResolvedValue(undefined);
-    coreExtractorModule.extractFromUrl = vi.fn().mockResolvedValue('my string');
+    coreExtractorModule.extractContent = vi.fn().mockResolvedValue('my string');
     embeddingModule.autoEmbed = vi.fn().mockResolvedValue([
       {
         chunkID: 0,
@@ -85,7 +85,48 @@ describe('addDocuments', async () => {
       ],
     });
 
-    expect(coreExtractorModule.extractFromUrl).toHaveBeenCalledTimes(2);
+    expect(coreExtractorModule.extractContent).toHaveBeenCalledTimes(2);
+    expect(embeddingModule.autoEmbed).toHaveBeenCalledTimes(2);
+    expect(databaseSearchInterface.addDocument).toHaveBeenCalledTimes(2);
+    expect(databaseSearchVector.saveVectorIndexToDisk).toHaveBeenCalledTimes(1);
+    expect(databaseSearchFTS.calculateIDF).toHaveBeenCalledTimes(1);
+    expect(databaseSearchFTS.saveFTSIndexToDisk).toHaveBeenCalledTimes(1);
+  });
+
+  test('addDocuments can handle raw documents', async () => {
+    databaseSearchInterface.addDocument = vi.fn().mockResolvedValue(undefined);
+    coreExtractorModule.extractContent = vi.fn().mockResolvedValue('my string');
+    embeddingModule.autoEmbed = vi.fn().mockResolvedValue([
+      {
+        chunkID: 0,
+        chunkText: 'my',
+        embedding: [0, 0, 0],
+      },
+      {
+        chunkID: 1,
+        chunkText: 'content',
+        embedding: [0, 0, 0],
+      },
+    ] satisfies Awaited<ReturnType<typeof embeddingModule.autoEmbed>>);
+
+    await addDocuments({
+      documents: [
+        {
+          content: 'test content 1',
+          documentID: '123',
+          metadata: { meta: 'data' },
+          title: 'title',
+        },
+        {
+          content: 'test content 2',
+          documentID: '456',
+          metadata: undefined,
+          title: undefined,
+        },
+      ],
+    });
+
+    expect(coreExtractorModule.extractContent).toBeCalledTimes(2);
     expect(embeddingModule.autoEmbed).toHaveBeenCalledTimes(2);
     expect(databaseSearchInterface.addDocument).toHaveBeenCalledTimes(2);
     expect(databaseSearchVector.saveVectorIndexToDisk).toHaveBeenCalledTimes(1);

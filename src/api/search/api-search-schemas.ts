@@ -21,7 +21,7 @@ export const documentLinkBodySchema = Type.Object(
               {},
               {
                 description:
-                  'Any metadata related to the document. This is not used for the search of filtering',
+                  'Any metadata related to the document. This is not used for the search or filtering',
               },
             ),
           ),
@@ -63,6 +63,67 @@ export const documentLinkBodySchema = Type.Object(
   },
 );
 export type DocumentLinkBody = Static<typeof documentLinkBodySchema>;
+
+export const ingestRawBodySchema = Type.Object(
+  {
+    documents: Type.Array(
+      Type.Object(
+        {
+          content: Type.String({
+            description:
+              'The content of the document in plain text. Ideally formatted as markdown',
+          }),
+          documentID: Type.String({
+            description:
+              'The ID of the document. **Note** This id can only support letters, numbers, dashes (-) and underscores (_)',
+          }),
+          metadata: Type.Optional(
+            Type.Object(
+              {},
+              {
+                description:
+                  'Any metadata related to the document. This is not used for the search or filtering',
+              },
+            ),
+          ),
+          title: Type.Optional(
+            Type.String({
+              description: 'The title of the document, if any',
+            }),
+          ),
+        },
+        {
+          description: 'An array of document to ingest in plain text.',
+        },
+      ),
+    ),
+  },
+  {
+    additionalProperties: false,
+    examples: [
+      {
+        documents: [
+          {
+            content: '# A test document\nhello world',
+            documentID: 'abc-123',
+            metadata: { meta: 'data' },
+            title: 'File 1',
+          },
+          {
+            content: 'Another test document',
+            documentID: 'def-456',
+          },
+          {
+            content: 'and another one with more metadata',
+            documentID: 'def-789',
+            metadata: { meta: 'data' },
+          },
+        ],
+      },
+    ],
+  },
+);
+export type IngestRawBody = Static<typeof ingestRawBodySchema>;
 
 export const searchBodySchema = Type.Object(
   {
