@@ -56,7 +56,7 @@ __metadata:
     "@fastify/swagger-ui": "npm:^5.2.0"
     "@fastify/type-provider-typebox": "npm:^5.1.0"
     "@fastify/under-pressure": "npm:^9.0.1"
-    "@langchain/community": "npm:^0.3.17"
+    "@langchain/community": "npm:^0.3.20"
     "@langchain/core": "npm:^0.3.22"
     "@langchain/textsplitters": "npm:^0.1.0"
     "@sentry/node": "npm:^8.43.0"
@@ -2731,9 +2731,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@langchain/community@npm:^0.3.17":
-  version: 0.3.17
-  resolution: "@langchain/community@npm:0.3.17"
+"@langchain/community@npm:^0.3.20":
+  version: 0.3.20
+  resolution: "@langchain/community@npm:0.3.20"
   dependencies:
     "@langchain/openai": "npm:>=0.2.0 <0.4.0"
     binary-extensions: "npm:^2.2.0"
@@ -2828,6 +2828,7 @@ __metadata:
     duck-duck-scrape: ^2.2.5
     epub2: ^3.0.1
     faiss-node: ^0.5.1
+    fast-xml-parser: "*"
     firebase-admin: ^11.9.0 || ^12.0.0
     google-auth-library: "*"
     googleapis: "*"
@@ -3030,6 +3031,8 @@ __metadata:
       optional: true
     faiss-node:
       optional: true
+    fast-xml-parser:
+      optional: true
     firebase-admin:
       optional: true
     google-auth-library:
@@ -3112,7 +3115,7 @@ __metadata:
       optional: true
     youtubei.js:
       optional: true
-  checksum: 10c0/cc240ca938e39c75248224484c9b5aeb6be9619758c9ffa174f3100ea63b5aa7397a39ac92c14e13a682156001b91483c09d602623c710d436dea17ad5faf78d
+  checksum: 10c0/40782efd83854b2c564898ab1ddc81d2ec33d89cef7ef9a572356005a177741fdd5acebea6921f9bbe8d75b96c4461be79850094989a7ffb666f282c37d0dd70
   languageName: node
   linkType: hard
 
