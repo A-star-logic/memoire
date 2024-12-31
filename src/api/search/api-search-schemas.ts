@@ -157,7 +157,7 @@ export const searchResponseSchema = Type.Object(
               '(Optional) the highlight of the document/Closest match. This is to be used in RAG or to display the relevant part of the document to the user',
           }),
         ),
-        metadata: Type.Optional(Type.Object({})),
+        metadata: Type.Optional(Type.Any({})),
         score: Type.Number({
           description:
             'The search score of the document. This score can be higher than 1',
