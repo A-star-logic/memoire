@@ -176,6 +176,7 @@ async function bm25({
  * @param root.documentID the id of the document
  * @param root.text the text of the document
  */
+// eslint-disable-next-line perfectionist/sort-modules
 export async function addFTSDocument({
   documentID,
   text,
@@ -200,13 +201,13 @@ export async function addFTSDocument({
   });
 
   // calculate the document frequency and IDF of each terms from this document
-  for (const [term, frequency] of Object.entries(documentTermFrequency)) {
+  for (const [term] of Object.entries(documentTermFrequency)) {
     const termData: TermsData = termsData.get(term) ?? {
       documentFrequency: 0,
       inverseDocumentFrequency: Number.NaN,
     };
 
-    termData.documentFrequency = termData.documentFrequency + frequency;
+    termData.documentFrequency = termData.documentFrequency + 1;
 
     termsData.set(term, termData);
   }

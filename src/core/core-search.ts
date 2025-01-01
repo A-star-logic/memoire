@@ -59,19 +59,19 @@ export async function addDocuments({
 /**
  * Search for the most similar documents, and return an array of scored documents
  * @param root named parameters
- * @param root.enhanceSimilarity increase the semantic search if set true (default: false)
  * @param root.maxResults the maximum number of results returned by the query (default: 100)
+ * @param root.useHyde uses hyde architecture if set true
  * @param root.query the query for keyword search
  * @returns an object with two arrays: one for vector search, one for keyword search
  */
 export async function search({
-  enhanceSimilarity = false,
   maxResults = 100,
   query,
+  useHyde = false,
 }: {
-  enhanceSimilarity?: boolean;
   maxResults?: number;
   query: string;
+  useHyde?: boolean;
 }): Promise<
   {
     content: string;
@@ -84,7 +84,7 @@ export async function search({
 > {
   const embeddingPromise = autoEmbedQuery({
     query,
-    useHyde: enhanceSimilarity,
+    useHyde,
   });
   const keywordPromise = FTSSearch({ maxResults, query });
   const vectorPromise = vectorSearch({

@@ -66,18 +66,19 @@ export type DocumentLinkBody = Static<typeof documentLinkBodySchema>;
 
 export const searchBodySchema = Type.Object(
   {
-    enhanceSimilarity: Type.Optional(
-      Type.Boolean({
-        default: false,
-        description: 'Enhance the semantic search',
-      }),
-    ),
     maxResults: Type.Optional(
       Type.Number({
         default: 100,
         description: 'The maximum number of results to return',
         examples: [10],
         minimum: 1,
+      }),
+    ),
+    operationMode: Type.Optional(
+      Type.Union([Type.Literal('speed'), Type.Literal('accuracy')], {
+        default: 'speed',
+        description:
+          'Choose the mode to be speed or accuracy, choosing the accuracy will reduce speed upto 2 sec for each query',
       }),
     ),
     query: Type.String({

@@ -156,9 +156,10 @@ Note:
       },
     },
     async (request, _reply): Promise<SearchResponse> => {
-      const { enhanceSimilarity, maxResults, query } = request.body;
+      const { maxResults, operationMode, query } = request.body;
+      const useHyde = operationMode === 'accuracy' ? true : false;
       return {
-        results: await search({ enhanceSimilarity, maxResults, query }),
+        results: await search({ maxResults, query, useHyde }),
       };
     },
   );

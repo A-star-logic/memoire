@@ -1,32 +1,126 @@
+/* eslint-disable perfectionist/sort-modules */
+import { type Static, Type } from '@sinclair/typebox';
+import { Check } from '@sinclair/typebox/value';
+import axios from 'axios';
 // libs
 import type { EmbeddingModelOutput } from './model/ai-embedding-model-contracts.js';
+import {
+  logger,
+  Sentry,
+} from '../../database/reporting/database-interface-reporting.ee.js';
 import { createLengthBasedChunks } from './chunking/ai-chunking-fixed-size.js';
 import { embedDocument, embedQuery } from './model/index.js';
-import {
-  AzureKeyCredential,
-  type ChatRequestMessageUnion,
-  OpenAIClient,
-} from '@azure/openai';
 
-if (process.env.AZURE_OPENAI_URL === undefined) {
-  throw new Error('please set the env variable AZURE_OPENAI_URL');
-}
-if (process.env.AZURE_OPENAI_KEY === undefined) {
-  throw new Error('please set the env variable AZURE_OPENAI_KEY');
+if (process.env.OPENAI_LLM_KEY === undefined) {
+  throw new Error('please set the env variable OPENAI_LLM_KEY');
 }
 
-const modelNameRegex = process.env.AZURE_OPENAI_URL.match(
-  /deployments\/([^\/]+)/,
-); // https://regex101.com/r/M3flvm/1
-if (modelNameRegex == null) {
-  throw new Error('Please set the valid env variable for AZURE_OPENAI_URL');
+if (!process.env.OPENAI_LLM_DEPLOYMENT) {
+  logger.info('Using OpenAI to generate hypothetical answer');
 }
-const modelName = modelNameRegex[0];
+if (process.env.OPENAI_LLM_DEPLOYMENT) {
+  logger.info('Using Azure LLM to generate hypothetical answer');
+}
 
-const openAIClient = new OpenAIClient(
-  process.env.AZURE_OPENAI_URL,
-  new AzureKeyCredential(process.env.AZURE_OPENAI_KEY),
+interface ChatCompletionMessage {
+  content: string;
+  role: string;
+}
+interface OpenAILLMBody {
+  max_tokens?: number; //max number of tokens to generate
+  messages: ChatCompletionMessage[];
+  model?: string; //mandatory for openAI API
+  user?: string;
+}
+/**
+ * https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#createcompletionresponse
+ */
+const azOpenAILLMResponseSchema = Type.Object(
+  {
+    choices: Type.Array(
+      Type.Object({
+        index: Type.Number(),
+        message: Type.Object(
+          {
+            content: Type.String(),
+            role: Type.String(),
+          },
+          { additionalProperties: true },
+        ),
+      }),
+    ),
+    created: Type.Number(),
+    id: Type.String(),
+    model: Type.String(),
+    usage: Type.Object(
+      {
+        // eslint-disable-next-line camelcase
+        completion_tokens: Type.Number(),
+        // eslint-disable-next-line camelcase
+        prompt_tokens: Type.Number(),
+        // eslint-disable-next-line camelcase
+        total_tokens: Type.Number(),
+      },
+      { additionalProperties: false },
+    ),
+  },
+  { additionalProperties: true },
 );
+
+type AzOpenAIChatResponse = Static<typeof azOpenAILLMResponseSchema>;
+
+/**
+ *will generate response with gpt models
+ @param root named parameters
+ @param root.query the query to generate response
+ @returns a hypothetical answer for given query
+ */
+async function generateHypotheticalAnswer({
+  query,
+}: {
+  query: string;
+}): Promise<string> {
+  const { data } = await axios<AzOpenAIChatResponse>({
+    data: {
+      messages: [
+        {
+          content:
+            'Please write a passage to answer the question if you only know the answer else return back the question as passage',
+          role: 'system',
+        },
+        {
+          content: `Question: ${query}
+          Passage:`,
+          role: 'user',
+        },
+      ],
+      model: process.env.OPENAI_LLM_DEPLOYMENT ? undefined : 'gpt-4o',
+    } satisfies OpenAILLMBody,
+    headers: process.env.OPENAI_LLM_DEPLOYMENT
+      ? {
+          'api-key': process.env.OPENAI_LLM_KEY,
+          'Content-Type': 'application/json',
+        }
+      : {
+          Authorization: `Bearer ${process.env.OPENAI_LLM_KEY}`,
+          'Content-Type': 'application/json',
+        },
+    method: 'POST',
+    url:
+      process.env.OPENAI_LLM_DEPLOYMENT ??
+      'https://api.openai.com/v1/chat/completions',
+  });
+  if (data.choices.length === 0) {
+    throw new Error(
+      'OpenAI LLM model had an error generating hypothetical answer',
+    );
+  }
+  if (!Check(azOpenAILLMResponseSchema, data)) {
+    Sentry.captureMessage('Discrepancy: in OpenAI embedding model');
+  }
+  // model will return back entire question with term "Question:" for unknown topic
+  return data.choices[0].message.content.replaceAll('Question:', '');
+}
 
 export { isTooLarge } from './model/index.js';
 
@@ -50,39 +144,18 @@ export async function autoEmbed({
  * Embed a search query
  * @param root named parameters
  * @param root.query the query to embed
- * @param root.useHyde creates an hypothetical answer and embed it instead of embedding query
+ * @param root.useHyde generated hypothetical answer for embedding (HyDE) if true to accuracy else uses query embedding
  * @returns the embedding of the query
  */
 export async function autoEmbedQuery({
-  query,
-  useHyde = true,
+  query = 'speed',
+  useHyde = false,
 }: {
   query: string;
   useHyde?: boolean;
 }): Promise<number[]> {
   if (useHyde) {
-    const generateAnswerPrompt: ChatRequestMessageUnion[] = [
-      {
-        content:
-          'You are an answering bot who will just generate answer to the given question',
-        role: 'system',
-      },
-      {
-        content: `Please write a passage to answer the question \nQuestion: ${query}`,
-        role: 'user',
-      },
-    ];
-
-    const response = await openAIClient.getChatCompletions(
-      modelName,
-      generateAnswerPrompt,
-    );
-    const hypotheticalAnswer = response.choices[0].message?.content;
-    if (hypotheticalAnswer === null || hypotheticalAnswer === undefined) {
-      throw new Error(
-        'Azure openAI model could not generate hypothetical answer for query',
-      );
-    }
+    const hypotheticalAnswer = await generateHypotheticalAnswer({ query });
     const answerChunk = createLengthBasedChunks({
       document: hypotheticalAnswer,
     })[0];
