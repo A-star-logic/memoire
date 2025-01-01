@@ -84,8 +84,7 @@ async function generateHypotheticalAnswer({
     data: {
       messages: [
         {
-          content:
-            'Please write a passage to answer the question if you only know the answer else return back the question as passage',
+          content: 'Please write a passage to answer the question',
           role: 'system',
         },
         {
@@ -118,8 +117,7 @@ async function generateHypotheticalAnswer({
   if (!Check(azOpenAILLMResponseSchema, data)) {
     Sentry.captureMessage('Discrepancy: in OpenAI embedding model');
   }
-  // model will return back entire question with term "Question:" for unknown topic
-  return data.choices[0].message.content.replaceAll('Question:', '');
+  return data.choices[0].message.content;
 }
 
 export { isTooLarge } from './model/index.js';
