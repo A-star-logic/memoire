@@ -3,6 +3,7 @@ import { describe, expect, test, vi } from 'vitest';
 
 import type {
   DocumentLinkBody,
+  IngestRawBody,
   SearchBody,
   SearchDeleteBody,
 } from '../../api-search-schemas.js';
@@ -151,6 +152,74 @@ describe('Add document links', async () => {
     });
     expect(response.statusCode).toBe(422);
     expect(response.json().message).toBe('Unsupported document type: test.url');
+
+    expect(coreSearchModule.addDocuments).not.toHaveBeenCalled();
+  });
+});
+
+describe('Add raw text', async () => {
+  test('The endpoint is protected by an API key', async () => {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/search/ingest/raw',
+    });
+    expect(response.statusCode).toBe(401);
+  });
+
+  test('The endpoint will call the core addDocuments and send usage statistics', async () => {
+    coreSearchModule.addDocuments = vi.fn().mockResolvedValue(undefined);
+    analyticsModule.apmReport = vi.fn().mockResolvedValue(undefined);
+    const response = await app.inject({
+      body: {
+        documents: [
+          {
+            content: 'hello world',
+            documentID: '123',
+            metadata: { meta: 'data' },
+            title: 'title',
+          },
+          {
+            content: 'Another test',
+            documentID: '456',
+            metadata: undefined,
+            title: undefined,
+          },
+        ],
+      } satisfies IngestRawBody,
+      headers: {
+        authorization: 'Bearer testToken',
+      },
+      method: 'POST',
+      url: '/search/ingest/raw',
+    });
+    expect(response.statusCode).toBe(200);
+
+    expect(coreSearchModule.addDocuments).toHaveBeenCalled();
+    expect(analyticsModule.apmReport).toHaveBeenCalled();
+  });
+
+  test('The endpoint will reject invalid IDs', async () => {
+    const response = await app.inject({
+      body: {
+        documents: [
+          {
+            content: 'test.url',
+            documentID: '../test',
+            metadata: { meta: 'data' },
+            title: 'title',
+          },
+        ],
+      } satisfies IngestRawBody,
+      headers: {
+        authorization: 'Bearer testToken',
+      },
+      method: 'POST',
+      url: '/search/ingest/raw',
+    });
+    expect(response.statusCode).toBe(422);
+    expect(response.json().message).toBe(
+      'Forbidden characters found in document ID: ../test',
+    );
 
     expect(coreSearchModule.addDocuments).not.toHaveBeenCalled();
   });
