@@ -1,12 +1,15 @@
+// schemas
+import type {
+  DocumentLinkBody,
+  IngestRawBody,
+} from '../api/search/api-search-schemas.js';
+
 // AI
 import { rerank } from '../ai/ai-reranker.js';
 import {
   autoEmbed,
   autoEmbedQuery,
 } from '../ai/embedding/ai-embeddings-interface.js';
-
-// schemas
-import type { DocumentLinkBody } from '../api/search/api-search-schemas.js';
 
 // Database
 import {
@@ -27,7 +30,7 @@ import {
 } from '../database/search/database-search-vector.js';
 
 // core
-import { extractFromUrl } from './core-extractor.js';
+import { extractContent } from './core-extractor.js';
 
 await loadVectorIndexFromDisk();
 await loadFTSIndexFromDisk();
@@ -39,9 +42,10 @@ await loadFTSIndexFromDisk();
  */
 export async function addDocuments({
   documents,
-}: DocumentLinkBody): Promise<void> {
+}: DocumentLinkBody | IngestRawBody): Promise<void> {
   for (const document of documents) {
-    const content = await extractFromUrl({ url: document.url });
+    const content = await extractContent({ document });
+
     const autoEmbedResult = await autoEmbed({ document: content });
     await addDocument({
       content,
@@ -51,9 +55,27 @@ export async function addDocuments({
       title: document.title,
     });
   }
+
   await calculateIDF();
   await saveFTSIndexToDisk();
   await saveVectorIndexToDisk();
+}
+
+/**
+ * Delete a list of from the search, and re-calculate the IDF
+ * @param root named parameters
+ * @param root.documentIDs the document IDs
+ */
+export async function deleteDocuments({
+  documentIDs,
+}: {
+  documentIDs: string[];
+}): Promise<void> {
+  for (const documentID of documentIDs) {
+    await deleteDocument({ documentID });
+  }
+  await calculateIDF();
+  await saveFTSIndexToDisk();
 }
 
 /**
@@ -113,21 +135,4 @@ export async function search({
   }
 
   return results;
-}
-
-/**
- * Delete a list of from the search, and re-calculate the IDF
- * @param root named parameters
- * @param root.documentIDs the document IDs
- */
-export async function deleteDocuments({
-  documentIDs,
-}: {
-  documentIDs: string[];
-}): Promise<void> {
-  for (const documentID of documentIDs) {
-    await deleteDocument({ documentID });
-  }
-  await calculateIDF();
-  await saveFTSIndexToDisk();
 }

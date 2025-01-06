@@ -4,8 +4,15 @@ import type { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox';
 // server
 import type { CustomFastifyInstance } from '../../server/types.js';
 
-// database
-import { usageStatsFTS } from '../../database/search/database-search-fts.js';
+// schema types
+import type {
+  BasicResponse,
+  DocumentLinkBody,
+  IngestRawBody,
+  SearchBody,
+  SearchDeleteBody,
+  SearchResponse,
+} from './api-search-schemas.js';
 
 // core
 import {
@@ -16,30 +23,25 @@ import {
 
 // database
 import { apmReport } from '../../database/reporting/database-interface-reporting.ee.js';
+import { usageStatsFTS } from '../../database/search/database-search-fts.js';
 import { usageStatsVector } from '../../database/search/database-search-vector.js';
+
+// parser
+import { isFileSupported } from '../../parser/parser.ee.js';
 
 // utils
 import { getTotalMemoryUsage } from '../../utils/utils-apm.js';
 import { secureVerifyDocumentID } from '../../utils/utils-security.js';
 
 // schemas
-import type {
-  BasicResponse,
-  DocumentLinkBody,
-  SearchBody,
-  SearchDeleteBody,
-  SearchResponse,
-} from './api-search-schemas.js';
 import {
   basicResponseSchema,
   documentLinkBodySchema,
+  ingestRawBodySchema,
   searchBodySchema,
   searchDeleteBodySchema,
   searchResponseSchema,
 } from './api-search-schemas.js';
-
-// parser
-import { isFileSupported } from '../../parser/parser.ee.js';
 
 // /**
 //  * The post reply hook, that will:
@@ -108,6 +110,63 @@ Support:
         if (!(await isFileSupported({ filename: document.url }))) {
           throw {
             message: 'Unsupported document type: ' + document.url,
+            statusCode: 422,
+          };
+        }
+      }
+
+      await addDocuments({ documents });
+
+      const { totalDocuments: totalVectors } = await usageStatsVector();
+      const { totalDocuments, totalTerms } = await usageStatsFTS();
+      await apmReport({
+        event: 'ingest',
+        properties: {
+          addedDocuments: documents.length,
+          memoryUsage: await getTotalMemoryUsage(),
+          totalDocuments,
+          totalTerms,
+          totalVectors,
+        },
+      });
+
+      return { message: 'ok' };
+    },
+  );
+
+  app.post<{
+    Body: IngestRawBody;
+    Reply: BasicResponse;
+  }>(
+    '/ingest/raw',
+    {
+      onRequest: [app.token_auth],
+      schema: {
+        body: ingestRawBodySchema,
+        description: `
+Send raw text to be ingested.
+
+Ideally your text should be in markdown format, to help with context extraction. But you can send any text you want.
+
+**Note:** Just like the other endpoints, there is a limit of 1mb per request.
+`,
+        response: {
+          200: basicResponseSchema,
+        },
+        security: [{ bearerAuth: [] }],
+      },
+    },
+    async (request, _reply): Promise<BasicResponse> => {
+      const { documents } = request.body;
+
+      for (const document of documents) {
+        try {
+          await secureVerifyDocumentID({ documentID: document.documentID });
+        } catch {
+          throw {
+            message:
+              'Forbidden characters found in document ID: ' +
+              document.documentID,
             statusCode: 422,
           };
         }
