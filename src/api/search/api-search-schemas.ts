@@ -77,8 +77,9 @@ export const searchBodySchema = Type.Object(
     operationMode: Type.Optional(
       Type.Union([Type.Literal('speed'), Type.Literal('accuracy')], {
         default: 'speed',
-        description:
-          'Choose the mode to be speed or accuracy, choosing the accuracy will reduce speed upto 2 sec for each query',
+        description: `Choose between speed and accuracy.
+        \`speed\` will use regular mathematical models, and will reply within milliseconds.
+        \`accuracy\` will leverage LLMs for a much more accurate result, but the reply can take up to 2 seconds.`,
       }),
     ),
     query: Type.String({

@@ -55,6 +55,7 @@
     "fixup",
     "flushall",
     "getenv",
+    "hapothitrical",
     "hgetall",
     "hset",
     "Hubspot",

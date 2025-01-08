@@ -201,7 +201,7 @@ export async function addFTSDocument({
   });
 
   // calculate the document frequency and IDF of each terms from this document
-  for (const [term] of Object.entries(documentTermFrequency)) {
+  for (const term of Object.keys(documentTermFrequency)) {
     const termData: TermsData = termsData.get(term) ?? {
       documentFrequency: 0,
       inverseDocumentFrequency: Number.NaN,
