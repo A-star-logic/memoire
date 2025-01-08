@@ -3,10 +3,10 @@ import { describe, expect, test } from 'vitest';
 
 // utils
 import { calculateSimilarity } from '../../../../utils/utils-similarity.js';
-import { embedDocument } from '../../model/ai-embedding-model-local.js';
+import { embedDocument } from '../../../embedding/model/ai-embedding-model-local.js';
 
 // test function
-import { generateHypotheticalAnswer } from '../../../agents/ai-agents-hyde.ts.js';
+import { generateHypotheticalAnswer } from '../../ai-agents-hyde.ts.js';
 
 describe('Invoking LLM to generate hypothetical answer', async () => {
   test('calling function with a query generated an answer', async () => {
