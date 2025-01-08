@@ -62,10 +62,10 @@ const azOpenAILLMResponseSchema = Type.Object(
 type AzOpenAIChatResponse = Static<typeof azOpenAILLMResponseSchema>;
 
 /**
- *will generate response with gpt models
- @param root named parameters
- @param root.query the query to generate response
- @returns a hypothetical answer for given query
+ * Generate Hypothetical answer for the query
+ * @param root named parameters
+ * @param root.query the query to generate response
+ * @returns a hypothetical answer for given query
  */
 export async function generateHypotheticalAnswer({
   query,

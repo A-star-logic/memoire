@@ -1,6 +1,6 @@
 // libs
 import type { EmbeddingModelOutput } from './model/ai-embedding-model-contracts.js';
-import { generateHypotheticalAnswer } from './ai-embedding-generate-hypothetical-answer.js';
+import { generateHypotheticalAnswer } from '../agents/ai-agents-hyde.ts.js';
 import { createLengthBasedChunks } from './chunking/ai-chunking-fixed-size.js';
 import { embedDocument, embedQuery } from './model/index.js';
 

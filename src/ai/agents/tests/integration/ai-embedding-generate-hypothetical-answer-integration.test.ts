@@ -6,7 +6,7 @@ import { calculateSimilarity } from '../../../../utils/utils-similarity.js';
 import { embedDocument } from '../../model/ai-embedding-model-local.js';
 
 // test function
-import { generateHypotheticalAnswer } from '../../ai-embedding-generate-hypothetical-answer.js';
+import { generateHypotheticalAnswer } from '../../../agents/ai-agents-hyde.ts.js';
 
 describe('Invoking LLM to generate hypothetical answer', async () => {
   test('calling function with a query generated an answer', async () => {
