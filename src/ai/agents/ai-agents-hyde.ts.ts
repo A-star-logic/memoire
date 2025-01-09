@@ -19,9 +19,15 @@ interface ChatCompletionMessage {
   role: string;
 }
 interface OpenAILLMBody {
-  max_tokens?: number; //max number of tokens to generate
+  /**
+   * max number of tokens to generate
+   */
+  max_tokens?: number;
   messages: ChatCompletionMessage[];
-  model?: string; //mandatory for openAI API
+  /**
+   * mandatory for openAI API
+   */
+  model?: string;
   user?: string;
 }
 /**
