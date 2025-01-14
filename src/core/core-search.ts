@@ -82,15 +82,18 @@ export async function deleteDocuments({
  * Search for the most similar documents, and return an array of scored documents
  * @param root named parameters
  * @param root.maxResults the maximum number of results returned by the query (default: 100)
+ * @param root.useHyde uses hyde architecture if set true
  * @param root.query the query for keyword search
  * @returns an object with two arrays: one for vector search, one for keyword search
  */
 export async function search({
   maxResults = 100,
   query,
+  useHyde = false,
 }: {
   maxResults?: number;
   query: string;
+  useHyde?: boolean;
 }): Promise<
   {
     content: string;
@@ -101,7 +104,10 @@ export async function search({
     title: string | undefined;
   }[]
 > {
-  const embeddingPromise = autoEmbedQuery({ query });
+  const embeddingPromise = autoEmbedQuery({
+    query,
+    useHyde,
+  });
   const keywordPromise = FTSSearch({ maxResults, query });
   const vectorPromise = vectorSearch({
     embedding: await embeddingPromise,
