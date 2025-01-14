@@ -135,6 +135,14 @@ export const searchBodySchema = Type.Object(
         minimum: 1,
       }),
     ),
+    operationMode: Type.Optional(
+      Type.Union([Type.Literal('speed'), Type.Literal('accuracy')], {
+        default: 'speed',
+        description: `Choose between speed and accuracy.
+        \`speed\` will use regular mathematical models, and will reply within milliseconds.
+        \`accuracy\` will leverage LLMs for a much more accurate result, but the reply can take up to 2 seconds.`,
+      }),
+    ),
     query: Type.String({
       description: 'The search query',
       examples: ['hello'],

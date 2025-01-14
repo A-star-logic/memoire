@@ -16,8 +16,12 @@ async function tokenize({ text }: { text: string }): Promise<string[]> {
  * @returns a normalized string
  */
 async function cleanText({ text }: { text: string }): Promise<string> {
+  // replace '.' or ',' with a white space https://regex101.com/r/uBXssf/1
+  let normalizedText = text.replaceAll(/[,.]/g, ' ');
   // remove any character that is neither a space or a word character https://regex101.com/r/ofzoTb/1
-  const normalizedText = text.replaceAll(/[^\s\w]|\r|\n/g, '');
+  normalizedText = normalizedText.replaceAll(/[^\s\w]|\r|\n/g, '');
+  // remove multi white spaces
+  normalizedText = normalizedText.replaceAll(/\s+/g, ' ');
   return normalizedText.toLowerCase();
 }
 

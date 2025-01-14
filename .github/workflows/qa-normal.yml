@@ -87,6 +87,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_REGION: us-east-1
+          OPENAI_LLM_KEY: ${{ secrets.OPENAI_LLM_KEY}}
+          OPENAI_LLM_DEPLOYMENT: ${{ secrets.OPENAI_LLM_DEPLOYMENT}}
           POSTHOG_KEY: secret
           SENTRY_DSN: secret
           OPENAI_DEPLOYMENT: ${{ secrets.OPENAI_DEPLOYMENT }}
