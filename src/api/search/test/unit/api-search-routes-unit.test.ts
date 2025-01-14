@@ -267,6 +267,7 @@ describe('Search', async () => {
     expect(coreSearchModule.search).toHaveBeenCalledWith({
       maxResults: undefined,
       query: 'test',
+      useHyde: false,
     });
 
     response = await app.inject({
@@ -284,6 +285,7 @@ describe('Search', async () => {
     expect(coreSearchModule.search).toHaveBeenCalledWith({
       maxResults: 1,
       query: 'test',
+      useHyde: false,
     });
   });
 });
