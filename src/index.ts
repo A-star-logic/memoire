@@ -2,6 +2,12 @@
 // libs
 import { createHttpTerminator } from 'http-terminator';
 
+// utils
+import packageJson from '../package.json' with { type: 'json' };
+
+// api
+import { app } from './api/api-config.js';
+
 // DB
 import {
   logger,
@@ -9,20 +15,19 @@ import {
   Sentry,
 } from './database/reporting/database-external-config.js';
 
-// utils
-import packageJson from '../package.json';
-
-// api
-import { app } from './api/api-config.js';
-
 await app.ready();
 await app.listen({
   host: '0.0.0.0',
   port: 3003,
 });
 logger.info(
-  `\n\n\n${packageJson.name} version ${packageJson.version} running in ${process.env.NODE_ENV} mode.\n\n\n`,
+  `${packageJson.name} version ${packageJson.version} running in ${process.env.NODE_ENV} mode on port 3003.`,
 );
+if (process.env.NODE_ENV === 'development' || process.env.SHOW_DOC) {
+  logger.info(
+    '\n\n\nDocumentation available at http://localhost:3003/docs\n\n\n',
+  );
+}
 const httpTerminator = createHttpTerminator({ server: app.server });
 
 /**

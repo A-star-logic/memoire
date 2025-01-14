@@ -2,6 +2,7 @@ python_env
 dataset
 .memoire
 .ipynb_checkpoints
+*.zip
 
 # Logs
 logs

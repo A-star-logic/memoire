@@ -1,6 +1,5 @@
 // libs
-import { HuggingFaceTransformersEmbeddings } from '@langchain/community/embeddings/hf_transformers';
-// eslint-disable-next-line camelcase
+import { pipeline } from '@huggingface/transformers';
 import { get_encoding } from 'tiktoken';
 
 // embedding models contracts
@@ -9,9 +8,34 @@ import type {
   EmbeddingModelOutput,
 } from './ai-embedding-model-contracts.js';
 
-const model = new HuggingFaceTransformersEmbeddings({
-  modelName: 'Xenova/all-MiniLM-L6-v2',
-});
+const extractor = await pipeline(
+  'feature-extraction',
+  'Xenova/all-MiniLM-L6-v2',
+);
+
+/**
+ * Use the model to embed a list of chunks
+ * @param root named parameters
+ * @param root.chunks A document, or a list of chunks from a document to embed
+ * @returns an object with the averaged embedding an an array of chunk embeddings
+ */
+export async function embedDocument({
+  chunks,
+}: EmbeddingModelInput): Promise<EmbeddingModelOutput> {
+  const embeddingsPromise = chunks.map(async (chunk, iteration) => {
+    const output = await extractor(chunk, { normalize: true, pooling: 'mean' });
+    // cspell: disable-next-line -- Not our code
+    const embedding = (output.tolist() as number[][])[0];
+    return {
+      chunkID: iteration,
+      chunkText: chunk,
+      embedding,
+    };
+  });
+
+  const embeddings = await Promise.all(embeddingsPromise);
+  return embeddings;
+}
 
 /**
  * Verify that the string sent has less tokens than the maximum possible for the model
@@ -24,25 +48,4 @@ export function isTooLarge({ text }: { text: string }): boolean {
   const tokens = encoding.encode(text);
   encoding.free();
   return tokens.length >= 512;
-}
-
-/**
- * Use the model to embed a list of chunks
- * @param root named parameters
- * @param root.chunks A document, or a list of chunks from a document to embed
- * @returns an object with the averaged embedding an an array of chunk embeddings
- */
-export async function embedDocument({
-  chunks,
-}: EmbeddingModelInput): Promise<EmbeddingModelOutput> {
-  const embeddingsPromise = chunks.map(async (chunk, iteration) => {
-    return {
-      chunkID: iteration,
-      chunkText: chunk,
-      embedding: await model.embedQuery(chunk),
-    };
-  });
-
-  const embeddings = await Promise.all(embeddingsPromise);
-  return embeddings;
 }
