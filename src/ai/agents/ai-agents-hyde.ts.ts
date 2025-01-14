@@ -52,11 +52,8 @@ const azOpenAILLMResponseSchema = Type.Object(
     model: Type.String(),
     usage: Type.Object(
       {
-        // eslint-disable-next-line camelcase
         completion_tokens: Type.Number(),
-        // eslint-disable-next-line camelcase
         prompt_tokens: Type.Number(),
-        // eslint-disable-next-line camelcase
         total_tokens: Type.Number(),
       },
       { additionalProperties: false },

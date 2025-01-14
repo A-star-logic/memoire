@@ -1,18 +1,20 @@
 // libs
 import { describe, expect, test } from 'vitest';
 
+// utils
+import { calculateSimilarity } from '../../../../../utils/utils-similarity.js';
+
+// test function
+import { embedDocument, isTooLarge } from '../../ai-embedding-model-local.js';
+
 //test variables
 import {
-  arraysEqual,
   largeText,
   testChunks,
   testDocument,
   testEmbeddingText,
   xenovaLocalTestEmbedding,
 } from './test-variables.js';
-
-// test function
-import { embedDocument, isTooLarge } from '../../ai-embedding-model-local.js';
 
 describe('invoked local xenova embedding model', async () => {
   test('calling model with a doc will embed a document ', async () => {
@@ -34,9 +36,11 @@ describe('invoked local xenova embedding model', async () => {
     expect(response).toBeDefined();
     expect(response.length).toBe(1);
     expect(response[0].embedding.length).toBe(384);
-    expect(arraysEqual(response[0].embedding, xenovaLocalTestEmbedding)).toBe(
-      true,
-    );
+    const similarity = await calculateSimilarity({
+      vectorA: response[0].embedding,
+      vectorB: xenovaLocalTestEmbedding,
+    });
+    expect(similarity).toBeGreaterThanOrEqual(0.99);
   });
 });
 

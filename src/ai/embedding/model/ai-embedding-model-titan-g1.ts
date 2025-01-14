@@ -1,13 +1,6 @@
 // libs
 import { InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
-// eslint-disable-next-line camelcase
 import { get_encoding } from 'tiktoken';
-
-// utils
-import { sleep } from '../../../utils/utils-sleep.js';
-
-// database
-import { errorReport } from '../../../database/reporting/database-interface-reporting.ee.js';
 
 // embeddings
 import type {
@@ -15,7 +8,16 @@ import type {
   EmbeddingModelOutput,
   IsTooLargeInput,
 } from './ai-embedding-model-contracts.js';
+
+// database
+import { errorReport } from '../../../database/reporting/database-interface-reporting.ee.js';
+
+// utils
+import { sleep } from '../../../utils/utils-sleep.js';
+
+// bedrock client
 import { bedrockClient } from '../ai-embedding-bedrock-client.js';
+
 /**
  * https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters-titan-embed-text.html
  */
@@ -30,46 +32,6 @@ interface TitanG1Response {
   embedding: number[];
   // token count of the input text
   inputTextTokenCount: number;
-}
-
-/**
- * Verify that the string sent has less tokens than the maximum possible for the model
- * @param root named parameters
- * @param root.text the text to verify
- * @returns true or false
- */
-export function isTooLarge({ text }: IsTooLargeInput): boolean {
-  const encoding = get_encoding('cl100k_base');
-  const tokens = encoding.encode(text);
-  encoding.free();
-  // titan input token limit 8192
-  return tokens.length > 8192;
-}
-
-/**
- * Calls the Titan G1 embedding model
- * @param root named params
- * @param root.text doc to embed
- * @returns promises of Titan response
- */
-async function invokeTitanEmbedding({
-  text,
-}: {
-  text: string;
-}): Promise<TitanG1Response> {
-  await sleep(30); // Titan rate limit 2000 calls/min https://docs.aws.amazon.com/general/latest/gr/bedrock.html
-  const command = new InvokeModelCommand({
-    body: JSON.stringify({
-      inputText: text,
-    } satisfies TitanG1Body),
-    modelId: 'amazon.titan-embed-text-v1',
-  });
-  const response = await bedrockClient.send(command);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const responseBody: TitanG1Response = JSON.parse(
-    Buffer.from(response.body).toString('utf8'),
-  );
-  return responseBody;
 }
 
 /**
@@ -107,4 +69,44 @@ export async function embedDocument({
     await errorReport({ error, message });
     throw error;
   }
+}
+
+/**
+ * Verify that the string sent has less tokens than the maximum possible for the model
+ * @param root named parameters
+ * @param root.text the text to verify
+ * @returns true or false
+ */
+export function isTooLarge({ text }: IsTooLargeInput): boolean {
+  const encoding = get_encoding('cl100k_base');
+  const tokens = encoding.encode(text);
+  encoding.free();
+  // titan input token limit 8192
+  return tokens.length > 8192;
+}
+
+/**
+ * Calls the Titan G1 embedding model
+ * @param root named params
+ * @param root.text doc to embed
+ * @returns promises of Titan response
+ */
+async function invokeTitanEmbedding({
+  text,
+}: {
+  text: string;
+}): Promise<TitanG1Response> {
+  await sleep(30); // Titan rate limit 2000 calls/min https://docs.aws.amazon.com/general/latest/gr/bedrock.html
+  const command = new InvokeModelCommand({
+    body: JSON.stringify({
+      inputText: text,
+    } satisfies TitanG1Body),
+    modelId: 'amazon.titan-embed-text-v1',
+  });
+  const response = await bedrockClient.send(command);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- fix this typing issue later
+  const responseBody: TitanG1Response = JSON.parse(
+    Buffer.from(response.body).toString('utf8'),
+  );
+  return responseBody;
 }
