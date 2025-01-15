@@ -2,7 +2,12 @@
 import { describe, expect, test, vi } from 'vitest';
 
 // function to test
-import { addDocuments, deleteDocuments } from '../../core-search.js';
+import {
+  addDocuments,
+  deleteDocuments,
+  documentExist,
+  getDocument,
+} from '../../core-search.js';
 
 // mocks
 vi.mock('../../../database/search/database-search-interface.js');
@@ -132,5 +137,62 @@ describe('addDocuments', async () => {
     expect(databaseSearchVector.saveVectorIndexToDisk).toHaveBeenCalledTimes(1);
     expect(databaseSearchFTS.calculateIDF).toHaveBeenCalledTimes(1);
     expect(databaseSearchFTS.saveFTSIndexToDisk).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('getDocument', async () => {
+  test('getDocument will return the document', async () => {
+    databaseSearchInterface.retrieveDocument = vi.fn().mockResolvedValue({
+      content: 'test content',
+      documentID: '123',
+    } satisfies Awaited<
+      ReturnType<typeof databaseSearchInterface.retrieveDocument>
+    >);
+    const document = await getDocument({ documentID: '123' });
+    if (!document) {
+      throw new Error('Document not found');
+    }
+    expect(document.content).toBe('test content');
+    expect(databaseSearchInterface.retrieveDocument).toHaveBeenCalledTimes(1);
+  });
+
+  test('getDocument will return undefined when the document does not exist', async () => {
+    databaseSearchInterface.retrieveDocument = vi
+      .fn()
+      .mockResolvedValue(
+        undefined satisfies Awaited<
+          ReturnType<typeof databaseSearchInterface.retrieveDocument>
+        >,
+      );
+    const document = await getDocument({ documentID: '123' });
+    expect(document).toBe(undefined);
+    expect(databaseSearchInterface.retrieveDocument).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('documentExist', async () => {
+  test('documentExist will return true when a document exists', async () => {
+    databaseSearchFTS.exists = vi
+      .fn()
+      .mockResolvedValue(
+        true satisfies Awaited<ReturnType<typeof databaseSearchFTS.exists>>,
+      );
+    const result = await documentExist({ documentID: '123' });
+    if (!result) {
+      throw new Error('Document not found');
+    }
+    expect(result).toBe(true);
+    expect(databaseSearchFTS.exists).toHaveBeenCalledTimes(1);
+  });
+
+  test('documentExist will return false when the document does not exist', async () => {
+    databaseSearchFTS.exists = vi
+      .fn()
+      .mockResolvedValue(
+        false satisfies Awaited<ReturnType<typeof databaseSearchFTS.exists>>,
+      );
+    const document = await documentExist({ documentID: '123' });
+    expect(document).toBe(false);
+    expect(databaseSearchFTS.exists).toHaveBeenCalledTimes(1);
   });
 });

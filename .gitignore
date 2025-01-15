@@ -1,6 +1,6 @@
 python_env
 dataset
-.memoire
+.memoire*
 .ipynb_checkpoints
 *.zip
 
