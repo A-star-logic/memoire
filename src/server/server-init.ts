@@ -40,25 +40,25 @@ export async function setupServer(): Promise<FastifyInstance> {
   // server limits
   /* v8 ignore start */
   // based on: https://stackoverflow.com/a/64145668/9020761
-  // await app.register(underPressure, {
-  //   maxEventLoopDelay: 1000,
-  //   maxHeapUsedBytes: v8.getHeapStatistics().heap_size_limit,
-  //   maxRssBytes: v8.getHeapStatistics().total_available_size,
-  //   pressureHandler: (request, _reply, type, value) => {
-  //     // eslint-disable-next-line import-x/no-named-as-default-member
-  //     if (type === underPressure.TYPE_HEAP_USED_BYTES) {
-  //       logger.warn(`too many heap bytes used: ${value}`);
-  //       // eslint-disable-next-line import-x/no-named-as-default-member
-  //     } else if (type === underPressure.TYPE_RSS_BYTES) {
-  //       logger.warn(`too many rss bytes used: ${value}`);
-  //     }
+  await app.register(underPressure, {
+    maxEventLoopDelay: 1000,
+    maxHeapUsedBytes: v8.getHeapStatistics().heap_size_limit,
+    maxRssBytes: v8.getHeapStatistics().total_available_size,
+    pressureHandler: (request, _reply, type, value) => {
+      // eslint-disable-next-line import-x/no-named-as-default-member
+      if (type === underPressure.TYPE_HEAP_USED_BYTES) {
+        logger.warn(`too many heap bytes used: ${value}`);
+        // eslint-disable-next-line import-x/no-named-as-default-member
+      } else if (type === underPressure.TYPE_RSS_BYTES) {
+        logger.warn(`too many rss bytes used: ${value}`);
+      }
 
-  //     // any 5xx error on this endpoint will trigger a kill from Kubernetes
-  //     if (!request.url.includes('liveness')) {
-  //       throw { message: 'under pressure', statusCode: 503 };
-  //     }
-  //   },
-  // });
+      // any 5xx error on this endpoint will trigger a kill from Kubernetes
+      if (!request.url.includes('liveness')) {
+        throw { message: 'under pressure', statusCode: 503 };
+      }
+    },
+  });
   /* v8 ignore stop */
 
   // compression
