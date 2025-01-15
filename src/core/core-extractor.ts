@@ -1,8 +1,5 @@
 // schemas
-import type {
-  DocumentLinkBody,
-  IngestRawBody,
-} from '../api/search/api-search-schemas.js';
+import type { DocumentLinkBody, IngestRawBody } from '../api/api-schemas.js';
 
 // parser
 import { parseStream } from '../parser/parser.ee.js';

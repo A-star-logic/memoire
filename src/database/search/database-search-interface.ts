@@ -1,4 +1,8 @@
+// types
 import type { EmbeddingModelOutput } from '../../ai/embedding/model/ai-embedding-model-contracts.js';
+import type { SearchGetDocumentResponse } from '../../api/api-schemas.js';
+
+// database
 import {
   addFTSDocument,
   deleteFTSDocument,
@@ -6,30 +10,13 @@ import {
 } from './database-search-fts.js';
 import {
   deleteSourceDocument,
+  getSourceDocuments,
   saveSourceDocument,
 } from './database-search-source.js';
 import {
   bulkAddVectorChunks,
   deleteVectorChunks,
 } from './database-search-vector.js';
-
-/**
- * Delete a document from the various indexes
- * @param root named parameters
- * @param root.documentID the document ID
- */
-export async function deleteDocument({
-  documentID,
-}: {
-  documentID: string;
-}): Promise<void> {
-  if (await exists({ documentID })) {
-    const ftsPromise = deleteFTSDocument({ documentID });
-    const vectorPromise = deleteVectorChunks({ documentID });
-    const sourcePromise = deleteSourceDocument({ documentID });
-    await Promise.all([ftsPromise, vectorPromise, sourcePromise]);
-  }
-}
 
 /**
  * add a document to the database
@@ -75,4 +62,47 @@ export async function addDocument({
     metadata,
     title,
   });
+}
+
+/**
+ * Delete a document from the various indexes
+ * @param root named parameters
+ * @param root.documentID the document ID
+ */
+export async function deleteDocument({
+  documentID,
+}: {
+  documentID: string;
+}): Promise<void> {
+  if (await exists({ documentID })) {
+    const ftsPromise = deleteFTSDocument({ documentID });
+    const vectorPromise = deleteVectorChunks({ documentID });
+    const sourcePromise = deleteSourceDocument({ documentID });
+    await Promise.all([ftsPromise, vectorPromise, sourcePromise]);
+  }
+}
+
+/**
+ * Fetch a document using its ID
+ * @param root named parameters
+ * @param root.documentID the document ID
+ * @returns The document and its source
+ */
+export async function retrieveDocument({
+  documentID,
+}: {
+  documentID: string;
+}): Promise<SearchGetDocumentResponse | undefined> {
+  if (await exists({ documentID })) {
+    const source = await getSourceDocuments({
+      searchResults: [{ documentID }],
+    });
+    return {
+      content: source[documentID].chunkedContent.join(' '),
+      documentID,
+      metadata: source[documentID].metadata,
+      title: source[documentID].title,
+    };
+  }
+  return undefined;
 }
