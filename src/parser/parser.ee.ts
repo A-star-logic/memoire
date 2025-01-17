@@ -70,7 +70,10 @@ export async function parseStream({
     throw new Error('Unsupported document type' + documentName);
   }
 
-  const resolvedMimeType = mimeType ?? (await getMimeType({ documentName }));
+  const resolvedMimeType =
+    mimeType === 'application/octet-stream' || !mimeType
+      ? await getMimeType({ documentName })
+      : mimeType;
 
   switch (resolvedMimeType) {
     // Open Office XML
