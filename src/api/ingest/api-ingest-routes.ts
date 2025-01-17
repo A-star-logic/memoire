@@ -189,6 +189,7 @@ Ideally your text should be in markdown format, to help with context extraction.
     {
       onRequest: [app.token_auth],
       schema: {
+        consumes: ['multipart/form-data'],
         description: `
 Upload multiple files and specify a unique documentID for each file.
 
@@ -203,8 +204,35 @@ Upload multiple files and specify a unique documentID for each file.
 **Form field 2..N**: file (multiple files) - Each file corresponds to an entry in the documents array.
 
 documents.length must equal the number of files uploaded.
-      `,
-        response: { 200: uploadFileResponseSchema },
+`,
+        requestBody: {
+          content: {
+            'multipart/form-data': {
+              schema: {
+                properties: {
+                  documents: {
+                    description:
+                      'A JSON string describing metadata for each file.',
+                    example:
+                      '[{"documentID":"doc-1","metadata":{"key":"value1"},"title":"File 1"}]',
+                    type: 'string',
+                  },
+                  file: {
+                    description: 'The file to upload.',
+                    format: 'binary',
+                    type: 'string',
+                  },
+                },
+                required: ['documents', 'file'],
+                type: 'object',
+              },
+            },
+          },
+          required: true,
+        },
+        response: {
+          200: uploadFileResponseSchema,
+        },
         security: [{ bearerAuth: [] }],
         tags: ['ingest'],
       },
