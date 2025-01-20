@@ -244,11 +244,14 @@ export async function calculateIDF(): Promise<void> {
  * Execute a full text search
  * @param root named parameters
  * @param root.query the text query to use for the full text search
+ * @param root.maxResults the maximum number of results
  * @returns an array of scores
  */
 export async function FTSSearch({
+  maxResults,
   query,
 }: {
+  maxResults: number;
   query: string;
 }): Promise<{ documentID: string; score: number }[]> {
   const speedMonitor = new SpeedMonitor();
@@ -286,7 +289,7 @@ export async function FTSSearch({
     },
   });
 
-  return results.slice(0, 100); // Retrieving as much as results for re-ranking
+  return results.slice(0, maxResults > 100 ? maxResults : 100);
 }
 
 /**
