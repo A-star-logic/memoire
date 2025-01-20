@@ -85,18 +85,18 @@ describe('Search will search and sort the results', async () => {
     await addFTSDocument(mockDocument1);
     await addFTSDocument(mockDocument2);
     await calculateIDF();
-    const results = await FTSSearch({ maxResults: 100, query: '2' });
+    const results = await FTSSearch({ query: '2' });
     expect(results.length).toBe(2);
     expect(results[0].documentID).toBe('2');
     expect(results[1].documentID).toBe('1');
   });
 
-  test('Search will filter the number of output depending on maxResults', async () => {
+  test('Search will filter the number of output to number of documents if less than 100', async () => {
     await addFTSDocument(mockDocument1);
     await addFTSDocument(mockDocument2);
     await calculateIDF();
-    const results = await FTSSearch({ maxResults: 1, query: '2' });
-    expect(results.length).toBe(1);
+    const results = await FTSSearch({ query: '2' });
+    expect(results.length).toBe(2);
   });
 
   test('Search can work with never seen before words', async () => {
@@ -104,7 +104,6 @@ describe('Search will search and sort the results', async () => {
     await addFTSDocument(mockDocument2);
     await calculateIDF();
     const results = await FTSSearch({
-      maxResults: 100,
       query: 'azertyuiop' /* cSpell: disable-line */,
     });
     expect(results.length).toBe(2);

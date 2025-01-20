@@ -51,7 +51,6 @@ describe('vectorSearch', async () => {
 
     const result = await vectorSearch({
       embedding: [0.9, 0.9, 0.9],
-      maxResults: 100,
     });
 
     expect(result.length).toBe(3);
@@ -72,7 +71,6 @@ describe('deleteVectorChunks', async () => {
 
     const result = await vectorSearch({
       embedding: [0.9, 0.9, 0.9],
-      maxResults: 100,
     });
     expect(result.length).toBe(0);
     expect(fsModule.unlink).toHaveBeenCalledTimes(2);
@@ -81,7 +79,6 @@ describe('deleteVectorChunks', async () => {
   test('deleteVectorChunks will pass if the document does not exist', async () => {
     const result = await vectorSearch({
       embedding: [0.9, 0.9, 0.9],
-      maxResults: 100,
     });
     const files = await readdir('.testMemoire/vector', { recursive: true });
 
