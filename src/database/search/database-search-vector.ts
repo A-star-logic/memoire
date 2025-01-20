@@ -121,15 +121,12 @@ export async function bulkAddVectorChunks({
  * Search in the index for similar embeddings
  * @param root named parameters
  * @param root.embedding the embedding of the query
- * @param root.maxResults the maximum number of results
  * @returns a sorted array with scores
  */
 export async function vectorSearch({
   embedding,
-  maxResults,
 }: {
   embedding: number[];
-  maxResults: number;
 }): Promise<{ chunkID: number; documentID: string; score: number }[]> {
   const speedMonitor = new SpeedMonitor();
 
@@ -148,7 +145,7 @@ export async function vectorSearch({
   scored.sort((a, b) => {
     return b.score - a.score;
   });
-  const results = scored.slice(0, maxResults + 1);
+  const results = scored.slice(0, 100); //retrieving as much as results for re-ranking
 
   await apmReport({
     event: 'vectorSearch',

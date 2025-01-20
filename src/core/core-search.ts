@@ -108,10 +108,9 @@ export async function search({
     query,
     useHyde,
   });
-  const keywordPromise = FTSSearch({ maxResults, query });
+  const keywordPromise = FTSSearch({ query });
   const vectorPromise = vectorSearch({
     embedding: await embeddingPromise,
-    maxResults,
   });
   const [keywordResults, vectorResults] = await Promise.all([
     keywordPromise,
