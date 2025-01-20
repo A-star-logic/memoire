@@ -20,10 +20,25 @@ export default tseslint.config(
     },
   },
   {
+    // Disable stuff on code that's not ours
     rules: {
-      // to change whenever possible
+      camelcase: [
+        'error',
+        {
+          ignoreDestructuring: true,
+          ignoreImports: true,
+          allow: ['prompt_tokens', 'total_tokens', 'completion_tokens'],
+        },
+      ],
+    },
+  },
+  {
+    rules: {
+      // to change whenever possible, set as warning for compatibility
       'perfectionist/sort-imports': 1,
       'perfectionist/sort-modules': 1,
+      '@eslint-community/eslint-comments/require-description': 1,
+      '@eslint-community/eslint-comments/disable-enable-pair': 1,
     },
   },
 );

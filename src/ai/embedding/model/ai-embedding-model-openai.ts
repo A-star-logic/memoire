@@ -2,7 +2,6 @@
 import { type Static, Type } from '@sinclair/typebox';
 import { Check } from '@sinclair/typebox/value';
 import axios from 'axios';
-// eslint-disable-next-line camelcase
 import { get_encoding } from 'tiktoken';
 
 // embedding models contracts
@@ -49,9 +48,7 @@ export const azOpenAIEmbedResponseSchema = Type.Object(
     object: Type.String(),
     usage: Type.Object(
       {
-        // eslint-disable-next-line camelcase
         prompt_tokens: Type.Number(),
-        // eslint-disable-next-line camelcase
         total_tokens: Type.Number(),
       },
       { additionalProperties: false },
@@ -59,8 +56,6 @@ export const azOpenAIEmbedResponseSchema = Type.Object(
   },
   { additionalProperties: false },
 );
-export type AzOpenAIEmbedResponse = Static<typeof azOpenAIEmbedResponseSchema>;
-
 export interface AzOpenAIEmbedBody {
   dimensions: number;
   input: string | string[];
@@ -68,18 +63,7 @@ export interface AzOpenAIEmbedBody {
   user?: string;
 }
 
-/**
- * Verify that the string sent has less tokens than the maximum possible for the model
- * @param root named parameters
- * @param root.text the text to verify
- * @returns true or false
- */
-export function isTooLarge({ text }: IsTooLargeInput): boolean {
-  const encoding = get_encoding('cl100k_base');
-  const tokens = encoding.encode(text);
-  encoding.free();
-  return tokens.length >= 3072;
-}
+export type AzOpenAIEmbedResponse = Static<typeof azOpenAIEmbedResponseSchema>;
 
 /**
  * Call the embedding model
@@ -140,4 +124,17 @@ export async function embedDocument({
     });
     throw error;
   }
+}
+
+/**
+ * Verify that the string sent has less tokens than the maximum possible for the model
+ * @param root named parameters
+ * @param root.text the text to verify
+ * @returns true or false
+ */
+export function isTooLarge({ text }: IsTooLargeInput): boolean {
+  const encoding = get_encoding('cl100k_base');
+  const tokens = encoding.encode(text);
+  encoding.free();
+  return tokens.length >= 3072;
 }

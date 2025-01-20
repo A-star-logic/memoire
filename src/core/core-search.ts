@@ -2,7 +2,8 @@
 import type {
   DocumentLinkBody,
   IngestRawBody,
-} from '../api/search/api-search-schemas.js';
+  SearchGetDocumentResponse,
+} from '../api/api-schemas.js';
 
 // AI
 import { rerank } from '../ai/ai-reranker.js';
@@ -14,6 +15,7 @@ import {
 // Database
 import {
   calculateIDF,
+  exists,
   FTSSearch,
   loadFTSIndexFromDisk,
   saveFTSIndexToDisk,
@@ -21,6 +23,7 @@ import {
 import {
   addDocument,
   deleteDocument,
+  retrieveDocument,
 } from '../database/search/database-search-interface.js';
 import { getSourceDocuments } from '../database/search/database-search-source.js';
 import {
@@ -76,6 +79,34 @@ export async function deleteDocuments({
   }
   await calculateIDF();
   await saveFTSIndexToDisk();
+}
+
+/**
+ * Verify a document exist in Memoire
+ * @param root named parameters
+ * @param root.documentID the document ID
+ * @returns boolean
+ */
+export async function documentExist({
+  documentID,
+}: {
+  documentID: string;
+}): Promise<boolean> {
+  return exists({ documentID });
+}
+
+/**
+ * Fetch a document using its ID
+ * @param root named parameters
+ * @param root.documentID the document ID
+ * @returns The document and its source
+ */
+export async function getDocument({
+  documentID,
+}: {
+  documentID: string;
+}): Promise<SearchGetDocumentResponse | undefined> {
+  return retrieveDocument({ documentID });
 }
 
 /**

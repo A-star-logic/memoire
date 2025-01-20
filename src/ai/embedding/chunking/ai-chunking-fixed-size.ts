@@ -1,4 +1,4 @@
-// eslint-disable-next-line camelcase
+// libs
 import { get_encoding } from 'tiktoken';
 
 /**

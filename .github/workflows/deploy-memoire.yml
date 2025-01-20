@@ -98,6 +98,14 @@ jobs:
         with:
           name: build
 
+      - name: Get version from package.json
+        id: package-version
+        run: |
+          FULL_VERSION=$(node -p "require('./package.json').version")
+          MAJOR_VERSION=$(echo $FULL_VERSION | cut -d. -f1)
+          echo "FULL_VERSION=$FULL_VERSION" >> $GITHUB_OUTPUT
+          echo "MAJOR_VERSION=$MAJOR_VERSION" >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -112,7 +120,11 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ghcr.io/a-star-logic/memoire:latest, ghcr.io/a-star-logic/memoire:${{ github.sha }}
+          tags: |
+            ghcr.io/a-star-logic/memoire:latest
+            ghcr.io/a-star-logic/memoire:${{ github.sha }}
+            ghcr.io/a-star-logic/memoire:${{ steps.package-version.outputs.FULL_VERSION }}
+            ghcr.io/a-star-logic/memoire:${{ steps.package-version.outputs.MAJOR_VERSION }}
           file: ./docker/Dockerfile.memoire
           platforms: linux/amd64
           context: ./

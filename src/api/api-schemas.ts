@@ -1,9 +1,7 @@
 import { type Static, Type } from '@sinclair/typebox';
 
 export const basicResponseSchema = Type.Object({
-  message: Type.String({
-    examples: ['ok'],
-  }),
+  message: Type.String({}),
 });
 export type BasicResponse = Static<typeof basicResponseSchema>;
 
@@ -187,3 +185,27 @@ export const searchDeleteBodySchema = Type.Object(
   { additionalProperties: false },
 );
 export type SearchDeleteBody = Static<typeof searchDeleteBodySchema>;
+
+export const searchGetDocumentParametersSchema = Type.Object(
+  {
+    documentID: Type.String({}),
+  },
+  { additionalProperties: false },
+);
+export type SearchGetDocumentParameters = Static<
+  typeof searchGetDocumentParametersSchema
+>;
+export const searchGetDocumentResponse = Type.Object(
+  {
+    content: Type.String({
+      description: 'The original document content',
+    }),
+    documentID: Type.String({}),
+    metadata: Type.Optional(Type.Any({})),
+    title: Type.Optional(Type.String()),
+  },
+  { additionalProperties: false },
+);
+export type SearchGetDocumentResponse = Static<
+  typeof searchGetDocumentResponse
+>;
