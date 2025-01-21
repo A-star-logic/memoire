@@ -209,3 +209,14 @@ export const searchGetDocumentResponse = Type.Object(
 export type SearchGetDocumentResponse = Static<
   typeof searchGetDocumentResponse
 >;
+
+export const uploadFileResponseSchema = Type.Object({
+  files: Type.Array(
+    Type.Object({
+      documentID: Type.String(),
+      filename: Type.String(),
+      status: Type.String({ examples: ['uploaded'] }),
+    }),
+  ),
+  message: Type.String({ examples: ['Files uploaded successfully'] }),
+});
