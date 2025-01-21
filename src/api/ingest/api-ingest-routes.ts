@@ -193,43 +193,20 @@ Ideally your text should be in markdown format, to help with context extraction.
         description: `
 Upload multiple files and specify a unique documentID for each file.
 
-**Form field 1**: documents - A JSON array describing the metadata for each file, including documentID. For example:
+The form has two fields, one for the files metadata, and one for the files themselves.
+
+- **'documents'**: This field is for adding metadata, which is a JSON array. Each object in the array represents the metadata for a corresponding file. For example:
   \`\`\`json
   [
-    { "documentID": "doc-1", "metadata": { "key": "value1" } },
-    { "documentID": "doc-2" }
+    { "documentID": "doc-1", "metadata": { "key": "value1" }, "title": "File 1" },
+    { "documentID": "doc-2", "title": "File 2" }
   ]
   \`\`\`
 
-**Form field 2..N**: file (multiple files) - Each file corresponds to an entry in the documents array.
+- **'files'**: This field contains the files to be uploaded. It supports uploading multiple files, with each file corresponding to an entry in the 'documents' array.
 
 documents.length must equal the number of files uploaded.
 `,
-        requestBody: {
-          content: {
-            'multipart/form-data': {
-              schema: {
-                properties: {
-                  documents: {
-                    description:
-                      'A JSON string describing metadata for each file.',
-                    example:
-                      '[{"documentID":"doc-1","metadata":{"key":"value1"},"title":"File 1"}]',
-                    type: 'string',
-                  },
-                  file: {
-                    description: 'The file to upload.',
-                    format: 'binary',
-                    type: 'string',
-                  },
-                },
-                required: ['documents', 'file'],
-                type: 'object',
-              },
-            },
-          },
-          required: true,
-        },
         response: {
           200: uploadFileResponseSchema,
         },
