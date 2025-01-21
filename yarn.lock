@@ -61,7 +61,7 @@ __metadata:
     "@fastify/swagger-ui": "npm:^5.2.1"
     "@fastify/type-provider-typebox": "npm:^5.1.0"
     "@fastify/under-pressure": "npm:^9.0.3"
-    "@huggingface/transformers": "npm:^3.2.4"
+    "@huggingface/transformers": "npm:^3.3.1"
     "@sentry/node": "npm:^8.48.0"
     "@sentry/profiling-node": "npm:^8.48.0"
     "@sinclair/typebox": "npm:^0.34.13"
@@ -2679,15 +2679,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@huggingface/transformers@npm:^3.2.4":
-  version: 3.2.4
-  resolution: "@huggingface/transformers@npm:3.2.4"
+"@huggingface/transformers@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "@huggingface/transformers@npm:3.3.1"
   dependencies:
     "@huggingface/jinja": "npm:^0.3.2"
     onnxruntime-node: "npm:1.20.1"
-    onnxruntime-web: "npm:1.21.0-dev.20241205-d27fecd3d3"
+    onnxruntime-web: "npm:1.21.0-dev.20250114-228dd16893"
     sharp: "npm:^0.33.5"
-  checksum: 10c0/9a37f1a19972aebcdabbf95067c834c88a1bae582968e2564b339727f2a02bd02ff0066c0c3ecb169de59e18c229e0ff046345ecc5db44dd5da0ae60eca8da9f
+  checksum: 10c0/951d6d8a8e2c6f05eb43c0a3b2cae771d9c72a2c384a1a648d01414ab60266af24932067d7bdd77bc213a32806083759b8bfe1e6ab5e95662c39514cd5971174
   languageName: node
   linkType: hard
 
@@ -8541,10 +8541,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"onnxruntime-common@npm:1.21.0-dev.20241205-6ed77cc374":
-  version: 1.21.0-dev.20241205-6ed77cc374
-  resolution: "onnxruntime-common@npm:1.21.0-dev.20241205-6ed77cc374"
-  checksum: 10c0/9793e1f0a438c9e7dd13e489ab2b331082b2cfd6f4ef83362c4f6ccd9ee2fa81433988e8f18af57ed483890e459324d5ec566b81a1f69c29ce432c82c1b691ee
+"onnxruntime-common@npm:1.21.0-dev.20241212-1f88284f96":
+  version: 1.21.0-dev.20241212-1f88284f96
+  resolution: "onnxruntime-common@npm:1.21.0-dev.20241212-1f88284f96"
+  checksum: 10c0/062a495832eaff211638690f82a6634ef0b4cccd082b809191bbdee1ddea0a306e39ce60ac3bf44c8a33672bc070fdf541c2db017a959494b35295736a70528e
   languageName: node
   linkType: hard
 
@@ -8559,17 +8559,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"onnxruntime-web@npm:1.21.0-dev.20241205-d27fecd3d3":
-  version: 1.21.0-dev.20241205-d27fecd3d3
-  resolution: "onnxruntime-web@npm:1.21.0-dev.20241205-d27fecd3d3"
+"onnxruntime-web@npm:1.21.0-dev.20250114-228dd16893":
+  version: 1.21.0-dev.20250114-228dd16893
+  resolution: "onnxruntime-web@npm:1.21.0-dev.20250114-228dd16893"
   dependencies:
     flatbuffers: "npm:^1.12.0"
     guid-typescript: "npm:^1.0.9"
     long: "npm:^5.2.3"
-    onnxruntime-common: "npm:1.21.0-dev.20241205-6ed77cc374"
+    onnxruntime-common: "npm:1.21.0-dev.20241212-1f88284f96"
     platform: "npm:^1.3.6"
     protobufjs: "npm:^7.2.4"
-  checksum: 10c0/32202cc417020008564f4cde5514035fc17f3c4684b4bc72cacd967b7714d7a12803e00c2b27d730a15f203bb892af8f134594d6e6840b59b7e478324333e843
+  checksum: 10c0/37d488b4dbfb9bdc764ddfd295901c30f1ad85f19615d36056162220dfe9b0dbe66f6bd27dbb959aef3ab254b50e4cef4dbce15972820e06ff4362c8690461ba
   languageName: node
   linkType: hard
 
