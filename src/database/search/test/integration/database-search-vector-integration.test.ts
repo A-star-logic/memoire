@@ -59,6 +59,46 @@ describe('vectorSearch', async () => {
     expect(result[1].score).toBeGreaterThan(0.99);
     expect(result[2].score).toBeLessThan(0.1);
   });
+  test('vectorSearch will filter the number of output to number of documents if less than maxResults', async () => {
+    await bulkAddVectorChunks(mockDocument1);
+    await bulkAddVectorChunks(mockDocument2);
+
+    const result = await vectorSearch({
+      embedding: [0.9, 0.9, 0.9],
+      maxResults: 1,
+    });
+
+    expect(result.length).toBe(3);
+  });
+
+  test('vectorSearch will filter the number of output to maxResults if maxResults is greater than 100', async () => {
+    // Add more than 100 unique vector documents
+    for (let index = 0; index < 102; index++) {
+      const mockDocument: Parameters<typeof bulkAddVectorChunks>[0] = {
+        documentID: `${index}`,
+        embeddings: [
+          {
+            chunkID: 0,
+            embedding: [0.1, 0.1, 0.1],
+          },
+        ],
+      };
+      await bulkAddVectorChunks(mockDocument);
+    }
+
+    const maxResults = 101;
+    const result = await vectorSearch({
+      embedding: [0.5, 0.5, 0.5],
+      maxResults,
+    });
+
+    expect(result.length).toBeLessThanOrEqual(maxResults);
+
+    // Cleanup: Delete all added documents
+    for (let index = 0; index < 200; index++) {
+      await deleteVectorChunks({ documentID: `${index}` });
+    }
+  });
 });
 
 describe('deleteVectorChunks', async () => {
