@@ -1,6 +1,7 @@
 /* v8 ignore start */
 // libs
 /* eslint-disable import-x/no-named-as-default -- this is from libraries */
+import multipart from '@fastify/multipart';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 /* eslint-enable import-x/no-named-as-default -- this is from libraries */
@@ -18,6 +19,7 @@ import { searchRouter } from './search/api-search-routes.js';
 
 // server
 export const app = await setupServer();
+await app.register(multipart);
 
 // documentation (dev only)
 if (process.env.NODE_ENV === 'development' || process.env.SHOW_DOC === 'true') {
