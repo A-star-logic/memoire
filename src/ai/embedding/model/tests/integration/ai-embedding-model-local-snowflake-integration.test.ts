@@ -43,6 +43,7 @@ describe('invoked local snowflake embedding model', async () => {
       vectorA: response[0].embedding,
       vectorB: snowflakeLocalTestEmbedding,
     });
+
     expect(similarity).toBeGreaterThanOrEqual(0.99);
   });
 });
