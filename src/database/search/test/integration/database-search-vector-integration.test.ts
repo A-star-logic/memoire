@@ -95,7 +95,7 @@ describe('vectorSearch', async () => {
     expect(result.length).toBeLessThanOrEqual(maxResults);
 
     // Cleanup: Delete all added documents
-    for (let index = 0; index < 200; index++) {
+    for (let index = 0; index < 102; index++) {
       await deleteVectorChunks({ documentID: `${index}` });
     }
   });
