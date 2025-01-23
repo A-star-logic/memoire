@@ -8,9 +8,9 @@ import type {
   EmbeddingModelOutput,
 } from './ai-embedding-model-contracts.js';
 
-const extractor = await pipeline(
+const xenovaExtractor = await pipeline(
   'feature-extraction',
-  'Snowflake/snowflake-arctic-embed-s',
+  'Xenova/all-MiniLM-L6-v2',
 );
 
 /**
@@ -23,7 +23,10 @@ export async function embedDocument({
   chunks,
 }: EmbeddingModelInput): Promise<EmbeddingModelOutput> {
   const embeddingsPromise = chunks.map(async (chunk, iteration) => {
-    const output = await extractor(chunk, { normalize: true, pooling: 'mean' });
+    const output = await xenovaExtractor(chunk, {
+      normalize: true,
+      pooling: 'mean',
+    });
     // cspell: disable-next-line -- Not our code
     const embedding = (output.tolist() as number[][])[0];
     return {

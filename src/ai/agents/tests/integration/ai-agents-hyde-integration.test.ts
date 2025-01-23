@@ -3,7 +3,7 @@ import { describe, expect, test } from 'vitest';
 
 // utils
 import { calculateSimilarity } from '../../../../utils/utils-similarity.js';
-import { embedDocument } from '../../../embedding/model/ai-embedding-model-local.js';
+import { embedDocument } from '../../../embedding/model/ai-embedding-model-local-snowflake.js';
 
 // test function
 import { generateHypotheticalAnswer } from '../../ai-agents-hyde.ts.js';

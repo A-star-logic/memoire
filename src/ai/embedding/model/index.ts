@@ -29,6 +29,17 @@ switch (process.env.EMBEDDING_MODEL) {
     break;
   }
 
+  case 'snowflake': {
+    const snowflakeLocalModel = await import(
+      './ai-embedding-model-local-snowflake.js'
+    );
+    embedDocumentFunction = snowflakeLocalModel.embedDocument;
+    embedQueryFunction = snowflakeLocalModel.embedDocument;
+    isTooLargeFunction = snowflakeLocalModel.isTooLarge;
+    logger.info('using local snowflake model for embedding');
+    break;
+  }
+
   case 'titanG1': {
     const titanModel = await import('./ai-embedding-model-titan-g1.js');
     embedDocumentFunction = titanModel.embedDocument;
@@ -48,10 +59,12 @@ switch (process.env.EMBEDDING_MODEL) {
   }
 
   default: {
-    const localModel = await import('./ai-embedding-model-local.js');
-    embedDocumentFunction = localModel.embedDocument;
-    embedQueryFunction = localModel.embedDocument;
-    isTooLargeFunction = localModel.isTooLarge;
+    const xenovaLocalModel = await import(
+      './ai-embedding-model-local-xenova.js'
+    );
+    embedDocumentFunction = xenovaLocalModel.embedDocument;
+    embedQueryFunction = xenovaLocalModel.embedDocument;
+    isTooLargeFunction = xenovaLocalModel.isTooLarge;
     logger.info('Using local model for embedding');
     break;
   }

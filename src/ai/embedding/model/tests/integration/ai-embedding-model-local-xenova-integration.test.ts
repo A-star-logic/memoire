@@ -5,7 +5,10 @@ import { describe, expect, test } from 'vitest';
 import { calculateSimilarity } from '../../../../../utils/utils-similarity.js';
 
 // test function
-import { embedDocument, isTooLarge } from '../../ai-embedding-model-local.js';
+import {
+  embedDocument,
+  isTooLarge,
+} from '../../ai-embedding-model-local-xenova.js';
 
 //test variables
 import {
