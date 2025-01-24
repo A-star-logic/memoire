@@ -4,8 +4,8 @@ import { loadEnv } from 'vite';
 
 export default defineConfig({
   test: {
-    watch: false,
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['**/.trunk/**', '**/node_modules/**'],
     coverage: {
       provider: 'v8',
       clean: true,

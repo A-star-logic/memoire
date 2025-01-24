@@ -1,0 +1,17 @@
+{
+  "name": "@astarlogic/services-utils",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": {
+      "workerd": "./src/*",
+      "typescript": "./src/*",
+      "development": "./src/*",
+      "types": "./src/*",
+      "default": "./dist/*"
+    }
+  },
+  "scripts": {
+    "build": "yarn w:build-service"
+  }
+}

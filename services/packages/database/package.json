@@ -1,0 +1,37 @@
+{
+  "name": "@astarlogic/services-database",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./search": {
+      "workerd": "./src/search/database-search-interface.ts",
+      "typescript": "./src/search/database-search-interface.ts",
+      "development": "./src/search/database-search-interface.ts",
+      "types": "./src/search/database-search-interface.ts",
+      "default": "./dist/search/database-search-interface.js"
+    },
+    "./reporting": {
+      "workerd": "./src/reporting/database-reporting-interface.ts",
+      "typescript": "./src/reporting/database-reporting-interface.ts",
+      "development": "./src/reporting/database-reporting-interface.ts",
+      "types": "./src/reporting/database-reporting-interface.ts",
+      "default": "./dist/reporting/database-reporting-interface.js"
+    },
+    "./document-queue": {
+      "workerd": "./src/document-queue/database-dq-interface.ts",
+      "typescript": "./src/document-queue/database-dq-interface.ts",
+      "development": "./src/document-queue/database-dq-interface.ts",
+      "types": "./src/document-queue/database-dq-interface.ts",
+      "default": "./dist/document-queue/database-dq-interface.js"
+    }
+  },
+  "scripts": {
+    "build": "yarn w:build-service"
+  },
+  "dependencies": {
+    "@astarlogic/shared": "workspace:^",
+    "@sentry/node": "^8.51.0",
+    "pino": "^9.6.0",
+    "posthog-node": "^4.4.1"
+  }
+}
