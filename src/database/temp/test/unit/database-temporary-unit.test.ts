@@ -26,20 +26,20 @@ describe('Database Temporary', () => {
 
     expect(fsPromises.mkdir).toHaveBeenCalledTimes(1);
     expect(fsPromises.mkdir).toHaveBeenCalledWith(
-      path.join(process.cwd(), 'data', 'temp'),
+      path.join(process.cwd(), '.testMemoire', 'temp'),
       { recursive: true },
     );
 
     expect(fsPromises.writeFile).toHaveBeenNthCalledWith(
       1,
-      path.join(process.cwd(), 'data', 'temp', `${documentId}.txt`),
+      path.join(process.cwd(), '.testMemoire', 'temp', `${documentId}.txt`),
       content,
       'utf8',
     );
 
     expect(fsPromises.writeFile).toHaveBeenNthCalledWith(
       2,
-      path.join(process.cwd(), 'data', 'temp', `${documentId}.json`),
+      path.join(process.cwd(), '.testMemoire', 'temp', `${documentId}.json`),
       JSON.stringify(metadata, undefined, 2),
       'utf8',
     );
@@ -49,7 +49,7 @@ describe('Database Temporary', () => {
     const documentId = 'test-doc';
     const expectedPath = path.join(
       process.cwd(),
-      'data',
+      '.testMemoire',
       'temp',
       `${documentId}.txt`,
     );
@@ -67,7 +67,7 @@ describe('Database Temporary', () => {
     const documentId = 'test-doc';
     const expectedPath = path.join(
       process.cwd(),
-      'data',
+      '.testMemoire',
       'temp',
       `${documentId}.json`,
     );

@@ -46,7 +46,12 @@ describe('Database Queue', () => {
     await queueAdd({ createdAt: 123, documentID: 'doc-1' });
 
     expect(fsPromises.writeFile).toHaveBeenCalledTimes(1);
-    const queuePath = path.join(process.cwd(), 'data', 'queue', 'queue.json');
+    const queuePath = path.join(
+      process.cwd(),
+      '.testMemoire',
+      'queue',
+      'queue.json',
+    );
     expect(fsPromises.writeFile).toHaveBeenCalledWith(
       queuePath,
       expect.any(String),
