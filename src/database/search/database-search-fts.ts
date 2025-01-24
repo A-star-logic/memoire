@@ -289,7 +289,7 @@ export async function FTSSearch({
     },
   });
 
-  return results.slice(0, maxResults);
+  return results.slice(0, Math.max(100, maxResults));
 }
 
 /**

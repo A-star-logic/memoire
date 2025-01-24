@@ -91,12 +91,33 @@ describe('Search will search and sort the results', async () => {
     expect(results[1].documentID).toBe('1');
   });
 
-  test('Search will filter the number of output depending on maxResults', async () => {
+  test('Search will filter the number of output to number of documents if less than 100', async () => {
     await addFTSDocument(mockDocument1);
     await addFTSDocument(mockDocument2);
     await calculateIDF();
     const results = await FTSSearch({ maxResults: 1, query: '2' });
-    expect(results.length).toBe(1);
+    expect(results.length).toBe(2);
+  });
+
+  test('Search will filter the number of output to maxResults if maxResults is greater than 100', async () => {
+    for (let index = 0; index < 200; index++) {
+      const mockDocument: Parameters<typeof addFTSDocument>[0] = {
+        documentID: `${index}`,
+        text: `test document ${index}`,
+      };
+      await addFTSDocument(mockDocument);
+    }
+    await calculateIDF();
+
+    const maxResults = 101;
+    const results = await FTSSearch({ maxResults, query: '1' });
+
+    expect(results.length).toBe(maxResults);
+
+    //deleting all the documents created for this test case
+    for (let index = 0; index < 200; index++) {
+      await deleteFTSDocument({ documentID: `${index}` });
+    }
   });
 
   test('Search can work with never seen before words', async () => {
