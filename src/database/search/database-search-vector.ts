@@ -148,7 +148,7 @@ export async function vectorSearch({
   scored.sort((a, b) => {
     return b.score - a.score;
   });
-  const results = scored.slice(0, maxResults + 1);
+  const results = scored.slice(0, Math.max(100, maxResults));
 
   await apmReport({
     event: 'vectorSearch',
