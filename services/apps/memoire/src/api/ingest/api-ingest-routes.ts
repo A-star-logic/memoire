@@ -12,8 +12,10 @@ import {
   usageStatsFTS,
   usageStatsVector,
 } from '@astarlogic/services-database/search';
+import { isFileSupported, parseStream } from '@astarlogic/services-parser';
 import { getTotalMemoryUsage } from '@astarlogic/services-utils/utils-apm.js';
 import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
+
 import {
   basicResponseSchema,
   documentLinkBodySchema,
@@ -23,12 +25,6 @@ import {
 
 // server
 import type { CustomFastifyInstance } from '../../server/types.js';
-
-// parser
-import {
-  isFileSupported,
-  parseStream,
-} from '../../../../../packages/parser/src/parser.js';
 
 // core
 import { addDocuments } from '../../core/core-search.js';

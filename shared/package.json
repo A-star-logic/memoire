@@ -1,6 +1,7 @@
 {
   "name": "@astarlogic/shared",
   "private": true,
+  "type": "module",
   "exports": {
     "./*": {
       "workerd": "./src/*",

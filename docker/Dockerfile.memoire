@@ -9,14 +9,14 @@ ENV SENTRY_DSN ${SENTRY_DSN}
 ARG POSTHOG_KEY
 ENV POSTHOG_KEY ${POSTHOG_KEY}
 
-
 COPY --chown=node:node node_modules ./node_modules
-COPY --chown=node:node dist ./dist
+COPY --chown=node:node services ./services
+COPY --chown=node:node shared ./shared
 COPY --chown=node:node package.json .
 
-RUN mkdir .memoire
-RUN chown node:node .memoire
+RUN mkdir .memoire && \
+    chown node:node .memoire
 
 USER node
 
-CMD ["node", "--enable-source-maps", "dist/index.js"]
+CMD ["node", "--enable-source-maps", "services/apps/memoire/dist/index.js"]

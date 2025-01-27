@@ -74,6 +74,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@astarlogic/monorepo@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@astarlogic/monorepo@workspace:."
+  dependencies:
+    "@ansearch/config": "npm:^0.1.1"
+    "@types/node": "npm:^22.10.6"
+    "@typescript-eslint/parser": "npm:^8.20.0"
+    "@vitest/coverage-v8": "npm:2.1.8"
+    eslint: "npm:^9.18.0"
+    eslint-config-prettier: "npm:^10.0.1"
+    eslint-import-resolver-typescript: "npm:^3.7.0"
+    license-checker-rseidelsohn: "npm:^4.4.2"
+    pino-pretty: "npm:^13.0.0"
+    prettier: "npm:^3.4.2"
+    tsup: "npm:^8.3.5"
+    tsx: "npm:^4.19.2"
+    turbo: "npm:^2.3.4"
+    typescript: "npm:5.7.3"
+    vitest: "npm:^2.1.8"
+  languageName: unknown
+  linkType: soft
+
 "@astarlogic/services-database@workspace:^, @astarlogic/services-database@workspace:services/packages/database":
   version: 0.0.0-use.local
   resolution: "@astarlogic/services-database@workspace:services/packages/database"
@@ -4885,27 +4907,6 @@ __metadata:
   checksum: 10c0/bbbcb117ac6480138f8c93cf7f535614282dea9dc828f540cdece85e3c665e8f78958b96afac52f29ff883c72638e6a87d469ecc9fe5bc902df03ed24a55dba8
   languageName: node
   linkType: hard
-
-"astarlogic@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "astarlogic@workspace:."
-  dependencies:
-    "@ansearch/config": "npm:^0.1.1"
-    "@types/node": "npm:^22.10.6"
-    "@typescript-eslint/parser": "npm:^8.20.0"
-    "@vitest/coverage-v8": "npm:2.1.8"
-    eslint: "npm:^9.18.0"
-    eslint-config-prettier: "npm:^10.0.1"
-    eslint-import-resolver-typescript: "npm:^3.7.0"
-    license-checker-rseidelsohn: "npm:^4.4.2"
-    pino-pretty: "npm:^13.0.0"
-    prettier: "npm:^3.4.2"
-    tsup: "npm:^8.3.5"
-    tsx: "npm:^4.19.2"
-    typescript: "npm:5.7.3"
-    vitest: "npm:^2.1.8"
-  languageName: unknown
-  linkType: soft
 
 "async-function@npm:^1.0.0":
   version: 1.0.0
@@ -10522,6 +10523,77 @@ __metadata:
   bin:
     tsx: dist/cli.mjs
   checksum: 10c0/63164b889b1d170403e4d8753a6755dec371f220f5ce29a8e88f1f4d6085a784a12d8dc2ee669116611f2c72757ac9beaa3eea5c452796f541bdd2dc11753721
+  languageName: node
+  linkType: hard
+
+"turbo-darwin-64@npm:2.3.4":
+  version: 2.3.4
+  resolution: "turbo-darwin-64@npm:2.3.4"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"turbo-darwin-arm64@npm:2.3.4":
+  version: 2.3.4
+  resolution: "turbo-darwin-arm64@npm:2.3.4"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"turbo-linux-64@npm:2.3.4":
+  version: 2.3.4
+  resolution: "turbo-linux-64@npm:2.3.4"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
+
+"turbo-linux-arm64@npm:2.3.4":
+  version: 2.3.4
+  resolution: "turbo-linux-arm64@npm:2.3.4"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"turbo-windows-64@npm:2.3.4":
+  version: 2.3.4
+  resolution: "turbo-windows-64@npm:2.3.4"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"turbo-windows-arm64@npm:2.3.4":
+  version: 2.3.4
+  resolution: "turbo-windows-arm64@npm:2.3.4"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"turbo@npm:^2.3.4":
+  version: 2.3.4
+  resolution: "turbo@npm:2.3.4"
+  dependencies:
+    turbo-darwin-64: "npm:2.3.4"
+    turbo-darwin-arm64: "npm:2.3.4"
+    turbo-linux-64: "npm:2.3.4"
+    turbo-linux-arm64: "npm:2.3.4"
+    turbo-windows-64: "npm:2.3.4"
+    turbo-windows-arm64: "npm:2.3.4"
+  dependenciesMeta:
+    turbo-darwin-64:
+      optional: true
+    turbo-darwin-arm64:
+      optional: true
+    turbo-linux-64:
+      optional: true
+    turbo-linux-arm64:
+      optional: true
+    turbo-windows-64:
+      optional: true
+    turbo-windows-arm64:
+      optional: true
+  bin:
+    turbo: bin/turbo
+  checksum: 10c0/c3c52f5aa4b7c38536f0229f59ae76592c581af351ebf4b6ed0eea95bd1534ed19d84fdaea6f8f26c106dfc95394f78d4361c95aa1ae3bacc255b4a8500d53cc
   languageName: node
   linkType: hard
 
