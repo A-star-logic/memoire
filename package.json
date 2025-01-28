@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@ansearch/config": "^0.1.1",
-    "@types/node": "^22.10.6",
+    "@types/node": "^22.12.0",
     "@typescript-eslint/parser": "^8.20.0",
     "@vitest/coverage-v8": "2.1.8",
     "eslint": "^9.18.0",
