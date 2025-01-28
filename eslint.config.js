@@ -27,7 +27,12 @@ export default tseslint.config(
         {
           ignoreDestructuring: true,
           ignoreImports: true,
-          allow: ['prompt_tokens', 'total_tokens', 'completion_tokens'],
+          allow: [
+            'prompt_tokens',
+            'total_tokens',
+            'completion_tokens',
+            'input_type',
+          ],
         },
       ],
     },
@@ -35,10 +40,19 @@ export default tseslint.config(
   {
     rules: {
       // to change whenever possible, set as warning for compatibility
-      'perfectionist/sort-imports': 1,
-      'perfectionist/sort-modules': 1,
-      '@eslint-community/eslint-comments/require-description': 1,
-      '@eslint-community/eslint-comments/disable-enable-pair': 1,
+      'perfectionist/sort-imports': 2,
+      'perfectionist/sort-modules': 2,
+      '@eslint-community/eslint-comments/require-description': 2,
+      '@eslint-community/eslint-comments/disable-enable-pair': 2,
+      'sonarjs/no-empty-test-file': 0, // duplicate of no-warning-comments
+    },
+  },
+  {
+    // disable some rules in test files
+    files: ['**/tests/**'],
+    rules: {
+      'security/detect-non-literal-fs-filename': 0,
+      'eslint/security/detect-non-literal-fs-filename': 0,
     },
   },
 );

@@ -1,11 +1,13 @@
-run-name: Quality assurance
+name: Quality assurance
 
 on:
   pull_request:
     paths:
-      - 'src/**'
-      - 'docker/Dockerfile.memoire'
-      - 'package.json'
+      - src/**
+      - docker/Dockerfile.memoire
+      - package.json
+
+permissions: {} # Restrict all permissions by default
 
 concurrency:
   # cancel any running action on new push
@@ -25,7 +27,7 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Transpile
-        run: yarn build
+        run: yarn turbo build
         shell: bash
 
   license-check:
@@ -68,8 +70,7 @@ jobs:
     container: node:20-slim
     environment: cicd
     permissions:
-      # Required to put a comment into the pull-request
-      pull-requests: write
+      pull-requests: write # Only grant PR write access to this specific job
 
     steps:
       - name: Checkout
@@ -95,5 +96,5 @@ jobs:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           OPENAI_KEY_OVERRIDE: ${{ secrets.OPENAI_KEY_OVERRIDE }}
 
-      - name: 'Report Coverage'
+      - name: Report Coverage
         uses: davelosert/vitest-coverage-report-action@v2

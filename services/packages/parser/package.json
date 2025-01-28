@@ -1,0 +1,22 @@
+{
+  "name": "@astarlogic/services-parser",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "workerd": "./src/parser.ts",
+      "typescript": "./src/parser.ts",
+      "development": "./src/parser.ts",
+      "types": "./src/parser.ts",
+      "default": "./dist/parser.js"
+    }
+  },
+  "dependencies": {
+    "@astarlogic/services-utils": "workspace:^",
+    "fast-xml-parser": "^4.5.1",
+    "fflate": "^0.8.2"
+  },
+  "scripts": {
+    "build": "yarn w:build-service"
+  }
+}

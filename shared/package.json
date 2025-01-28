@@ -1,0 +1,21 @@
+{
+  "name": "@astarlogic/shared",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": {
+      "workerd": "./src/*",
+      "typescript": "./src/*",
+      "development": "./src/*",
+      "types": "./src/*",
+      "default": "./dist/*"
+    }
+  },
+  "scripts": {
+    "build": "yarn w:build-service"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.14",
+    "ofetch": "^1.4.1"
+  }
+}
