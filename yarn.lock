@@ -64,7 +64,7 @@ __metadata:
     "@fastify/under-pressure": "npm:^9.0.3"
     "@huggingface/transformers": "npm:^3.2.4"
     "@sentry/node": "npm:^8.48.0"
-    "@sentry/profiling-node": "npm:^8.48.0"
+    "@sentry/profiling-node": "npm:^8.51.0"
     "@sinclair/typebox": "npm:^0.34.13"
     "@types/luxon": "npm:^3.4.2"
     "@types/node": "npm:^22.10.6"
@@ -3761,7 +3761,57 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/node@npm:8.48.0, @sentry/node@npm:^8.48.0":
+"@sentry/core@npm:8.51.0":
+  version: 8.51.0
+  resolution: "@sentry/core@npm:8.51.0"
+  checksum: 10c0/efcdce1bee004afb6d722db38baf23f818e0eb670f2c61b7739fe42d48dd94210b58cba2e5c27b031d83fab2cec36bf27a6f61c6bc30a9397f6a0f6657dbb5fe
+  languageName: node
+  linkType: hard
+
+"@sentry/node@npm:8.51.0":
+  version: 8.51.0
+  resolution: "@sentry/node@npm:8.51.0"
+  dependencies:
+    "@opentelemetry/api": "npm:^1.9.0"
+    "@opentelemetry/context-async-hooks": "npm:^1.29.0"
+    "@opentelemetry/core": "npm:^1.29.0"
+    "@opentelemetry/instrumentation": "npm:^0.56.0"
+    "@opentelemetry/instrumentation-amqplib": "npm:^0.45.0"
+    "@opentelemetry/instrumentation-connect": "npm:0.42.0"
+    "@opentelemetry/instrumentation-dataloader": "npm:0.15.0"
+    "@opentelemetry/instrumentation-express": "npm:0.46.0"
+    "@opentelemetry/instrumentation-fastify": "npm:0.43.0"
+    "@opentelemetry/instrumentation-fs": "npm:0.18.0"
+    "@opentelemetry/instrumentation-generic-pool": "npm:0.42.0"
+    "@opentelemetry/instrumentation-graphql": "npm:0.46.0"
+    "@opentelemetry/instrumentation-hapi": "npm:0.44.0"
+    "@opentelemetry/instrumentation-http": "npm:0.56.0"
+    "@opentelemetry/instrumentation-ioredis": "npm:0.46.0"
+    "@opentelemetry/instrumentation-kafkajs": "npm:0.6.0"
+    "@opentelemetry/instrumentation-knex": "npm:0.43.0"
+    "@opentelemetry/instrumentation-koa": "npm:0.46.0"
+    "@opentelemetry/instrumentation-lru-memoizer": "npm:0.43.0"
+    "@opentelemetry/instrumentation-mongodb": "npm:0.50.0"
+    "@opentelemetry/instrumentation-mongoose": "npm:0.45.0"
+    "@opentelemetry/instrumentation-mysql": "npm:0.44.0"
+    "@opentelemetry/instrumentation-mysql2": "npm:0.44.0"
+    "@opentelemetry/instrumentation-nestjs-core": "npm:0.43.0"
+    "@opentelemetry/instrumentation-pg": "npm:0.49.0"
+    "@opentelemetry/instrumentation-redis-4": "npm:0.45.0"
+    "@opentelemetry/instrumentation-tedious": "npm:0.17.0"
+    "@opentelemetry/instrumentation-undici": "npm:0.9.0"
+    "@opentelemetry/resources": "npm:^1.29.0"
+    "@opentelemetry/sdk-trace-base": "npm:^1.29.0"
+    "@opentelemetry/semantic-conventions": "npm:^1.28.0"
+    "@prisma/instrumentation": "npm:5.22.0"
+    "@sentry/core": "npm:8.51.0"
+    "@sentry/opentelemetry": "npm:8.51.0"
+    import-in-the-middle: "npm:^1.11.2"
+  checksum: 10c0/8d343cd2be751fea1a3dcefcf34385cdc4de2d61325315de984e9d1cc461711c8ccdf207cefaafe3b1bdc0db7afb60d42f0a1c5cd65ccff8117d83f44488737d
+  languageName: node
+  linkType: hard
+
+"@sentry/node@npm:^8.48.0":
   version: 8.48.0
   resolution: "@sentry/node@npm:8.48.0"
   dependencies:
@@ -3819,18 +3869,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/profiling-node@npm:^8.48.0":
-  version: 8.48.0
-  resolution: "@sentry/profiling-node@npm:8.48.0"
+"@sentry/opentelemetry@npm:8.51.0":
+  version: 8.51.0
+  resolution: "@sentry/opentelemetry@npm:8.51.0"
   dependencies:
-    "@sentry/core": "npm:8.48.0"
-    "@sentry/node": "npm:8.48.0"
+    "@sentry/core": "npm:8.51.0"
+  peerDependencies:
+    "@opentelemetry/api": ^1.9.0
+    "@opentelemetry/core": ^1.29.0
+    "@opentelemetry/instrumentation": ^0.56.0
+    "@opentelemetry/sdk-trace-base": ^1.29.0
+    "@opentelemetry/semantic-conventions": ^1.28.0
+  checksum: 10c0/5ffd52ee1a77a1ad29204760ad6a6883a5150f76c42e2cfc3022dfdb62f16b943f3177a58cffa8a1e3f755a0a6ee4e9cdcfd088ba53446aee9a8f56f4656f105
+  languageName: node
+  linkType: hard
+
+"@sentry/profiling-node@npm:^8.51.0":
+  version: 8.51.0
+  resolution: "@sentry/profiling-node@npm:8.51.0"
+  dependencies:
+    "@sentry/core": "npm:8.51.0"
+    "@sentry/node": "npm:8.51.0"
     detect-libc: "npm:^2.0.2"
     node-abi: "npm:^3.61.0"
     node-gyp: "npm:latest"
   bin:
     sentry-prune-profiler-binaries: scripts/prune-profiler-binaries.js
-  checksum: 10c0/6a71c7aea0c07988092442a40fe13ed1b11115cb53b8e3c9b67b4935d24e35f40376299920da069cb3cabf0dc94dfd29609d21eae3d86476278dd5b7f980aeb6
+  checksum: 10c0/2ad532c9c699042459b546ebaed4a937e74c6bf49c1207463f19ca395da56a15ab7b6067acfd43b6284044fc03870e3404382dcd2da24b35817b26e1d0a30fea
   languageName: node
   linkType: hard
 

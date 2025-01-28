@@ -42,7 +42,7 @@
     "@fastify/under-pressure": "^9.0.3",
     "@huggingface/transformers": "^3.2.4",
     "@sentry/node": "^8.48.0",
-    "@sentry/profiling-node": "^8.48.0",
+    "@sentry/profiling-node": "^8.51.0",
     "@sinclair/typebox": "^0.34.13",
     "axios": "^1.7.9",
     "fast-xml-parser": "^4.5.1",
