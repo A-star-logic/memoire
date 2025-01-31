@@ -1,4 +1,4 @@
-import type { QueueItem } from './database-dq-queue.js';
+import type { QueueItem } from './database-dq-queue-typebox-schema.js';
 import { queueAdd, queueGetNext } from './database-dq-queue.js';
 import {
   readTemporaryMetadata,
