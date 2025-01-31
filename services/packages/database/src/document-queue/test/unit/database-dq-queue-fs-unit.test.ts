@@ -1,12 +1,7 @@
-import fs from 'node:fs/promises';
 import path from 'node:path';
 import { beforeEach, describe, expect, type Mock, test, vi } from 'vitest';
 
 vi.mock('node:fs/promises');
-
-import { loadQueue, queueAdd, queueGetNext } from '../../database-dq-queue.js';
-
-const fsPromises = fs;
 
 /**
  * Creates an Error object with `code = 'ENOENT'` without using classes or Object.assign.
@@ -22,20 +17,30 @@ function createENOENTError(
   return error as Error & { code: string };
 }
 
-describe('Database Queue', () => {
+describe('Database Queue (FS Mode Only)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    process.env.SUPABASE_URL = '';
+    vi.resetModules();
   });
 
   test('loadQueue will create an empty queue if the file does not exist (ENOENT)', async () => {
-    (fsPromises.readFile as Mock).mockRejectedValueOnce(createENOENTError());
+    const fsModule = await import('node:fs/promises');
+    const fsPromises = fsModule.default;
 
+    const { loadQueue } = await import('../../database-dq-queue.js');
+
+    (fsPromises.readFile as Mock).mockRejectedValueOnce(createENOENTError());
     await loadQueue();
 
     expect(fsPromises.readFile).toHaveBeenCalledTimes(1);
   });
 
   test('loadQueue will throw error if JSON is not an array', async () => {
+    const fsModule = await import('node:fs/promises');
+    const fsPromises = fsModule.default;
+    const { loadQueue } = await import('../../database-dq-queue.js');
+
     (fsPromises.readFile as Mock).mockResolvedValueOnce(
       Buffer.from(JSON.stringify({ not: 'an array' })),
     );
@@ -43,6 +48,10 @@ describe('Database Queue', () => {
   });
 
   test('queueAdd will push item in memory and call saveQueue', async () => {
+    const fsModule = await import('node:fs/promises');
+    const fsPromises = fsModule.default;
+    const { queueAdd } = await import('../../database-dq-queue.js');
+
     await queueAdd({ createdAt: 123, documentID: 'doc-1' });
 
     expect(fsPromises.writeFile).toHaveBeenCalledTimes(1);
@@ -60,6 +69,12 @@ describe('Database Queue', () => {
   });
 
   test('queueGetNext will shift item from the queue and call saveQueue', async () => {
+    const fsModule = await import('node:fs/promises');
+    const fsPromises = fsModule.default;
+    const { loadQueue, queueGetNext } = await import(
+      '../../database-dq-queue.js'
+    );
+
     (fsPromises.readFile as Mock).mockResolvedValueOnce(
       Buffer.from(JSON.stringify([{ createdAt: 123, documentID: 'doc-1' }])),
     );

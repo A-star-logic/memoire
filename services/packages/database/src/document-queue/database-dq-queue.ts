@@ -1,5 +1,11 @@
+import { Value } from '@sinclair/typebox/value';
+import { eq } from 'drizzle-orm';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import type { QueueItem } from './database-dq-queue-typebox-schema.js';
+import { queueTable } from './database-dq-queue-database-schema.js';
+import { QueueItemSchema } from './database-dq-queue-typebox-schema.js';
+import { db as database } from './database-dq.js';
 
 const isTestEnvironment = process.env.NODE_ENV === 'test';
 export const BASE_FOLDER = isTestEnvironment ? '.testMemoire' : 'data';
@@ -10,21 +16,19 @@ const QUEUE_FILE_PATH = path.join(
   'queue.json',
 );
 
-export interface QueueItem {
-  createdAt: number;
-  documentID: string;
-}
-
-/**
- * A custom interface for errors that may have an optional code property.
- */
 interface NodeJsErrorWithCode extends Error {
   code?: string;
 }
 
 /**
- * In-memory queue (FIFO), reloaded from disk on startup.
+ * Verify the object matches the QueueItem interface.
+ * @param object The object to check.
+ * @returns A boolean indicating whether the object is a valid QueueItem.
  */
+function isQueueItem(object: unknown): object is QueueItem {
+  return Value.Check(QueueItemSchema, object);
+}
+
 let inMemoryQueue: QueueItem[] = [];
 
 /**
@@ -66,8 +70,15 @@ export async function loadQueue(): Promise<void> {
  * @param item The item to add.
  */
 export async function queueAdd(item: QueueItem): Promise<void> {
-  inMemoryQueue.push(item);
-  await saveQueue();
+  if (database) {
+    await database.insert(queueTable).values({
+      createdAt: item.createdAt,
+      documentID: item.documentID,
+    });
+  } else {
+    inMemoryQueue.push(item);
+    await saveQueue();
+  }
 }
 
 /**
@@ -75,9 +86,32 @@ export async function queueAdd(item: QueueItem): Promise<void> {
  * @returns The next QueueItem or undefined if the queue is empty.
  */
 export async function queueGetNext(): Promise<QueueItem | undefined> {
-  const item = inMemoryQueue.shift();
-  await saveQueue();
-  return item;
+  if (database) {
+    const rows = await database
+      .select({
+        createdAt: queueTable.createdAt,
+        documentID: queueTable.documentID,
+        id: queueTable.id,
+      })
+      .from(queueTable)
+      .orderBy(queueTable.createdAt)
+      .limit(1);
+
+    if (rows.length === 0) {
+      return undefined;
+    }
+
+    const [row] = rows;
+    await database.delete(queueTable).where(eq(queueTable.id, row.id));
+    return {
+      createdAt: row.createdAt,
+      documentID: row.documentID,
+    };
+  } else {
+    const item = inMemoryQueue.shift();
+    await saveQueue();
+    return item;
+  }
 }
 
 /**
@@ -95,21 +129,4 @@ export async function saveQueue(): Promise<void> {
 async function ensureQueueFolder(): Promise<void> {
   const directory = path.dirname(QUEUE_FILE_PATH);
   await fs.mkdir(directory, { recursive: true });
-}
-
-/**
- * A type guard function to verify the object matches the QueueItem interface.
- * @param object The object to check.
- * @returns A boolean indicating whether the object is a valid QueueItem.
- */
-function isQueueItem(object: unknown): object is QueueItem {
-  if (typeof object !== 'object' || object === null) {
-    return false;
-  }
-
-  const record = object as { [key: string]: unknown };
-  return (
-    typeof record.documentID === 'string' &&
-    typeof record.createdAt === 'number'
-  );
 }
