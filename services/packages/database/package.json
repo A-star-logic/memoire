@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@astarlogic/shared": "workspace:^",
-    "@sentry/node": "^8.51.0",
+    "@sentry/node": "^8.54.0",
     "pino": "^9.6.0",
     "posthog-node": "^4.4.1"
   }
