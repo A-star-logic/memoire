@@ -15,7 +15,7 @@
     "build": "yarn w:build-service"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.34.14",
+    "@sinclair/typebox": "^0.34.15",
     "ofetch": "^1.4.1"
   }
 }
