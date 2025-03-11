@@ -33,7 +33,10 @@
   "dependencies": {
     "@astarlogic/shared": "workspace:^",
     "@sentry/node": "^8.51.0",
+    "@sinclair/typebox": "^0.34.30",
     "@types/pg": "^8.11.11",
+    "drizzle-orm": "^0.40.0",
+    "drizzle-typebox": "^0.3.0",
     "pg": "^8.13.3",
     "pino": "^9.6.0",
     "posthog-node": "^4.4.1",

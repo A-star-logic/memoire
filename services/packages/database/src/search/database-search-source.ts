@@ -1,5 +1,8 @@
 import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
 import { db } from '../utils/database.js';
+import { getDrizzle, DrizzleDB } from '../utils/drizzle.js';
+import { documents, chunks } from '../schema/schema.js';
+import { eq } from 'drizzle-orm';
 
 interface SourceDocument {
   chunkedContent: string[];
@@ -18,13 +21,16 @@ export async function deleteSourceDocument({
   documentID: string;
 }): Promise<void> {
   const verifiedDocumentId = await secureVerifyDocumentID({ documentID });
+  const client = await db.getClient();
 
-  // Delete from documents table - chunks will be deleted automatically due to CASCADE
-  const deleteQuery = `
-    DELETE FROM documents
-    WHERE document_id = $1;
-  `;
-  await db.query(deleteQuery, [verifiedDocumentId]);
+  try {
+    // Delete from documents table - chunks will be deleted automatically due to CASCADE
+    await getDrizzle(client)
+      .delete(documents)
+      .where(eq(documents.documentId, verifiedDocumentId));
+  } finally {
+    client.release();
+  }
 }
 
 /**
@@ -70,47 +76,48 @@ export async function saveSourceDocument({
   title: string | undefined;
 }): Promise<void> {
   const verifiedDocumentId = await secureVerifyDocumentID({ documentID });
-
-  // Start a transaction since we're inserting into multiple tables
   const client = await db.getClient();
+
   try {
-    await client.query('BEGIN');
+    // Use a transaction since we're modifying multiple tables
+    const drizzle = getDrizzle(client);
+    await drizzle.transaction(async (tx: DrizzleDB) => {
+      // Insert/Update document
+      await tx
+        .insert(documents)
+        .values({
+          documentId: verifiedDocumentId,
+          title: title || '', // Convert undefined to empty string as title is NOT NULL
+          metadata: metadata as any, // Type assertion needed as metadata is a generic object
+          updatedAt: new Date() // Update timestamp
+        })
+        .onConflictDoUpdate({
+          target: documents.documentId,
+          set: {
+            title: title || '',
+            metadata: metadata as any,
+            updatedAt: new Date()
+          }
+        });
 
-    // Insert into documents table
-    const documentInsertQuery = `
-      INSERT INTO documents (document_id, title, metadata)
-      VALUES ($1, $2, $3)
-      ON CONFLICT (document_id) DO UPDATE
-      SET title = $2,
-          metadata = $3,
-          updated_at = CURRENT_TIMESTAMP
-      RETURNING document_id;
-    `;
-    await client.query(documentInsertQuery, [
-      verifiedDocumentId,
-      title || '', // Convert undefined to empty string as title is NOT NULL
-      JSON.stringify(metadata)
-    ]);
+      // Delete existing chunks
+      await tx
+        .delete(chunks)
+        .where(eq(chunks.documentId, verifiedDocumentId));
 
-    // Delete existing chunks for this document (they'll be recreated)
-    const deleteChunksQuery = `
-      DELETE FROM chunks
-      WHERE document_id = $1;
-    `;
-    await client.query(deleteChunksQuery, [verifiedDocumentId]);
-
-    // Insert new chunks
-    const chunkInsertQuery = `
-      INSERT INTO chunks (document_id, chunk_content)
-      VALUES ($1, $2);
-    `;
-    for (const chunk of chunkedContent) {
-      await client.query(chunkInsertQuery, [verifiedDocumentId, chunk.chunkText]);
-    }
-
-    await client.query('COMMIT');
+      // Insert new chunks
+      if (chunkedContent.length > 0) {
+        await tx
+          .insert(chunks)
+          .values(
+            chunkedContent.map((chunk: { chunkText: string }) => ({
+              documentId: verifiedDocumentId,
+              chunkContent: chunk.chunkText
+            }))
+          );
+      }
+    });
   } catch (error) {
-    await client.query('ROLLBACK');
     throw error;
   } finally {
     client.release();
@@ -129,31 +136,39 @@ async function loadSourceDocument({
   documentID: string;
 }): Promise<SourceDocument> {
   const verifiedDocumentId = await secureVerifyDocumentID({ documentID });
+  const client = await db.getClient();
 
-  // Get document metadata
-  const documentQuery = `
-    SELECT title, metadata
-    FROM documents
-    WHERE document_id = $1;
-  `;
-  const documentResult = await db.query<{ title: string; metadata: object }>(documentQuery, [verifiedDocumentId]);
-  
-  if (documentResult.length === 0) {
-    throw new Error(`Document not found: ${documentID}`);
+  try {
+    const drizzle = getDrizzle(client);
+
+    // Get document metadata
+    const documentResult = await drizzle
+      .select({
+        title: documents.title,
+        metadata: documents.metadata
+      })
+      .from(documents)
+      .where(eq(documents.documentId, verifiedDocumentId));
+
+    if (documentResult.length === 0) {
+      throw new Error(`Document not found: ${documentID}`);
+    }
+
+    // Get document chunks
+    const chunksResult = await drizzle
+      .select({
+        chunkContent: chunks.chunkContent
+      })
+      .from(chunks)
+      .where(eq(chunks.documentId, verifiedDocumentId))
+      .orderBy(chunks.createdAt);
+
+    return {
+      chunkedContent: chunksResult.map((row: { chunkContent: string }) => row.chunkContent),
+      metadata: documentResult[0].metadata,
+      title: documentResult[0].title
+    };
+  } finally {
+    client.release();
   }
-
-  // Get document chunks
-  const chunksQuery = `
-    SELECT chunk_content
-    FROM chunks
-    WHERE document_id = $1
-    ORDER BY created_at;
-  `;
-  const chunksResult = await db.query<{ chunk_content: string }>(chunksQuery, [verifiedDocumentId]);
-
-  return {
-    chunkedContent: chunksResult.map(row => row.chunk_content),
-    metadata: documentResult[0].metadata,
-    title: documentResult[0].title
-  };
 }
