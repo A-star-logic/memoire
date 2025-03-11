@@ -1,5 +1,5 @@
 import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { db } from '../utils/database.js';
 
 interface SourceDocument {
   chunkedContent: string[];
@@ -17,17 +17,14 @@ export async function deleteSourceDocument({
 }: {
   documentID: string;
 }): Promise<void> {
-  try {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename -- the ID is verified
-    await unlink(
-      `.memoire/sources/${await secureVerifyDocumentID({ documentID })}.json`,
-    );
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('ENOENT')) {
-      return;
-    }
-    throw error;
-  }
+  const verifiedDocumentId = await secureVerifyDocumentID({ documentID });
+
+  // Delete from documents table - chunks will be deleted automatically due to CASCADE
+  const deleteQuery = `
+    DELETE FROM documents
+    WHERE document_id = $1;
+  `;
+  await db.query(deleteQuery, [verifiedDocumentId]);
 }
 
 /**
@@ -72,18 +69,52 @@ export async function saveSourceDocument({
   metadata: object;
   title: string | undefined;
 }): Promise<void> {
-  await mkdir('.memoire/sources', { recursive: true });
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- the ID is verified
-  await writeFile(
-    `.memoire/sources/${await secureVerifyDocumentID({ documentID })}.json`,
-    JSON.stringify({
-      chunkedContent: chunkedContent.map((chunk) => {
-        return chunk.chunkText;
-      }),
-      metadata,
-      title,
-    } satisfies SourceDocument),
-  );
+  const verifiedDocumentId = await secureVerifyDocumentID({ documentID });
+
+  // Start a transaction since we're inserting into multiple tables
+  const client = await db.getClient();
+  try {
+    await client.query('BEGIN');
+
+    // Insert into documents table
+    const documentInsertQuery = `
+      INSERT INTO documents (document_id, title, metadata)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (document_id) DO UPDATE
+      SET title = $2,
+          metadata = $3,
+          updated_at = CURRENT_TIMESTAMP
+      RETURNING document_id;
+    `;
+    await client.query(documentInsertQuery, [
+      verifiedDocumentId,
+      title || '', // Convert undefined to empty string as title is NOT NULL
+      JSON.stringify(metadata)
+    ]);
+
+    // Delete existing chunks for this document (they'll be recreated)
+    const deleteChunksQuery = `
+      DELETE FROM chunks
+      WHERE document_id = $1;
+    `;
+    await client.query(deleteChunksQuery, [verifiedDocumentId]);
+
+    // Insert new chunks
+    const chunkInsertQuery = `
+      INSERT INTO chunks (document_id, chunk_content)
+      VALUES ($1, $2);
+    `;
+    for (const chunk of chunkedContent) {
+      await client.query(chunkInsertQuery, [verifiedDocumentId, chunk.chunkText]);
+    }
+
+    await client.query('COMMIT');
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 
 /**
@@ -97,8 +128,32 @@ async function loadSourceDocument({
 }: {
   documentID: string;
 }): Promise<SourceDocument> {
-  return JSON.parse(
-    // eslint-disable-next-line security/detect-non-literal-fs-filename -- the ID is verified
-    await readFile(`.memoire/sources/${documentID}.json`, { encoding: 'utf8' }),
-  ) as SourceDocument;
+  const verifiedDocumentId = await secureVerifyDocumentID({ documentID });
+
+  // Get document metadata
+  const documentQuery = `
+    SELECT title, metadata
+    FROM documents
+    WHERE document_id = $1;
+  `;
+  const documentResult = await db.query<{ title: string; metadata: object }>(documentQuery, [verifiedDocumentId]);
+  
+  if (documentResult.length === 0) {
+    throw new Error(`Document not found: ${documentID}`);
+  }
+
+  // Get document chunks
+  const chunksQuery = `
+    SELECT chunk_content
+    FROM chunks
+    WHERE document_id = $1
+    ORDER BY created_at;
+  `;
+  const chunksResult = await db.query<{ chunk_content: string }>(chunksQuery, [verifiedDocumentId]);
+
+  return {
+    chunkedContent: chunksResult.map(row => row.chunk_content),
+    metadata: documentResult[0].metadata,
+    title: documentResult[0].title
+  };
 }
