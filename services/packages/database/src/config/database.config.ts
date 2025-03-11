@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 const DatabaseConfigSchema = z.object({
   connectionUrl: z.string().url('Invalid database connection URL'),
-  password: z.string().min(1, 'Database password is required'),
   maxConnections: z.coerce
     .number()
     .int()
@@ -29,14 +28,13 @@ function validateEnvConfig(): DatabaseConfig {
   try {
     return DatabaseConfigSchema.parse({
       connectionUrl: process.env.NEON_DB_URL,
-      password: process.env.NEON_DB_PASSWORD,
       maxConnections: process.env.DB_MAX_CONNECTIONS,
       idleTimeout: process.env.DB_IDLE_TIMEOUT,
       connectionTimeout: process.env.DB_CONNECTION_TIMEOUT,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      const issues = error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('\n');
+      const issues = error.issues.map((issue: z.ZodIssue) => `${issue.path.join('.')}: ${issue.message}`).join('\n');
       throw new Error(`Database configuration validation failed:\n${issues}`);
     }
     throw error;

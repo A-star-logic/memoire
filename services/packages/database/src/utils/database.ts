@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { databaseConfig } from '../config/database.config';
+import { databaseConfig } from '@astarlogic/services-database/config';
 
 class DatabaseConnection {
   private static instance: DatabaseConnection;
@@ -8,7 +8,6 @@ class DatabaseConnection {
   private constructor() {
     this.pool = new Pool({
       connectionString: databaseConfig.connectionUrl,
-      password: databaseConfig.password,
       max: databaseConfig.maxConnections,
       idleTimeoutMillis: databaseConfig.idleTimeout,
       connectionTimeoutMillis: databaseConfig.connectionTimeout,
