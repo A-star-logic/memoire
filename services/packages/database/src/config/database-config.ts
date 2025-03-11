@@ -18,7 +18,9 @@ const configValidator = TypeCompiler.Compile(DatabaseConfigSchema);
  */
 export function getDatabaseConfig(): DatabaseConfig {
   const connectionTimeout = Number(process.env.DB_CONNECTION_TIMEOUT ?? '3000');
-  const databaseUrl = process.env.DATABASE_URL ?? '';
+  const databaseUrl =
+    process.env.DATABASE_URL ??
+    'postgresql://neondb_owner:npg_SPH8D4jYvWNa@ep-royal-morning-a9jlhlvf-pooler.gwc.azure.neon.tech/neondb?sslmode=require';
   const idleTimeout = Number(process.env.DB_IDLE_TIMEOUT ?? '10000');
   const maxConnections = Number(process.env.DB_MAX_CONNECTIONS ?? '20');
 
