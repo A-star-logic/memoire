@@ -86,20 +86,18 @@ export async function saveSourceDocument({
 }): Promise<void> {
   const database = getDatabaseClient();
 
-  const combinedContent = title ? `${title}\n\n${content}` : content;
-
   try {
     await database
       .insert(documents)
       .values({
-        content: combinedContent,
+        content,
         documentId: documentID,
         metadata: metadata,
         title: title ?? undefined,
       })
       .onConflictDoUpdate({
         set: {
-          content: combinedContent,
+          content: content,
           metadata: metadata,
           title: title ?? undefined,
           updatedAt: sql`CURRENT_TIMESTAMP`,
