@@ -20,6 +20,16 @@
     "**/libs/*/**": true,
     "**/dist/*/**": true
   },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "package.json": "vitest.config*, environment.d.ts, .windsurfrules, postcss.config*, tailwind.config*, env.d.ts, .editorconfig*, .gitattributes*, .gitignore*, .prettierrc*, eslint.config*, LICENSE, .yarn*, tsconfig*, tsup.config*, turbo.json, yarn.lock, drizzle.config*, vite.config*"
+  },
+  "files.exclude": {
+    "**/node_modules/": true,
+    "**/.wrangler/": true,
+    ".yarn": true,
+    "**/.turbo": true
+  },
   "cSpell.ignorePaths": [
     "package-lock.json",
     "package.json",
@@ -56,6 +66,7 @@
     "flushall",
     "getenv",
     "hgetall",
+    "hnsw",
     "hset",
     "Hubspot",
     "iconify",

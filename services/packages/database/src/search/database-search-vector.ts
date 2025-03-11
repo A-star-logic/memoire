@@ -1,28 +1,10 @@
 // libs
 import { SpeedMonitor } from '@astarlogic/services-utils/utils-apm.js';
-import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
-import { calculateSimilarity } from '@astarlogic/services-utils/utils-similarity.js';
-import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
-
-// database
+import { cosineDistance, count, desc, eq, gt, sql } from 'drizzle-orm';
+import { pgDatabase } from '../postgresql-config/database-postgresql.js';
 import { logger } from '../reporting/database-external-config.js';
-
-// database
-import {
-  apmReport,
-  errorReport,
-} from '../reporting/database-reporting-interface.js';
-
-const documentsData: {
-  [documentIDatChunkID: string]: {
-    chunkID: number;
-    documentID: string;
-    embedding: number[];
-  };
-} = {};
-
-const basePath =
-  process.env.NODE_ENV === 'test' ? '.testMemoire/vector' : '.memoire/vector';
+import { apmReport } from '../reporting/database-reporting-interface.js';
+import { chunksTable } from './database-search-schemas.js';
 
 /**
  * Bulk add the chunks that will be used for search
@@ -36,16 +18,21 @@ export async function bulkAddVectorChunks({
   embeddings,
 }: {
   documentID: string;
-  embeddings: { chunkID: number; embedding: number[] }[];
+  embeddings: {
+    chunkContent: string;
+    chunkID: number;
+    embedding: number[];
+  }[];
 }): Promise<void> {
   const speedMonitor = new SpeedMonitor();
 
-  for (const { chunkID, embedding } of embeddings) {
-    documentsData[`${documentID}@${chunkID}`] = {
+  for (const { chunkContent, chunkID, embedding } of embeddings) {
+    await pgDatabase.insert(chunksTable).values({
+      chunkContent,
       chunkID,
       documentID,
-      embedding,
-    };
+      embeddingTE3L: embedding,
+    });
   }
 
   await apmReport({
@@ -53,7 +40,6 @@ export async function bulkAddVectorChunks({
     properties: {
       chunks: embeddings.length,
       executionTime: speedMonitor.finishMonitoring(),
-      totalDocuments: Object.keys(documentsData).length,
     },
   });
 
@@ -70,77 +56,9 @@ export async function deleteVectorChunks({
 }: {
   documentID: string;
 }): Promise<void> {
-  const keys = Object.keys(documentsData).filter((key) => {
-    return key.startsWith(`${documentID}@`);
-  });
-  for (const key of keys) {
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete, fp/no-delete -- temporary, will work for now
-    delete documentsData[key];
-    // eslint-disable-next-line security/detect-non-literal-fs-filename -- safe
-    await unlink(
-      basePath +
-        '/' +
-        (await secureVerifyDocumentID({ documentID: key })) +
-        '.json',
-    );
-  }
-}
-
-/**
- * Load the index from disk
- */
-export async function loadVectorIndexFromDisk(): Promise<void> {
-  try {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename -- safe
-    const files = await readdir(basePath, { recursive: true });
-    if (files.length > 0) {
-      for (const file of files) {
-        if (file.endsWith('.json')) {
-          const documentData = JSON.parse(
-            // eslint-disable-next-line security/detect-non-literal-fs-filename -- safe
-            await readFile(`${basePath}/${file}`, { encoding: 'utf8' }),
-          ) as (typeof documentsData)[string];
-          documentsData[documentData.documentID] = documentData;
-        }
-      }
-    }
-    logger.info(
-      `${Object.keys(documentsData).length} documents loaded in vector index`,
-    );
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('ENOENT')) {
-      logger.info('No Vector index found');
-    } else {
-      await errorReport({
-        error,
-        message: 'Error loading Vector index from disk',
-      });
-    }
-  }
-}
-
-/**
- * Save the index to disk
- */
-export async function saveVectorIndexToDisk(): Promise<void> {
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- safe
-  await mkdir(basePath, { recursive: true });
-  for (const documentID of Object.keys(documentsData)) {
-    if (documentID !== 'undefined') {
-      // eslint-disable-next-line security/detect-non-literal-fs-filename -- safe
-      await writeFile(
-        basePath +
-          '/' +
-          (await secureVerifyDocumentID({ documentID })) +
-          '.json',
-        JSON.stringify({
-          chunkID: documentsData[documentID].chunkID,
-          documentID: documentsData[documentID].documentID,
-          embedding: documentsData[documentID].embedding,
-        } satisfies (typeof documentsData)[string]),
-      );
-    }
-  }
+  await pgDatabase
+    .delete(chunksTable)
+    .where(eq(chunksTable.documentID, documentID));
 }
 
 /**
@@ -150,8 +68,10 @@ export async function saveVectorIndexToDisk(): Promise<void> {
 export async function usageStatsVector(): Promise<{
   totalDocuments: number;
 }> {
+  const result = await pgDatabase.select({ count: count() }).from(chunksTable);
+
   return {
-    totalDocuments: Object.keys(documentsData).length,
+    totalDocuments: Number(result[0]?.count || 0),
   };
 }
 
@@ -171,30 +91,26 @@ export async function vectorSearch({
 }): Promise<{ chunkID: number; documentID: string; score: number }[]> {
   const speedMonitor = new SpeedMonitor();
 
-  const scored: Awaited<ReturnType<typeof vectorSearch>> = [];
-  // todo: can be optimised to limit results size to maxResult instead of slicing it at the end
-  for (const chunk of Object.values(documentsData)) {
-    scored.push({
-      chunkID: chunk.chunkID,
-      documentID: chunk.documentID,
-      score: await calculateSimilarity({
-        vectorA: chunk.embedding,
-        vectorB: embedding,
-      }),
-    });
-  }
-  scored.sort((a, b) => {
-    return b.score - a.score;
-  });
-  const results = scored.slice(0, Math.max(100, maxResults));
+  const distance = sql<number>`1 - (${cosineDistance(chunksTable.embeddingTE3L, embedding)})`;
+  const records = await pgDatabase
+    .select({
+      chunkID: chunksTable.chunkID,
+      documentID: chunksTable.documentID,
+      score: distance,
+    })
+    .from(chunksTable)
+    .where(gt(distance, 0.5))
+    .orderBy(desc(distance))
+    .limit(maxResults)
+    .execute();
 
   await apmReport({
     event: 'vectorSearch',
     properties: {
       executionTime: await speedMonitor.finishMonitoring(),
-      totalDocuments: Object.keys(documentsData).length,
+      totalDocuments: records.length,
     },
   });
 
-  return results;
+  return records;
 }
