@@ -1,3 +1,10 @@
+import pg from 'pg';
+const { Pool } = pg;
+
+import { databaseConfig } from '../config/database.config';
+
+// Re-export config types
+export type { DatabaseConfig } from '../config/database.config';
 import { Pool } from 'pg';
 import { databaseConfig } from '@astarlogic/services-database/config';
 
@@ -12,8 +19,8 @@ class DatabaseConnection {
       idleTimeoutMillis: databaseConfig.idleTimeout,
       connectionTimeoutMillis: databaseConfig.connectionTimeout,
       ssl: {
-        rejectUnauthorized: false // Required for Neon Postgres
-      }
+        rejectUnauthorized: false, // Required for Neon Postgres
+      },
     });
 
     // Handle pool errors

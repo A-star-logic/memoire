@@ -2,24 +2,9 @@ import { z } from 'zod';
 
 const DatabaseConfigSchema = z.object({
   connectionUrl: z.string().url('Invalid database connection URL'),
-  maxConnections: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(100)
-    .default(20),
-  idleTimeout: z.coerce
-    .number()
-    .int()
-    .min(1000)
-    .max(300000)
-    .default(30000),
-  connectionTimeout: z.coerce
-    .number()
-    .int()
-    .min(1000)
-    .max(60000)
-    .default(5000),
+  maxConnections: z.coerce.number().int().min(1).max(100).default(20),
+  idleTimeout: z.coerce.number().int().min(1000).max(300000).default(30000),
+  connectionTimeout: z.coerce.number().int().min(1000).max(60000).default(5000),
 });
 
 export type DatabaseConfig = z.infer<typeof DatabaseConfigSchema>;
@@ -34,7 +19,9 @@ function validateEnvConfig(): DatabaseConfig {
     });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      const issues = error.issues.map((issue: z.ZodIssue) => `${issue.path.join('.')}: ${issue.message}`).join('\n');
+      const issues = error.issues
+        .map((issue: z.ZodIssue) => `${issue.path.join('.')}: ${issue.message}`)
+        .join('\n');
       throw new Error(`Database configuration validation failed:\n${issues}`);
     }
     throw error;

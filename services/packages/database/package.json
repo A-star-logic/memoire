@@ -3,20 +3,6 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./utils": {
-      "workerd": "./src/utils/database.ts",
-      "typescript": "./src/utils/database.ts",
-      "development": "./src/utils/database.ts",
-      "types": "./src/utils/database.ts",
-      "default": "./dist/utils/database.js"
-    },
-    "./config": {
-      "workerd": "./src/config/database.config.ts",
-      "typescript": "./src/config/database.config.ts",
-      "development": "./src/config/database.config.ts",
-      "types": "./src/config/database.config.ts",
-      "default": "./dist/config/database.config.js"
-    },
     "./search": {
       "workerd": "./src/search/database-search-interface.ts",
       "typescript": "./src/search/database-search-interface.ts",
@@ -50,5 +36,11 @@
     "pino": "^9.6.0",
     "posthog-node": "^4.4.1",
     "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
   }
 }
