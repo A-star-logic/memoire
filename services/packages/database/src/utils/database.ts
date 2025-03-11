@@ -1,12 +1,9 @@
-import pg from 'pg';
-const { Pool } = pg;
-
+import { Pool } from 'pg';
 import { databaseConfig } from '../config/database.config';
+import type { DatabaseConfig } from '../config/database.config';
 
 // Re-export config types
-export type { DatabaseConfig } from '../config/database.config';
-import { Pool } from 'pg';
-import { databaseConfig } from '@astarlogic/services-database/config';
+export type { DatabaseConfig };
 
 class DatabaseConnection {
   private static instance: DatabaseConnection;
