@@ -57,7 +57,7 @@ export async function addDocument({
   });
 
   await saveSourceDocument({
-    chunkedContent: embedOutput,
+    content: title ? title + content : content,
     documentID,
     metadata,
     title,

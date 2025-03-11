@@ -10,7 +10,7 @@ export const documents = pgTable('documents', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   documentId: uuid('document_id').primaryKey().defaultRandom(),
   metadata: jsonb('metadata').notNull().default({}),
-  title: text('title').notNull(),
+  title: text('title'),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 

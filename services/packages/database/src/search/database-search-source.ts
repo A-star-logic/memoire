@@ -1,5 +1,7 @@
-import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { sql } from 'drizzle-orm';
+import type { Document } from '../schema/documents.js';
+import { getDatabaseClient } from '../client/database-client.js';
+import { documents } from '../schema/documents.js';
 
 interface SourceDocument {
   chunkedContent: string[];
@@ -17,16 +19,16 @@ export async function deleteSourceDocument({
 }: {
   documentID: string;
 }): Promise<void> {
+  const database = getDatabaseClient();
+
   try {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename -- the ID is verified
-    await unlink(
-      `.memoire/sources/${await secureVerifyDocumentID({ documentID })}.json`,
-    );
+    await database
+      .delete(documents)
+      .where(sql`${documents.documentId} = ${documentID}`);
   } catch (error) {
-    if (error instanceof Error && error.message.includes('ENOENT')) {
-      return;
-    }
-    throw error;
+    throw new Error(
+      `Failed to delete document: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
@@ -48,46 +50,71 @@ export async function getSourceDocuments({
   );
   const documents: Awaited<ReturnType<typeof getSourceDocuments>> = {};
   for (const documentID of uniqueDocumentIDs) {
-    documents[documentID] = await loadSourceDocument({ documentID });
+    try {
+      documents[documentID] = await loadSourceDocument({ documentID });
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes('Document not found')
+      ) {
+        continue;
+      }
+      throw error;
+    }
   }
   return documents;
 }
 
 /**
- * Save the source document to disk
+ * Save the source document to PostgreSQL
  * @param root named parameters
- * @param root.chunkedContent the content as chunks
+ * @param root.content the content of the document
  * @param root.documentID the document ID
  * @param root.metadata the metadata of the document
  * @param root.title the document title
  */
 export async function saveSourceDocument({
-  chunkedContent,
+  content,
   documentID,
   metadata,
   title,
 }: {
-  chunkedContent: { chunkText: string }[];
+  content: string;
   documentID: string;
   metadata: object;
   title: string | undefined;
 }): Promise<void> {
-  await mkdir('.memoire/sources', { recursive: true });
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- the ID is verified
-  await writeFile(
-    `.memoire/sources/${await secureVerifyDocumentID({ documentID })}.json`,
-    JSON.stringify({
-      chunkedContent: chunkedContent.map((chunk) => {
-        return chunk.chunkText;
-      }),
-      metadata,
-      title,
-    } satisfies SourceDocument),
-  );
+  const database = getDatabaseClient();
+
+  const combinedContent = title ? `${title}\n\n${content}` : content;
+
+  try {
+    await database
+      .insert(documents)
+      .values({
+        content: combinedContent,
+        documentId: documentID,
+        metadata: metadata,
+        title: title ?? undefined,
+      })
+      .onConflictDoUpdate({
+        set: {
+          content: combinedContent,
+          metadata: metadata,
+          title: title ?? undefined,
+          updatedAt: sql`CURRENT_TIMESTAMP`,
+        },
+        target: documents.documentId,
+      });
+  } catch (error) {
+    throw new Error(
+      `Failed to save document: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
 }
 
 /**
- * Load the source from disk
+ * Load the source document from PostgreSQL
  * @param root named parameters
  * @param root.documentID the document ID
  * @returns The source document
@@ -97,8 +124,21 @@ async function loadSourceDocument({
 }: {
   documentID: string;
 }): Promise<SourceDocument> {
-  return JSON.parse(
-    // eslint-disable-next-line security/detect-non-literal-fs-filename -- the ID is verified
-    await readFile(`.memoire/sources/${documentID}.json`, { encoding: 'utf8' }),
-  ) as SourceDocument;
+  const database = getDatabaseClient();
+  const result = await database
+    .select()
+    .from(documents)
+    .where(sql`${documents.documentId} = ${documentID}`);
+
+  if (result.length === 0) {
+    throw new Error(`Document not found: ${documentID}`);
+  }
+
+  const document = result[0] as Document;
+
+  return {
+    chunkedContent: [], // replace with content from the chunks table
+    metadata: document.metadata as object,
+    title: document.title ?? undefined,
+  };
 }
