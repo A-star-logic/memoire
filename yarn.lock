@@ -127,7 +127,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@astarlogic/shared@workspace:shared"
   dependencies:
-    "@sinclair/typebox": "npm:^0.34.14"
+    "@sinclair/typebox": "npm:^0.34.29"
     ofetch: "npm:^1.4.1"
   languageName: unknown
   linkType: soft
@@ -3817,10 +3817,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinclair/typebox@npm:^0.34.14":
-  version: 0.34.14
-  resolution: "@sinclair/typebox@npm:0.34.14"
-  checksum: 10c0/880a99ea958aed1b8074c10feb554dc588f6a1ee649f54d143855311c919699216690b88ff210a3023fd8552a6c3005f7cf58b2c6e9bc1e1a122dea06fd54433
+"@sinclair/typebox@npm:^0.34.29":
+  version: 0.34.29
+  resolution: "@sinclair/typebox@npm:0.34.29"
+  checksum: 10c0/90f41e78e1963abd91eaa4c8be792401b1482790650c7440752312bbf0f199196660defd8e30e2d10854289851baafe47799d0ce72aa43c273cd39a3e6f61204
   languageName: node
   linkType: hard
 
