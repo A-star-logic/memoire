@@ -1,5 +1,8 @@
 import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { readFile, unlink } from 'node:fs/promises';
+
+import { pgDatabase } from '../postgresql-config/database-postgresql.js';
+import { documentsTable } from './database-search-schemas.js';
 
 interface SourceDocument {
   chunkedContent: string[];
@@ -54,36 +57,27 @@ export async function getSourceDocuments({
 }
 
 /**
- * Save the source document to disk
+ * Save the source document to the database
  * @param root named parameters
- * @param root.chunkedContent the content as chunks
  * @param root.documentID the document ID
  * @param root.metadata the metadata of the document
  * @param root.title the document title
  */
 export async function saveSourceDocument({
-  chunkedContent,
   documentID,
   metadata,
   title,
 }: {
-  chunkedContent: { chunkText: string }[];
   documentID: string;
   metadata: object;
   title: string | undefined;
 }): Promise<void> {
-  await mkdir('.memoire/sources', { recursive: true });
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- the ID is verified
-  await writeFile(
-    `.memoire/sources/${await secureVerifyDocumentID({ documentID })}.json`,
-    JSON.stringify({
-      chunkedContent: chunkedContent.map((chunk) => {
-        return chunk.chunkText;
-      }),
-      metadata,
-      title,
-    } satisfies SourceDocument),
-  );
+  // Save to database
+  await pgDatabase.insert(documentsTable).values({
+    documentId: documentID,
+    metadata,
+    title,
+  });
 }
 
 /**

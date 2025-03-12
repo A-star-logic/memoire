@@ -9,7 +9,6 @@ import {
 } from '../../database-search-source.js';
 
 const mockDocumentForSave: Parameters<typeof saveSourceDocument>[0] = {
-  chunkedContent: [{ chunkText: 'test' }, { chunkText: 'document' }],
   documentID: '1',
   metadata: {
     meta: 'data',
