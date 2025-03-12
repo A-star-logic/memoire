@@ -11,6 +11,7 @@ import {
 import {
   deleteSourceDocument,
   getSourceDocuments,
+  saveDocumentContent,
   saveSourceDocument,
 } from './database-search-source.js';
 import {
@@ -60,6 +61,11 @@ export async function addDocument({
     documentID,
     metadata,
     title,
+  });
+
+  await saveDocumentContent({
+    content: title ? title + content : content,
+    documentID,
   });
 }
 
