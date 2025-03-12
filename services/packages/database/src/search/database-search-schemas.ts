@@ -38,10 +38,3 @@ export const documentsTable = pgTable('documents', {
 });
 
 export type Document = InferSelectModel<typeof documentsTable>;
-
-export const contentsTable = pgTable('contents', {
-  content: text('content').notNull(),
-  documentId: uuid('document_id').unique().notNull(),
-});
-
-export type Content = InferSelectModel<typeof contentsTable>;

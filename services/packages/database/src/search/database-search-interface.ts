@@ -11,7 +11,6 @@ import {
 import {
   deleteSourceDocument,
   getSourceDocuments,
-  saveDocumentContent,
   saveSourceDocument,
 } from './database-search-source.js';
 import {
@@ -61,11 +60,6 @@ export async function addDocument({
     documentID,
     metadata,
     title,
-  });
-
-  await saveDocumentContent({
-    content: title ? title + content : content,
-    documentID,
   });
 }
 
@@ -121,9 +115,4 @@ export {
   usageStatsFTS,
 } from './database-search-fts.js';
 export { getSourceDocuments } from './database-search-source.js';
-export {
-  loadVectorIndexFromDisk,
-  saveVectorIndexToDisk,
-  usageStatsVector,
-  vectorSearch,
-} from './database-search-vector.js';
+export { usageStatsVector, vectorSearch } from './database-search-vector.js';

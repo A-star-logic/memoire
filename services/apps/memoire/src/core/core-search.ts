@@ -14,10 +14,8 @@ import {
   FTSSearch,
   getSourceDocuments,
   loadFTSIndexFromDisk,
-  loadVectorIndexFromDisk,
   retrieveDocument,
   saveFTSIndexToDisk,
-  saveVectorIndexToDisk,
   vectorSearch,
 } from '@astarlogic/services-database/search';
 
@@ -32,7 +30,6 @@ import {
 // core
 import { extractContent } from './core-extractor.js';
 
-await loadVectorIndexFromDisk();
 await loadFTSIndexFromDisk();
 
 /**
@@ -58,7 +55,6 @@ export async function addDocuments({
 
   await calculateIDF();
   await saveFTSIndexToDisk();
-  await saveVectorIndexToDisk();
 }
 
 /**

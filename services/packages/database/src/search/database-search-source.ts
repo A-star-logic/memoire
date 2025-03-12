@@ -1,11 +1,7 @@
 import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
 import { asc, eq } from 'drizzle-orm';
 import { pgDatabase } from '../postgresql-config/database-postgresql.js';
-import {
-  chunksTable,
-  contentsTable,
-  documentsTable,
-} from './database-search-schemas.js';
+import { chunksTable, documentsTable } from './database-search-schemas.js';
 
 interface ChunkContent {
   chunkText: string;
@@ -28,11 +24,6 @@ export async function deleteSourceDocument({
   documentID: string;
 }): Promise<void> {
   const verifiedID = await secureVerifyDocumentID({ documentID });
-
-  // Delete from contents table
-  await pgDatabase
-    .delete(contentsTable)
-    .where(eq(contentsTable.documentId, verifiedID));
 
   // Delete from chunks table
   await pgDatabase
@@ -71,27 +62,6 @@ export async function getSourceDocuments({
     documents[documentID] = await loadSourceDocument({ documentID });
   }
   return documents;
-}
-
-/**
- * Save the document content to the database
- * @param root named parameters
- * @param root.documentID the document ID
- * @param root.content the document content
- */
-export async function saveDocumentContent({
-  content,
-  documentID,
-}: {
-  content: string;
-  documentID: string;
-}): Promise<void> {
-  const verifiedID = await secureVerifyDocumentID({ documentID });
-
-  await pgDatabase.insert(contentsTable).values({
-    content,
-    documentId: verifiedID,
-  });
 }
 
 /**
