@@ -1,7 +1,5 @@
 import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
 import { asc, eq } from 'drizzle-orm';
-import { unlink } from 'node:fs/promises';
-
 import { pgDatabase } from '../postgresql-config/database-postgresql.js';
 import {
   chunksTable,
@@ -20,7 +18,7 @@ interface SourceDocument {
 }
 
 /**
- * Delete a document from the sources. It will skip any document that do not exist
+ * Delete a document and its related data from all tables
  * @param root named parameters
  * @param root.documentID the document ID
  */
@@ -29,17 +27,22 @@ export async function deleteSourceDocument({
 }: {
   documentID: string;
 }): Promise<void> {
-  try {
-    // eslint-disable-next-line security/detect-non-literal-fs-filename -- the ID is verified
-    await unlink(
-      `.memoire/sources/${await secureVerifyDocumentID({ documentID })}.json`,
-    );
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('ENOENT')) {
-      return;
-    }
-    throw error;
-  }
+  const verifiedID = await secureVerifyDocumentID({ documentID });
+
+  // Delete from contents table
+  await pgDatabase
+    .delete(contentsTable)
+    .where(eq(contentsTable.documentId, verifiedID));
+
+  // Delete from chunks table
+  await pgDatabase
+    .delete(chunksTable)
+    .where(eq(chunksTable.documentID, verifiedID));
+
+  // Delete from documents table
+  await pgDatabase
+    .delete(documentsTable)
+    .where(eq(documentsTable.documentId, verifiedID));
 }
 
 /**
@@ -54,9 +57,14 @@ export async function getSourceDocuments({
   searchResults: { documentID: string }[];
 }): Promise<{ [documentID: string]: SourceDocument }> {
   const uniqueDocumentIDs = new Set(
-    searchResults.map((result) => {
-      return result.documentID;
-    }),
+    await Promise.all(
+      searchResults.map(async (result) => {
+        const verifiedID = await secureVerifyDocumentID({
+          documentID: result.documentID,
+        });
+        return verifiedID;
+      }),
+    ),
   );
   const documents: Awaited<ReturnType<typeof getSourceDocuments>> = {};
   for (const documentID of uniqueDocumentIDs) {
@@ -78,9 +86,11 @@ export async function saveDocumentContent({
   content: string;
   documentID: string;
 }): Promise<void> {
+  const verifiedID = await secureVerifyDocumentID({ documentID });
+
   await pgDatabase.insert(contentsTable).values({
     content,
-    documentId: documentID,
+    documentId: verifiedID,
   });
 }
 
@@ -100,9 +110,11 @@ export async function saveSourceDocument({
   metadata: object;
   title: string | undefined;
 }): Promise<void> {
+  const verifiedID = await secureVerifyDocumentID({ documentID });
+
   // Save to database
   await pgDatabase.insert(documentsTable).values({
-    documentId: documentID,
+    documentId: verifiedID,
     metadata,
     title,
   });
@@ -119,12 +131,14 @@ async function loadSourceDocument({
 }: {
   documentID: string;
 }): Promise<SourceDocument> {
+  const verifiedID = await secureVerifyDocumentID({ documentID });
+
   const chunks = await pgDatabase
     .select({
       chunkText: chunksTable.chunkContent,
     })
     .from(chunksTable)
-    .where(eq(chunksTable.documentID, documentID))
+    .where(eq(chunksTable.documentID, verifiedID))
     .orderBy(asc(chunksTable.chunkID));
 
   const document = await pgDatabase
@@ -133,14 +147,16 @@ async function loadSourceDocument({
       title: documentsTable.title,
     })
     .from(documentsTable)
-    .where(eq(documentsTable.documentId, documentID))
+    .where(eq(documentsTable.documentId, verifiedID))
     .limit(1)
-    .then((results) => results[0])
-    .then((result) => {
-      if (!result) {
-        throw new Error(`Document ${documentID} not found`);
+    .then((results) => {
+      const document = results[0];
+
+      // Drizzle-orm guarantees that document will be defined if found
+      if (results.length === 0) {
+        throw new Error(`Document ${verifiedID} not found in database`);
       }
-      return result;
+      return document;
     });
 
   return {
