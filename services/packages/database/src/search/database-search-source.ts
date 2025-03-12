@@ -3,7 +3,11 @@ import { asc, eq } from 'drizzle-orm';
 import { unlink } from 'node:fs/promises';
 
 import { pgDatabase } from '../postgresql-config/database-postgresql.js';
-import { chunksTable, documentsTable } from './database-search-schemas.js';
+import {
+  chunksTable,
+  contentsTable,
+  documentsTable,
+} from './database-search-schemas.js';
 
 interface ChunkContent {
   chunkText: string;
@@ -59,6 +63,25 @@ export async function getSourceDocuments({
     documents[documentID] = await loadSourceDocument({ documentID });
   }
   return documents;
+}
+
+/**
+ * Save the document content to the database
+ * @param root named parameters
+ * @param root.documentID the document ID
+ * @param root.content the document content
+ */
+export async function saveDocumentContent({
+  content,
+  documentID,
+}: {
+  content: string;
+  documentID: string;
+}): Promise<void> {
+  await pgDatabase.insert(contentsTable).values({
+    content,
+    documentId: documentID,
+  });
 }
 
 /**
