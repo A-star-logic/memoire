@@ -1,12 +1,17 @@
 import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
-import { readFile, unlink } from 'node:fs/promises';
+import { asc, eq } from 'drizzle-orm';
+import { unlink } from 'node:fs/promises';
 
 import { pgDatabase } from '../postgresql-config/database-postgresql.js';
-import { documentsTable } from './database-search-schemas.js';
+import { chunksTable, documentsTable } from './database-search-schemas.js';
+
+interface ChunkContent {
+  chunkText: string;
+}
 
 interface SourceDocument {
-  chunkedContent: string[];
-  metadata: object;
+  chunkedContent: ChunkContent[];
+  metadata: { [key: string]: unknown };
   title: string | undefined;
 }
 
@@ -81,7 +86,7 @@ export async function saveSourceDocument({
 }
 
 /**
- * Load the source from disk
+ * Load the source document from database
  * @param root named parameters
  * @param root.documentID the document ID
  * @returns The source document
@@ -91,8 +96,37 @@ async function loadSourceDocument({
 }: {
   documentID: string;
 }): Promise<SourceDocument> {
-  return JSON.parse(
-    // eslint-disable-next-line security/detect-non-literal-fs-filename -- the ID is verified
-    await readFile(`.memoire/sources/${documentID}.json`, { encoding: 'utf8' }),
-  ) as SourceDocument;
+  const chunks = await pgDatabase
+    .select({
+      chunkText: chunksTable.chunkContent,
+    })
+    .from(chunksTable)
+    .where(eq(chunksTable.documentID, documentID))
+    .orderBy(asc(chunksTable.chunkID));
+
+  const document = await pgDatabase
+    .select({
+      metadata: documentsTable.metadata,
+      title: documentsTable.title,
+    })
+    .from(documentsTable)
+    .where(eq(documentsTable.documentId, documentID))
+    .limit(1)
+    .then((results) => results[0])
+    .then((result) => {
+      if (!result) {
+        throw new Error(`Document ${documentID} not found`);
+      }
+      return result;
+    });
+
+  return {
+    chunkedContent: chunks.map((chunk): ChunkContent => {
+      return {
+        chunkText: chunk.chunkText,
+      };
+    }),
+    metadata: document.metadata as { [key: string]: unknown },
+    title: document.title ?? undefined,
+  };
 }
