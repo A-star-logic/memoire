@@ -2,16 +2,29 @@
 import { SpeedMonitor } from '@astarlogic/services-utils/utils-apm.js';
 import { secureVerifyDocumentID } from '@astarlogic/services-utils/utils-security.js';
 import { prepareForBM25 } from '@astarlogic/services-utils/utils-text-processing.js';
+import { sql } from 'drizzle-orm';
 import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 
 // database
+import { pgDatabase } from '../postgresql-config/database-postgresql.js';
 import { logger, Sentry } from '../reporting/database-external-config.js';
-
-// database
 import {
   apmReport,
   errorReport,
 } from '../reporting/database-reporting-interface.js';
+import { chunksTable } from './database-search-schemas.js';
+
+// types
+interface SearchParameters {
+  documentID?: string;
+  maxResults: number;
+  query: string;
+}
+
+interface SearchResult {
+  chunkID: string;
+  score: number;
+}
 
 const b = 0.75;
 const k1 = 1.5;
@@ -220,6 +233,101 @@ export async function FTSSearch({
   });
 
   return results.slice(0, Math.max(100, maxResults));
+}
+
+/**
+ * Search for chunks using PostgreSQL full-text search capabilities
+ * @param params Search parameters
+ * @param params.documentID Optional document ID to filter chunks by
+ * @param params.maxResults Maximum number of results to return
+ * @param params.query Text query to search for
+ * @returns Array of chunk IDs and their search rank scores
+ */
+export async function FullTextSearch({
+  documentID,
+  maxResults,
+  query,
+}: SearchParameters): Promise<SearchResult[]> {
+  const speedMonitor = new SpeedMonitor();
+
+  try {
+    // Convert query to tsquery format with word prefix matching
+    const searchQuery = query
+      .split(/\s+/)
+      .filter((term) => {
+        return term.length > 0;
+      })
+      .map((term) => {
+        return `${term}:*`;
+      })
+      .join(' & ');
+
+    // Build base query with full-text search using ts_rank_cd for ranking
+    const searchSql = sql<{ chunkID: string; score: number }>`
+      SELECT 
+        ${chunksTable.chunkID}::text as "chunkID",
+        ts_rank_cd(to_tsvector('english', ${chunksTable.chunkContent}), to_tsquery('english', ${searchQuery})) as score
+      FROM ${chunksTable}
+      WHERE to_tsvector('english', ${chunksTable.chunkContent}) @@ to_tsquery('english', ${searchQuery})
+      ${documentID ? sql`AND ${chunksTable.documentID} = ${documentID}` : sql``}
+      ORDER BY score DESC
+      LIMIT ${maxResults}
+    `;
+
+    // Execute search query and transform results
+    let searchResults: SearchResult[];
+    try {
+      const queryResult = await pgDatabase.execute(searchSql);
+      interface QueryRow {
+        chunkID: string;
+        score: number;
+      }
+      searchResults = (queryResult.rows as unknown as QueryRow[]).map((row) => {
+        return {
+          chunkID: row.chunkID,
+          score: row.score,
+        };
+      });
+    } catch (databaseError) {
+      const error = new Error('Failed to execute search query', {
+        cause: databaseError,
+      });
+      logger.error('Full-text search failed', { error: databaseError });
+      throw error;
+    }
+
+    const executionTime = await speedMonitor.finishMonitoring();
+    await apmReport({
+      event: 'FullTextSearch',
+      properties: {
+        documentID,
+        executionTime,
+        resultCount: searchResults.length,
+      },
+    });
+
+    return searchResults;
+  } catch (error) {
+    const typedError =
+      error instanceof Error
+        ? error
+        : new Error('Unknown error during full-text search');
+
+    const errorParameters = {
+      error: typedError,
+      message: 'Error during full-text search',
+      properties: {
+        documentID,
+        maxResults,
+        query,
+      },
+      severity: 'error' as const,
+    };
+
+    await errorReport(errorParameters);
+    logger.error('Full-text search failed', { error: typedError });
+    throw typedError;
+  }
 }
 
 /**
