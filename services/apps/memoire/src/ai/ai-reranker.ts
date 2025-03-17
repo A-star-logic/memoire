@@ -1,6 +1,6 @@
 // database types
 import type {
-  FTSSearch,
+  FullTextSearch,
   vectorSearch,
 } from '@astarlogic/services-database/search';
 
@@ -24,7 +24,7 @@ export async function rerank({
   maxResults = 100,
   vectorResults,
 }: {
-  keywordResults: Awaited<ReturnType<typeof FTSSearch>>;
+  keywordResults: Awaited<ReturnType<typeof FullTextSearch>>;
   maxResults?: number;
   vectorResults: Awaited<ReturnType<typeof vectorSearch>>;
 }): Promise<ReRankOutput> {

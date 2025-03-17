@@ -7,24 +7,22 @@ import { mkdir, readdir, readFile, unlink, writeFile } from 'node:fs/promises';
 
 // database
 import { pgDatabase } from '../postgresql-config/database-postgresql.js';
-import { logger, Sentry } from '../reporting/database-external-config.js';
+import { logger } from '../reporting/database-external-config.js';
 import {
   apmReport,
   errorReport,
 } from '../reporting/database-reporting-interface.js';
 import { chunksTable } from './database-search-schemas.js';
 
-interface SearchResult {
-  chunkID: string;
-  score: number;
-}
-
-const b = 0.75;
-const k1 = 1.5;
-
 interface DocumentData {
   termFrequency: { [key: string]: number };
   wordLength: number;
+}
+
+interface SearchResult {
+  chunkID: number;
+  documentID: string;
+  score: number;
 }
 /** The document's data, with the key being the document ID */
 const documentsData = new Map<string, DocumentData>();
@@ -177,58 +175,6 @@ export async function exists({
 }
 
 /**
- * Execute a full text search
- * @param root named parameters
- * @param root.query the text query to use for the full text search
- * @param root.maxResults the maximum number of results
- * @returns an array of scores
- */
-export async function FTSSearch({
-  maxResults,
-  query,
-}: {
-  maxResults: number;
-  query: string;
-}): Promise<{ documentID: string; score: number }[]> {
-  const speedMonitor = new SpeedMonitor();
-  const normalizedQuery = await prepareForBM25({ text: query });
-
-  let totalWordsLength = 0;
-  for (const document of documentsData.values()) {
-    totalWordsLength += document.wordLength;
-  }
-  const averageDocumentLength = totalWordsLength / documentsData.size;
-
-  const results: Awaited<ReturnType<typeof FTSSearch>> = [];
-  // todo: can be optimised to limit results size to maxResult instead of splicing it at the end
-  for (const documentID of documentsData.keys()) {
-    const score = await bm25({
-      averageDocumentLength,
-      documentID,
-      normalizedQuery,
-    });
-    results.push({ documentID, score });
-  }
-  results.sort((a, b) => {
-    return b.score - a.score;
-  });
-
-  const executionTime = await speedMonitor.finishMonitoring();
-  const totalDocuments = documentsData.size;
-  const totalTerms = termsData.size;
-  await apmReport({
-    event: 'FTSSearch',
-    properties: {
-      executionTime,
-      totalDocuments,
-      totalTerms,
-    },
-  });
-
-  return results.slice(0, Math.max(100, maxResults));
-}
-
-/**
  * Search for chunks using PostgreSQL full-text search capabilities
  * @param params Search parameters
  * @param params.maxResults Maximum number of results to return
@@ -257,9 +203,14 @@ export async function FullTextSearch({
       .join(' & ');
 
     // Build base query with full-text search using ts_rank_cd for ranking
-    const searchSql = sql<{ chunkID: string; score: number }>`
+    const searchSql = sql<{
+      chunkID: number;
+      documentID: string;
+      score: number;
+    }>`
       SELECT 
-        ${chunksTable.chunkID}::text as "chunkID",
+        ${chunksTable.chunkID} as "chunkID",
+        ${chunksTable.documentID}::text as "documentID",
         ts_rank_cd(to_tsvector('english', ${chunksTable.chunkContent}), to_tsquery('english', ${searchQuery})) as score
       FROM ${chunksTable}
       WHERE to_tsvector('english', ${chunksTable.chunkContent}) @@ to_tsquery('english', ${searchQuery})
@@ -272,12 +223,14 @@ export async function FullTextSearch({
     try {
       const queryResult = await pgDatabase.execute(searchSql);
       interface QueryRow {
-        chunkID: string;
+        chunkID: number;
+        documentID: string;
         score: number;
       }
       searchResults = (queryResult.rows as unknown as QueryRow[]).map((row) => {
         return {
           chunkID: row.chunkID,
+          documentID: row.documentID,
           score: row.score,
         };
       });
@@ -400,52 +353,4 @@ export async function usageStatsFTS(): Promise<{
     totalDocuments: documentsData.size,
     totalTerms: termsData.size,
   };
-}
-
-/**
- * Calculate the bm25 score of a query against a document
- * @param root named parameters
- * @param root.averageDocumentLength the average document length
- * @param root.documentID the id of the document
- * @param root.normalizedQuery the query normalised
- * @returns the score
- */
-async function bm25({
-  averageDocumentLength,
-  documentID,
-  normalizedQuery,
-}: {
-  averageDocumentLength: number;
-  documentID: string;
-  normalizedQuery: string[];
-}): Promise<number> {
-  let score = 0;
-  const document = documentsData.get(documentID);
-  if (!document) throw new Error(`Document ${documentID} not found`);
-  const { termFrequency, wordLength } = document;
-
-  for (const term of normalizedQuery) {
-    if (term in termFrequency) {
-      const freq = termFrequency[term];
-      let idf = termsData.get(term)?.inverseDocumentFrequency;
-      if (!idf) {
-        logger.warn(`IDF of ${term} not found`);
-        Sentry.captureMessage(
-          'IDF of term not found (this usually indicates the calculateIDF was not run or incorrect indexes)',
-        );
-        await calculateIDF();
-        idf = termsData.get(term)?.inverseDocumentFrequency;
-        if (!idf) {
-          throw new Error(
-            `IDF of ${term} not found even after self-healing. Our team has been notified with this issue.`,
-          );
-        }
-      }
-      const numerator = idf * freq * (k1 + 1);
-      const denominator =
-        freq + k1 * (1 - b + (b * wordLength) / averageDocumentLength);
-      score += numerator / denominator;
-    }
-  }
-  return score;
 }

@@ -11,7 +11,7 @@ import {
   calculateIDF,
   deleteDocument,
   exists,
-  FTSSearch,
+  FullTextSearch,
   getSourceDocuments,
   loadFTSIndexFromDisk,
   retrieveDocument,
@@ -26,7 +26,6 @@ import {
   autoEmbed,
   autoEmbedQuery,
 } from '../ai/embedding/ai-embeddings-interface.js';
-
 // core
 import { extractContent } from './core-extractor.js';
 
@@ -132,7 +131,7 @@ export async function search({
     query,
     useHyde,
   });
-  const keywordPromise = FTSSearch({ maxResults, query });
+  const keywordPromise = FullTextSearch({ maxResults, query });
   const vectorPromise = vectorSearch({
     embedding: await embeddingPromise,
     maxResults,

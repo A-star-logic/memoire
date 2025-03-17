@@ -8,10 +8,8 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 // functions to test
 import {
   addFTSDocument,
-  calculateIDF,
   deleteFTSDocument,
   exists,
-  FTSSearch,
   saveFTSIndexToDisk,
 } from '../../database-search-fts.js';
 
@@ -80,57 +78,57 @@ describe('saving & loading indexes', async () => {
   // });
 });
 
-describe('Search will search and sort the results', async () => {
-  test('Search will search and sort the results', async () => {
-    await addFTSDocument(mockDocument1);
-    await addFTSDocument(mockDocument2);
-    await calculateIDF();
-    const results = await FTSSearch({ maxResults: 100, query: '2' });
-    expect(results.length).toBe(2);
-    expect(results[0].documentID).toBe('2');
-    expect(results[1].documentID).toBe('1');
-  });
+// describe('Search will search and sort the results', async () => {
+//   test('Search will search and sort the results', async () => {
+//     await addFTSDocument(mockDocument1);
+//     await addFTSDocument(mockDocument2);
+//     await calculateIDF();
+//     const results = await FTSSearch({ maxResults: 100, query: '2' });
+//     expect(results.length).toBe(2);
+//     expect(results[0].documentID).toBe('2');
+//     expect(results[1].documentID).toBe('1');
+//   });
 
-  test('Search will filter the number of output to number of documents if less than 100', async () => {
-    await addFTSDocument(mockDocument1);
-    await addFTSDocument(mockDocument2);
-    await calculateIDF();
-    const results = await FTSSearch({ maxResults: 1, query: '2' });
-    expect(results.length).toBe(2);
-  });
+//   test('Search will filter the number of output to number of documents if less than 100', async () => {
+//     await addFTSDocument(mockDocument1);
+//     await addFTSDocument(mockDocument2);
+//     await calculateIDF();
+//     const results = await FTSSearch({ maxResults: 1, query: '2' });
+//     expect(results.length).toBe(2);
+//   });
 
-  test('Search will filter the number of output to maxResults if maxResults is greater than 100', async () => {
-    for (let index = 0; index < 200; index++) {
-      const mockDocument: Parameters<typeof addFTSDocument>[0] = {
-        documentID: `${index}`,
-        text: `test document ${index}`,
-      };
-      await addFTSDocument(mockDocument);
-    }
-    await calculateIDF();
+//   test('Search will filter the number of output to maxResults if maxResults is greater than 100', async () => {
+//     for (let index = 0; index < 200; index++) {
+//       const mockDocument: Parameters<typeof addFTSDocument>[0] = {
+//         documentID: `${index}`,
+//         text: `test document ${index}`,
+//       };
+//       await addFTSDocument(mockDocument);
+//     }
+//     await calculateIDF();
 
-    const maxResults = 101;
-    const results = await FTSSearch({ maxResults, query: '1' });
+//     const maxResults = 101;
+//     const results = await FTSSearch({ maxResults, query: '1' });
 
-    expect(results.length).toBe(maxResults);
+//     expect(results.length).toBe(maxResults);
 
-    //deleting all the documents created for this test case
-    for (let index = 0; index < 200; index++) {
-      await deleteFTSDocument({ documentID: `${index}` });
-    }
-  });
+//     //deleting all the documents created for this test case
+//     for (let index = 0; index < 200; index++) {
+//       await deleteFTSDocument({ documentID: `${index}` });
+//     }
+//   });
 
-  test('Search can work with never seen before words', async () => {
-    await addFTSDocument(mockDocument1);
-    await addFTSDocument(mockDocument2);
-    await calculateIDF();
-    const results = await FTSSearch({
-      maxResults: 100,
-      query: 'azertyuiop' /* cSpell: disable-line */,
-    });
-    expect(results.length).toBe(2);
-  });
-});
+//   test('Search can work with never seen before words', async () => {
+//     await addFTSDocument(mockDocument1);
+//     await addFTSDocument(mockDocument2);
+//     await calculateIDF();
+//     const results = await FTSSearch({
+//       maxResults: 100,
+//       query: 'azertyuiop' /* cSpell: disable-line */,
+//     });
+//     expect(results.length).toBe(2);
+//   });
+// });
 
 describe('deleteFTSDocument', async () => {
   test('deleteFTSDocument will delete the document from the index and from the disk', async () => {

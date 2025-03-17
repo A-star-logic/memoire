@@ -109,7 +109,7 @@ export async function retrieveDocument({
 export {
   calculateIDF,
   exists,
-  FTSSearch,
+  FullTextSearch,
   loadFTSIndexFromDisk,
   saveFTSIndexToDisk,
   usageStatsFTS,
