@@ -14,13 +14,6 @@ import {
 } from '../reporting/database-reporting-interface.js';
 import { chunksTable } from './database-search-schemas.js';
 
-// types
-interface SearchParameters {
-  documentID?: string;
-  maxResults: number;
-  query: string;
-}
-
 interface SearchResult {
   chunkID: string;
   score: number;
@@ -238,16 +231,17 @@ export async function FTSSearch({
 /**
  * Search for chunks using PostgreSQL full-text search capabilities
  * @param params Search parameters
- * @param params.documentID Optional document ID to filter chunks by
  * @param params.maxResults Maximum number of results to return
  * @param params.query Text query to search for
  * @returns Array of chunk IDs and their search rank scores
  */
 export async function FullTextSearch({
-  documentID,
   maxResults,
   query,
-}: SearchParameters): Promise<SearchResult[]> {
+}: {
+  maxResults: number;
+  query: string;
+}): Promise<SearchResult[]> {
   const speedMonitor = new SpeedMonitor();
 
   try {
@@ -269,7 +263,6 @@ export async function FullTextSearch({
         ts_rank_cd(to_tsvector('english', ${chunksTable.chunkContent}), to_tsquery('english', ${searchQuery})) as score
       FROM ${chunksTable}
       WHERE to_tsvector('english', ${chunksTable.chunkContent}) @@ to_tsquery('english', ${searchQuery})
-      ${documentID ? sql`AND ${chunksTable.documentID} = ${documentID}` : sql``}
       ORDER BY score DESC
       LIMIT ${maxResults}
     `;
@@ -300,7 +293,6 @@ export async function FullTextSearch({
     await apmReport({
       event: 'FullTextSearch',
       properties: {
-        documentID,
         executionTime,
         resultCount: searchResults.length,
       },
@@ -317,7 +309,6 @@ export async function FullTextSearch({
       error: typedError,
       message: 'Error during full-text search',
       properties: {
-        documentID,
         maxResults,
         query,
       },
