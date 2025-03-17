@@ -11,7 +11,7 @@ import {
 import {
   deleteSourceDocument,
   getSourceDocuments,
-  saveSourceDocument,
+  insertDocument,
 } from './database-search-source.js';
 import {
   bulkAddVectorChunks,
@@ -56,7 +56,7 @@ export async function addDocument({
     embeddings: embedOutput,
   });
 
-  await saveSourceDocument({
+  await insertDocument({
     documentID,
     metadata,
     title,

@@ -71,7 +71,7 @@ export async function getSourceDocuments({
  * @param root.metadata the metadata of the document
  * @param root.title the document title
  */
-export async function saveSourceDocument({
+export async function insertDocument({
   documentID,
   metadata,
   title,

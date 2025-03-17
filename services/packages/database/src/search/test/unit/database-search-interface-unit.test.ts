@@ -55,9 +55,7 @@ describe('addDocument', async () => {
     databaseSearchVector.bulkAddVectorChunks = vi
       .fn()
       .mockResolvedValue(undefined);
-    databaseSearchSource.saveSourceDocument = vi
-      .fn()
-      .mockResolvedValue(undefined);
+    databaseSearchSource.insertDocument = vi.fn().mockResolvedValue(undefined);
 
     await addDocument({
       content: 'my content',
@@ -81,7 +79,7 @@ describe('addDocument', async () => {
     expect(databaseSearchVector.deleteVectorChunks).not.toHaveBeenCalled();
     expect(databaseSearchFTS.addFTSDocument).toHaveBeenCalledOnce();
     expect(databaseSearchVector.bulkAddVectorChunks).toHaveBeenCalledOnce();
-    expect(databaseSearchSource.saveSourceDocument).toHaveBeenCalledOnce();
+    expect(databaseSearchSource.insertDocument).toHaveBeenCalledOnce();
   });
 
   test('addDocument will upsert existing docs', async () => {
@@ -93,9 +91,7 @@ describe('addDocument', async () => {
     databaseSearchVector.bulkAddVectorChunks = vi
       .fn()
       .mockResolvedValue(undefined);
-    databaseSearchSource.saveSourceDocument = vi
-      .fn()
-      .mockResolvedValue(undefined);
+    databaseSearchSource.insertDocument = vi.fn().mockResolvedValue(undefined);
 
     await addDocument({
       content: 'my content',

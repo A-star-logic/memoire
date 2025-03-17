@@ -2,13 +2,13 @@
 import { describe, expect, test } from 'vitest';
 
 // functions to test
+import { insertDocument } from '../../database-search-source.js';
 import {
   deleteSourceDocument,
   getSourceDocuments,
-  saveSourceDocument,
 } from '../../database-search-source.js';
 
-const mockDocumentForSave: Parameters<typeof saveSourceDocument>[0] = {
+const mockDocumentForSave: Parameters<typeof insertDocument>[0] = {
   documentID: '1',
   metadata: {
     meta: 'data',
@@ -18,7 +18,7 @@ const mockDocumentForSave: Parameters<typeof saveSourceDocument>[0] = {
 
 describe('deleteSourceDocument', async () => {
   test('deleteSourceDocument will remove the document from disk', async () => {
-    await saveSourceDocument(mockDocumentForSave);
+    await insertDocument(mockDocumentForSave);
 
     await deleteSourceDocument({ documentID: '1' });
 
