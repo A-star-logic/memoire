@@ -30,7 +30,10 @@
   },
   "dependencies": {
     "@astarlogic/shared": "workspace:^",
+    "@neondatabase/serverless": "^0.10.4",
     "@sentry/node": "^8.51.0",
+    "drizzle-orm": "^0.40.0",
+    "drizzle-typebox": "^0.3.0",
     "pino": "^9.6.0",
     "posthog-node": "^4.4.1"
   }
