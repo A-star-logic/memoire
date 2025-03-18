@@ -19,7 +19,7 @@ interface EmbeddingMetricsParameters {
 }
 
 /**
- * Defintion Doc for param - https://posthog.com/docs/ai-engineering/observability?tab=Embedding
+ * Definition Doc for param - https://posthog.com/docs/ai-engineering/observability?tab=Embedding
  * Log embedding metrics to PostHog
  * @param params - Embedding metrics parameters
  * @param params.baseUrl - The base URL of the LLM provider
