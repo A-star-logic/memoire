@@ -87,9 +87,6 @@ describe('addDocuments', async () => {
     expect(coreExtractorModule.extractContent).toHaveBeenCalledTimes(2);
     expect(embeddingModule.autoEmbed).toHaveBeenCalledTimes(2);
     expect(databaseSearchInterface.addDocument).toHaveBeenCalledTimes(2);
-    expect(databaseSearchInterface.saveVectorIndexToDisk).toHaveBeenCalledTimes(
-      1,
-    );
     expect(databaseSearchInterface.calculateIDF).toHaveBeenCalledTimes(1);
     expect(databaseSearchInterface.saveFTSIndexToDisk).toHaveBeenCalledTimes(1);
   });
@@ -130,9 +127,6 @@ describe('addDocuments', async () => {
     expect(coreExtractorModule.extractContent).toBeCalledTimes(2);
     expect(embeddingModule.autoEmbed).toHaveBeenCalledTimes(2);
     expect(databaseSearchInterface.addDocument).toHaveBeenCalledTimes(2);
-    expect(databaseSearchInterface.saveVectorIndexToDisk).toHaveBeenCalledTimes(
-      1,
-    );
     expect(databaseSearchInterface.calculateIDF).toHaveBeenCalledTimes(1);
     expect(databaseSearchInterface.saveFTSIndexToDisk).toHaveBeenCalledTimes(1);
   });

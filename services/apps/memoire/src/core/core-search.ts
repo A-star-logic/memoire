@@ -11,13 +11,11 @@ import {
   calculateIDF,
   deleteDocument,
   exists,
-  FTSSearch,
+  FullTextSearch,
   getSourceDocuments,
   loadFTSIndexFromDisk,
-  loadVectorIndexFromDisk,
   retrieveDocument,
   saveFTSIndexToDisk,
-  saveVectorIndexToDisk,
   vectorSearch,
 } from '@astarlogic/services-database/search';
 
@@ -28,11 +26,9 @@ import {
   autoEmbed,
   autoEmbedQuery,
 } from '../../../../packages/ai/embedding/ai-embeddings-interface.js';
-
 // core
 import { extractContent } from './core-extractor.js';
 
-await loadVectorIndexFromDisk();
 await loadFTSIndexFromDisk();
 
 /**
@@ -58,7 +54,6 @@ export async function addDocuments({
 
   await calculateIDF();
   await saveFTSIndexToDisk();
-  await saveVectorIndexToDisk();
 }
 
 /**
@@ -136,7 +131,7 @@ export async function search({
     query,
     useHyde,
   });
-  const keywordPromise = FTSSearch({ maxResults, query });
+  const keywordPromise = FullTextSearch({ maxResults, query });
   const vectorPromise = vectorSearch({
     embedding: await embeddingPromise,
     maxResults,
