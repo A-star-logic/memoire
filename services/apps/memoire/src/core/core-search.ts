@@ -25,7 +25,11 @@ import { rerank } from '../../../../packages/ai/ai-reranker.js';
 import {
   autoEmbed,
   autoEmbedQuery,
+<<<<<<< HEAD
 } from '../../../../packages/ai/embedding/ai-embeddings-interface.js';
+=======
+} from '../ai/embedding/ai-embeddings-interface.js';
+>>>>>>> fc81871 (Add Drizzle ORM and PostgreSQL database support (#163))
 // core
 import { extractContent } from './core-extractor.js';
 
