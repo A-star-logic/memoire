@@ -1,6 +1,7 @@
 import type { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import { logger } from '@astarlogic/services-database/reporting';
 import { neon } from '@neondatabase/serverless';
+import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/neon-http';
 import type { Environment } from '../../../../environment.js';
 
@@ -23,10 +24,19 @@ export function initPostgreSQL({ env }: { env: Environment }): void {
     const url = env.DATABASE_URL_TEST ?? env.DATABASE_URL;
     const client = neon(url);
     pgDatabase = drizzle(client);
+    addExtensions();
   } else {
     databaseLogger.info('Initializing PostgreSQL for production environment');
     const client = neon(env.DATABASE_URL);
     pgDatabase = drizzle(client);
+    addExtensions();
   }
+}
+
+/**
+ *
+ */
+function addExtensions(): void {
+  pgDatabase.execute(sql`CREATE EXTENSION IF NOT EXISTS vector`);
 }
 /* v8 ignore end */
