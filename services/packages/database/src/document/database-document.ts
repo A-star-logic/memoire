@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import type { Document, DocumentInsert } from './database-document-schemas.js';
-import { pgDatabase } from '../database-config/database-postgresql.js';
+import { pgDatabase } from '../config/database-postgresql.js';
 import { documentsTable } from './database-document-schemas.js';
 
 /**

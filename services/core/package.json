@@ -1,0 +1,9 @@
+{
+  "name": "core",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@astarlogic/services-database": "workspace:^",
+    "ai": "workspace:^"
+  }
+}

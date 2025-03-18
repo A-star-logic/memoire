@@ -4,25 +4,28 @@
   "type": "module",
   "exports": {
     "./search": {
-      "workerd": "./src/search/database-search-interface.ts",
       "typescript": "./src/search/database-search-interface.ts",
       "development": "./src/search/database-search-interface.ts",
       "types": "./src/search/database-search-interface.ts",
       "default": "./dist/search/database-search-interface.js"
     },
     "./reporting": {
-      "workerd": "./src/reporting/database-reporting-interface.ts",
       "typescript": "./src/reporting/database-reporting-interface.ts",
       "development": "./src/reporting/database-reporting-interface.ts",
       "types": "./src/reporting/database-reporting-interface.ts",
       "default": "./dist/reporting/database-reporting-interface.js"
     },
-    "./document-queue": {
-      "workerd": "./src/document-queue/database-dq-interface.ts",
-      "typescript": "./src/document-queue/database-dq-interface.ts",
-      "development": "./src/document-queue/database-dq-interface.ts",
-      "types": "./src/document-queue/database-dq-interface.ts",
-      "default": "./dist/document-queue/database-dq-interface.js"
+    "./document": {
+      "typescript": "./src/document/database-document-interface.ts",
+      "development": "./src/document/database-document-interface.ts",
+      "types": "./src/document/database-document-interface.ts",
+      "default": "./dist/document/database-document-interface.js"
+    },
+    "./config": {
+      "typescript": "./src/config/database-config-interface.ts",
+      "development": "./src/config/database-config-interface.ts",
+      "types": "./src/config/database-config-interface.ts",
+      "default": "./dist/config/database-config-interface.js"
     }
   },
   "scripts": {

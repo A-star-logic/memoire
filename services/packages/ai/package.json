@@ -1,0 +1,16 @@
+{
+  "name": "ai",
+  "private": true,
+  "exports": {
+    "./package.json": "./package.json",
+    "./models": {
+      "typescript": "./src/providers/ai-providers-models.ts",
+      "development": "./src/providers/ai-providers-models.ts",
+      "types": "./src/providers/ai-providers-models.ts",
+      "default": "./dist/providers/ai-providers-models.js"
+    }
+  },
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.758.0"
+  }
+}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Chunk } from '../../database-search-schemas.js';
-import { pgDatabase } from '../../../database-config/database-postgresql.js';
+import { pgDatabase } from '../../../config/database-postgresql.js';
 import {
   addChunk,
   deleteChunks,

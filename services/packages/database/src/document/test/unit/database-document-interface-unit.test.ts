@@ -8,9 +8,7 @@ vi.mock('../../database-document.js');
 const databaseDocument = await import('../../database-document.js');
 
 vi.mock('../../database-document-source.js');
-const databaseDocumentSource = await import(
-  '../../database-document-source.js'
-);
+const databaseDocumentSource = await import('../../database-document-blob.js');
 
 describe('addDocument', () => {
   test('should add a document to the database, then to the bucket, and sync the status to the database', async () => {

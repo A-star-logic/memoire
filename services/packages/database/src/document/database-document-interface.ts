@@ -1,7 +1,4 @@
-import {
-  deleteSourceDocument,
-  uploadToBucket,
-} from './database-document-source.js';
+import { deleteBlob, uploadBlob } from './database-document-blob.js';
 import {
   deleteDocumentInDatabase,
   insertDocumentInDatabase,
@@ -32,7 +29,7 @@ export async function addDocument({
   });
 
   try {
-    await uploadToBucket();
+    await uploadBlob();
 
     await updateDocumentInDatabase({
       documentID,
@@ -54,11 +51,11 @@ export async function deleteDocument({
 }: {
   documentID: string;
 }): Promise<void> {
-  await deleteSourceDocument({ documentID });
+  await deleteBlob({ documentID });
   await deleteDocumentInDatabase({ documentID });
 }
 
-export { loadSourceDocument } from './database-document-source.js';
+export { loadBlob } from './database-document-blob.js';
 export {
   getDocumentByID,
   updateDocumentInDatabase as updateDocument,
