@@ -16,7 +16,7 @@ const databaseSearchInterface = await import(
 );
 vi.mock('../../../ai/embedding/ai-embeddings-interface.js');
 const embeddingModule = await import(
-  '../../../ai/embedding/ai-embeddings-interface.js'
+  '../../../../../../packages/ai/embedding/ai-embeddings-interface.js'
 );
 vi.mock('../../core-extractor.js');
 const coreExtractorModule = await import('../../core-extractor.js');

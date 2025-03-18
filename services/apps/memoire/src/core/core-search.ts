@@ -22,12 +22,12 @@ import {
 } from '@astarlogic/services-database/search';
 
 // AI
-import { rerank } from '../ai/ai-reranker.js';
+import { rerank } from '../../../../packages/ai/ai-reranker.js';
 
 import {
   autoEmbed,
   autoEmbedQuery,
-} from '../ai/embedding/ai-embeddings-interface.js';
+} from '../../../../packages/ai/embedding/ai-embeddings-interface.js';
 
 // core
 import { extractContent } from './core-extractor.js';
