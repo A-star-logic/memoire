@@ -26,7 +26,6 @@ import {
   autoEmbed,
   autoEmbedQuery,
 } from '../../../../packages/ai/embedding/ai-embeddings-interface.js';
-
 // core
 import { extractContent } from './core-extractor.js';
 
