@@ -3,7 +3,7 @@ import { calculateSimilarity } from '@astarlogic/services-utils/utils-similarity
 import { describe, expect, test } from 'vitest';
 
 // utils
-import { embedDocument } from '../../../embedding/model/ai-embedding-model-local-snowflake.js';
+import { embedDocument } from '../../../embedding/model/ai-embedding-model-cohere.js';
 
 // test function
 import { generateHypotheticalAnswer } from '../../ai-agents-hyde.ts.js';
