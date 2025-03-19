@@ -1,17 +1,16 @@
 import type { InferInsertModel, InferSelectModel } from 'drizzle-orm';
-import { jsonb, pgEnum, pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import { jsonb, pgTable, text, uuid } from 'drizzle-orm/pg-core';
 
-export const documentStatus = pgEnum('document_status', [
-  'uploading',
-  'errorUploading',
-  'pendingIndexing',
-  'errorIndexing',
-  'indexed',
-]);
+export type DocumentStatus =
+  | 'error'
+  | 'indexed'
+  | 'pendingIndexing'
+  | 'uploading';
+
 export const documentsTable = pgTable('documents', {
   documentID: uuid('document_id').primaryKey().notNull(),
   metadata: jsonb('metadata').notNull(),
-  status: documentStatus('status').notNull().default('uploading'),
+  status: text('status').notNull().default('uploading').$type<DocumentStatus>(),
   title: text('title'),
 });
 

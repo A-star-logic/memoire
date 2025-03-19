@@ -4,6 +4,25 @@
   "type": "module",
   "dependencies": {
     "@astarlogic/services-database": "workspace:^",
-    "ai": "workspace:^"
+    "ai": "workspace:^",
+    "service-reporting": "workspace:^"
+  },
+  "exports": {
+    "./init": {
+      "typescript": "./src/core-init.ts",
+      "development": "./src/core-init.ts",
+      "types": "./src/core-init.ts",
+      "default": "./dist/core-init.js"
+    },
+    "./documents": {
+      "typescript": "./src/core-documents.ts",
+      "development": "./src/core-documents.ts",
+      "types": "./src/core-documents.ts",
+      "default": "./dist/core-documents.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "yarn w:build-service"
   }
 }

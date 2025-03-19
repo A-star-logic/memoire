@@ -1,7 +1,5 @@
-import { SpeedMonitor } from '@astarlogic/services-utils/utils-apm.js';
 import { cosineDistance, desc, eq, gt, sql } from 'drizzle-orm';
 import { pgDatabase } from '../config/database-postgresql.js';
-import { apmReport } from '../reporting/database-reporting-interface.js';
 import { searchChunksTable } from './database-search-schemas.js';
 
 /**
@@ -102,8 +100,6 @@ export async function vectorSearch({
     score: number;
   }[]
 > {
-  const speedMonitor = new SpeedMonitor();
-
   const distance = sql<number>`1 - (${cosineDistance(searchChunksTable.embedding, embedding)})`;
   const records = await pgDatabase
     .select({
@@ -117,14 +113,6 @@ export async function vectorSearch({
     .orderBy(desc(distance))
     .limit(maxResults)
     .execute();
-
-  await apmReport({
-    event: 'vectorSearch',
-    properties: {
-      executionTime: await speedMonitor.finishMonitoring(),
-      totalDocuments: records.length,
-    },
-  });
 
   return records;
 }

@@ -11,15 +11,20 @@ import {
  * @param root.documentID the document ID
  * @param root.metadata the metadata of the document
  * @param root.title the title of the document
+ * @param root.binaryStream the binary stream of the document
+ * @param root.mimeType the mime type of the document
  */
 export async function addDocument({
+  binaryStream,
   documentID,
-
   metadata,
+  mimeType,
   title = undefined,
 }: {
+  binaryStream: Buffer;
   documentID: string;
   metadata: object;
+  mimeType: string;
   title: string | undefined;
 }): Promise<void> {
   await insertDocumentInDatabase({
@@ -29,7 +34,11 @@ export async function addDocument({
   });
 
   try {
-    await uploadBlob();
+    await uploadBlob({
+      binaryStream,
+      documentID,
+      mimeType,
+    });
 
     await updateDocumentInDatabase({
       documentID,

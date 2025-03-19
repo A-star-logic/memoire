@@ -49,7 +49,7 @@ export default tseslint.config(
   },
   {
     // disable some rules in test files
-    files: ['**/tests/**'],
+    files: ['**/*.test.ts'],
     rules: {
       'security/detect-non-literal-fs-filename': 0,
       'eslint/security/detect-non-literal-fs-filename': 0,

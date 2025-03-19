@@ -10,6 +10,9 @@
       "default": "./dist/providers/ai-providers-models.js"
     }
   },
+  "scripts": {
+    "build": "yarn w:build-service"
+  },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.758.0"
   }

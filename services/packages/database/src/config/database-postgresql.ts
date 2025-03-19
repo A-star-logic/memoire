@@ -1,9 +1,11 @@
 import type { NeonHttpDatabase } from 'drizzle-orm/neon-http';
-import { logger } from '@astarlogic/services-database/reporting';
 import { neon } from '@neondatabase/serverless';
 import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/neon-http';
+import { getContextLogger } from 'service-reporting/logger';
 import type { Environment } from '../../../../environment.js';
+
+const logger = getContextLogger('database-postgresql');
 
 export let pgDatabase: NeonHttpDatabase;
 const databaseLogger = logger.child({ context: 'database-pg.ts' });

@@ -1,6 +1,7 @@
 import {
   deleteDocument as deleteDocumentFromDatabase,
   loadBlob,
+  updateDocument,
 } from '@astarlogic/services-database/document';
 import {
   addDocumentToSearch,
@@ -14,6 +15,7 @@ export {
   getDocumentByID,
   updateDocument,
 } from '@astarlogic/services-database/document';
+export { isFileSupported } from '@astarlogic/services-parser';
 
 /**
  * Delete a document from the search and database
@@ -56,5 +58,10 @@ export async function parseAndIndexDocument({
   await addDocumentToSearch({
     chunks: embeddings,
     documentID,
+  });
+
+  await updateDocument({
+    documentID,
+    status: 'indexed',
   });
 }
