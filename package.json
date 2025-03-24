@@ -44,6 +44,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.772.0",
     "pino-pretty": "^13.0.0"
   }
 }

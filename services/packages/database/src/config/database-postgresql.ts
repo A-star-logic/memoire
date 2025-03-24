@@ -17,6 +17,8 @@ const databaseLogger = logger.child({ context: 'database-pg.ts' });
  */
 export function initPostgreSQL({ env }: { env: Environment }): void {
   /* v8 ignore start */
+  env.DATABASE_URL =
+    'postgresql://neondb_owner:npg_SPH8D4jYvWNa@ep-royal-morning-a9jlhlvf-pooler.gwc.azure.neon.tech/neondb?sslmode=require';
   if (!env.DATABASE_URL) {
     throw new Error('DATABASE_URL is not set');
   }
