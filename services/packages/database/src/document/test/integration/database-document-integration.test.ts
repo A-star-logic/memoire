@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { DocumentInsert } from '../../database-document-schemas.js';
-import { pgDatabase } from '../../../database-config/database-postgresql.js';
+import { pgDatabase } from '../../../config/database-postgresql.js';
 import { documentsTable } from '../../database-document-schemas.js';
 import {
   deleteDocumentInDatabase,

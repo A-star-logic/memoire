@@ -1,4 +1,4 @@
-import type { EmbeddingModelOutput } from '@astarlogic/shared/schemas/ai/shared-schemas-ai-embedding.js';
+import type { Chunk } from './database-search-schemas.js';
 import { addChunk, deleteChunks } from './database-search-chunks.js';
 
 export { textSearch, vectorSearch } from './database-search-chunks.js';
@@ -15,12 +15,12 @@ export async function addDocumentToSearch({
   chunks,
   documentID,
 }: {
-  chunks: EmbeddingModelOutput;
+  chunks: Omit<Chunk, 'documentID'>[];
   documentID: string;
 }): Promise<void> {
   for (const chunk of chunks) {
     await addChunk({
-      chunkContent: chunk.chunkText,
+      chunkContent: chunk.chunkContent,
       chunkID: chunk.chunkID,
       documentID,
       embedding: chunk.embedding,

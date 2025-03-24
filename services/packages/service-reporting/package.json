@@ -1,0 +1,27 @@
+{
+  "name": "service-reporting",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
+    "posthog-node": "^4.5.2"
+  },
+  "exports": {
+    "./client": {
+      "workerd": "./src/service-reporting.ts",
+      "typescript": "./src/service-reporting.ts",
+      "development": "./src/service-reporting.ts",
+      "types": "./src/service-reporting.ts",
+      "default": "./dist/service-reporting.js"
+    },
+    "./logger": {
+      "workerd": "./src/service-logger.ts",
+      "typescript": "./src/service-logger.ts",
+      "development": "./src/service-logger.ts",
+      "types": "./src/service-logger.ts",
+      "default": "./dist/service-logger.js"
+    },
+    "./package.json": "./package.json"
+  }
+}

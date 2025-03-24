@@ -21,7 +21,7 @@ await app.listen({
 logger.info(
   `${packageJson.name} version ${packageJson.version} running in ${process.env.NODE_ENV} mode on port 3003.`,
 );
-if (process.env.NODE_ENV === 'development' || process.env.SHOW_DOC) {
+if (process.env.NODE_ENV === 'development') {
   logger.info(
     '\n\n\nDocumentation available at http://localhost:3003/docs\n\n\n',
   );

@@ -1,10 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { beforeAll, beforeEach, vi } from 'vitest';
 import type { Environment } from '../../../../environment.js';
-import {
-  initPostgreSQL,
-  pgDatabase,
-} from '../database-config/database-postgresql.js';
+import { initPostgreSQL, pgDatabase } from '../config/database-postgresql.js';
 import { documentsTable } from '../document/database-document-schemas.js';
 import { searchChunksTable } from '../search/database-search-schemas.js';
 

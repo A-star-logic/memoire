@@ -1,7 +1,4 @@
-import {
-  deleteSourceDocument,
-  uploadToBucket,
-} from './database-document-source.js';
+import { deleteBlob, uploadBlob } from './database-document-blob.js';
 import {
   deleteDocumentInDatabase,
   insertDocumentInDatabase,
@@ -14,15 +11,20 @@ import {
  * @param root.documentID the document ID
  * @param root.metadata the metadata of the document
  * @param root.title the title of the document
+ * @param root.binaryStream the binary stream of the document
+ * @param root.mimeType the mime type of the document
  */
 export async function addDocument({
+  binaryStream,
   documentID,
-
   metadata,
+  mimeType,
   title = undefined,
 }: {
+  binaryStream: Buffer;
   documentID: string;
   metadata: object;
+  mimeType: string;
   title: string | undefined;
 }): Promise<void> {
   await insertDocumentInDatabase({
@@ -32,7 +34,11 @@ export async function addDocument({
   });
 
   try {
-    await uploadToBucket();
+    await uploadBlob({
+      binaryStream,
+      documentID,
+      mimeType,
+    });
 
     await updateDocumentInDatabase({
       documentID,
@@ -54,11 +60,11 @@ export async function deleteDocument({
 }: {
   documentID: string;
 }): Promise<void> {
-  await deleteSourceDocument({ documentID });
+  await deleteBlob({ documentID });
   await deleteDocumentInDatabase({ documentID });
 }
 
-export { loadSourceDocument } from './database-document-source.js';
+export { loadBlob } from './database-document-blob.js';
 export {
   getDocumentByID,
   updateDocumentInDatabase as updateDocument,
