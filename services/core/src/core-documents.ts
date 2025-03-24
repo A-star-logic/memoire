@@ -45,18 +45,18 @@ export async function parseAndIndexDocument({
 
   const traceID = crypto.randomUUID();
 
-  const chunks = await parseStream({
+  const textChunks = await parseStream({
     binaryStream,
     mimeType,
   });
 
-  const embeddings = await embedDocumentChunks({
-    chunks,
+  const chunksWithEmbeddings = await embedDocumentChunks({
+    chunks: textChunks,
     traceID,
   });
 
   await addDocumentToSearch({
-    chunks: embeddings,
+    chunks: chunksWithEmbeddings,
     documentID,
   });
 
