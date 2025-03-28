@@ -1,3 +1,12 @@
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+} from '@aws-sdk/client-s3';
+import { s3Client } from '../config/database-s3.js';
+
+const bucketName = 'document-default';
+
 /**
  * Delete a document from the bucket
  * @param root named parameters
@@ -8,7 +17,12 @@ export async function deleteBlob({
 }: {
   documentID: string;
 }): Promise<void> {
-  // TODO: Implement
+  const deleteCommand = new DeleteObjectCommand({
+    Bucket: bucketName,
+    Key: documentID,
+  });
+
+  await s3Client.send(deleteCommand);
 }
 
 /**
@@ -25,7 +39,28 @@ export async function loadBlob({
   binaryStream: Buffer;
   mimeType: string;
 }> {
-  // TODO: Implement
+  const getCommand = new GetObjectCommand({
+    Bucket: bucketName,
+    Key: documentID,
+  });
+
+  const response = await s3Client.send(getCommand);
+
+  if (!response.Body) {
+    throw new Error(`No content found for document ${documentID}`);
+  }
+
+  // Convert the readable stream to a buffer
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
+    chunks.push(chunk);
+  }
+  const binaryStream = Buffer.concat(chunks);
+
+  return {
+    binaryStream,
+    mimeType: response.ContentType ?? 'application/octet-stream',
+  };
 }
 
 /**
@@ -44,5 +79,12 @@ export async function uploadBlob({
   documentID: string;
   mimeType: string;
 }): Promise<void> {
-  // TODO: Implement
+  const createDocument = new PutObjectCommand({
+    Body: binaryStream,
+    Bucket: bucketName,
+    ContentType: mimeType,
+    Key: documentID,
+  });
+
+  await s3Client.send(createDocument);
 }
