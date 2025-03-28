@@ -1,16 +1,21 @@
 import { randomUUID } from 'node:crypto';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Environment } from '../../../../../../environment.js';
-import { initS3Client } from '../../../config/database-s3.js';
+import { clearBucket, initS3Client } from '../../../config/database-s3.js';
 import {
   deleteBlob,
   loadBlob,
   uploadBlob,
 } from '../../database-document-blob.js';
 
-describe('S3 Blob Storage Integration Tests', () => {
-  beforeAll(() => {
+describe('S3 Blob Storage Integration Tests', async () => {
+  beforeAll(async () => {
     initS3Client({ env: process.env as Environment });
+    await clearBucket({ bucketName: 'document-default' });
+  });
+
+  afterAll(async () => {
+    await clearBucket({ bucketName: 'document-default' });
   });
 
   it('should upload a file to S3 successfully', async () => {

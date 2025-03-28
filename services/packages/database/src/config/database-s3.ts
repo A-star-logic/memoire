@@ -1,7 +1,45 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectsCommand,
+  paginateListObjectsV2,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import type { Environment } from '../../../../environment.js';
 
 export let s3Client: S3Client;
+
+/**
+ * Clear all objects in the bucket
+ * @param root named parameters
+ * @param root.bucketName the name of the bucket
+ */
+export async function clearBucket({
+  bucketName,
+}: {
+  bucketName: string;
+}): Promise<void> {
+  const paginator = paginateListObjectsV2(
+    { client: s3Client },
+    {
+      Bucket: bucketName,
+    },
+  );
+
+  const objectKeys = [];
+  for await (const { Contents } of paginator) {
+    objectKeys.push(
+      ...Contents.map((object) => {
+        return { Key: object.Key };
+      }),
+    );
+  }
+
+  const deleteCommand = new DeleteObjectsCommand({
+    Bucket: bucketName,
+    Delete: { Objects: objectKeys },
+  });
+
+  await s3Client.send(deleteCommand);
+}
 
 /**
  * Initialize the connection to the PostgreSQL database
@@ -23,6 +61,6 @@ export function initS3Client({ env }: { env: Environment }): void {
       secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
       sessionToken: env.AWS_SESSION_TOKEN,
     },
-    region: env.AWS_REGION,
+    region: 'eu-north-1',
   });
 }

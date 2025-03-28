@@ -77,7 +77,6 @@ __metadata:
   resolution: "@astarlogic/monorepo@workspace:."
   dependencies:
     "@ansearch/config": "npm:^0.1.1"
-    "@aws-sdk/client-s3": "npm:^3.772.0"
     "@types/node": "npm:^22.10.6"
     "@typescript-eslint/parser": "npm:^8.20.0"
     "@vitest/coverage-v8": "npm:2.1.8"
@@ -95,6 +94,14 @@ __metadata:
     turbo: "npm:^2.3.4"
     typescript: "npm:5.7.3"
     vitest: "npm:^2.1.8"
+  languageName: unknown
+  linkType: soft
+
+"@astarlogic/sdks@workspace:SDKs/TS":
+  version: 0.0.0-use.local
+  resolution: "@astarlogic/sdks@workspace:SDKs/TS"
+  dependencies:
+    "@aws-sdk/client-s3": "npm:^3.772.0"
   languageName: unknown
   linkType: soft
 
@@ -5255,12 +5262,6 @@ __metadata:
   checksum: 10c0/d4a29ecd8f6c24c790e4c009f313a044d89e664e331bc9c3cfb57fe1380fb1d2999706dbbfc291f067d6c489602e76d00435309fbc906197c0d01f831ca17d64
   languageName: node
   linkType: hard
-
-"TS-58f4e1@workspace:SDKs/TS":
-  version: 0.0.0-use.local
-  resolution: "TS-58f4e1@workspace:SDKs/TS"
-  languageName: unknown
-  linkType: soft
 
 "abbrev@npm:^2.0.0":
   version: 2.0.0

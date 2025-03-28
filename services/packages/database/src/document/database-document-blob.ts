@@ -5,6 +5,8 @@ import {
 } from '@aws-sdk/client-s3';
 import { s3Client } from '../config/database-s3.js';
 
+const bucketName = 'document-default';
+
 /**
  * Delete a document from the bucket
  * @param root named parameters
@@ -15,12 +17,6 @@ export async function deleteBlob({
 }: {
   documentID: string;
 }): Promise<void> {
-  const bucketName = process.env.AWS_BUCKET_NAME;
-
-  if (!bucketName) {
-    throw new Error('AWS_BUCKET_NAME is not set');
-  }
-
   const deleteCommand = new DeleteObjectCommand({
     Bucket: bucketName,
     Key: documentID,
@@ -43,12 +39,6 @@ export async function loadBlob({
   binaryStream: Buffer;
   mimeType: string;
 }> {
-  const bucketName = process.env.AWS_BUCKET_NAME;
-
-  if (!bucketName) {
-    throw new Error('AWS_BUCKET_NAME is not set');
-  }
-
   const getCommand = new GetObjectCommand({
     Bucket: bucketName,
     Key: documentID,
@@ -89,12 +79,6 @@ export async function uploadBlob({
   documentID: string;
   mimeType: string;
 }): Promise<void> {
-  const bucketName = process.env.AWS_BUCKET_NAME;
-
-  if (!bucketName) {
-    throw new Error('AWS_BUCKET_NAME is not set');
-  }
-
   const createDocument = new PutObjectCommand({
     Body: binaryStream,
     Bucket: bucketName,
