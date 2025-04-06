@@ -1,8 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import type { Environment } from '../../../../../../../environment';
-import { initOcr } from '../../../../config/ai-config-ocr';
+import { afterAll, describe, expect, it } from 'vitest';
 import {
   deleteFileFromMistral,
   getSignedUrlFromMistral,
@@ -15,10 +13,6 @@ import {
 const filePath = path.join(import.meta.dirname, 'sample.pdf');
 
 describe('Mistral OCR Integration Tests', async () => {
-  beforeAll(async () => {
-    initOcr({ env: process.env as Environment });
-  });
-
   afterAll(async () => {
     const results = await listFilesFromOcr();
     const files = results.data;

@@ -1,10 +1,10 @@
+import { Mistral } from '@mistralai/mistralai';
 import type {
   ListFilesOut,
   OCRResponse,
   RetrieveFileOut,
   UploadFileOut,
 } from '../ai-providers-ocr';
-import { mistral } from '../../config/ai-config-ocr';
 
 /**
  * Delete a file from Mistral
@@ -16,6 +16,10 @@ export async function deleteFileFromMistral({
 }: {
   fileId: string;
 }): Promise<void> {
+  const mistral = new Mistral({
+    apiKey: process.env.MISTRAL_API_KEY,
+  });
+
   await mistral.files.delete({
     fileId,
   });
@@ -32,6 +36,10 @@ export async function getSignedUrlFromMistral({
 }: {
   fileId: string;
 }): Promise<string> {
+  const mistral = new Mistral({
+    apiKey: process.env.MISTRAL_API_KEY,
+  });
+
   const result = await mistral.files.getSignedUrl({
     fileId,
   });
@@ -44,6 +52,10 @@ export async function getSignedUrlFromMistral({
  * @returns The list of files from Mistral
  */
 export async function listFilesFromOcr(): Promise<ListFilesOut> {
+  const mistral = new Mistral({
+    apiKey: process.env.MISTRAL_API_KEY,
+  });
+
   const result = await mistral.files.list();
   return result;
 }
@@ -59,6 +71,10 @@ export async function processFileWithMistralOcr({
 }: {
   url: string;
 }): Promise<OCRResponse> {
+  const mistral = new Mistral({
+    apiKey: process.env.MISTRAL_API_KEY,
+  });
+
   const result = await mistral.ocr.process({
     document: {
       documentUrl: url,
@@ -81,6 +97,10 @@ export async function retrieveFileFromMistral({
 }: {
   fileId: string;
 }): Promise<RetrieveFileOut> {
+  const mistral = new Mistral({
+    apiKey: process.env.MISTRAL_API_KEY,
+  });
+
   const result = await mistral.files.retrieve({
     fileId,
   });
@@ -106,6 +126,11 @@ export async function uploadFileToMistral({
     content: blobContent,
     fileName,
   };
+
+  const mistral = new Mistral({
+    apiKey: process.env.MISTRAL_API_KEY,
+  });
+
   const result = await mistral.files.upload({
     file: fileToUpload,
     purpose: 'ocr',
