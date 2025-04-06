@@ -48,17 +48,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apidevtools/json-schema-ref-parser@npm:^11.1.0":
-  version: 11.9.3
-  resolution: "@apidevtools/json-schema-ref-parser@npm:11.9.3"
-  dependencies:
-    "@jsdevtools/ono": "npm:^7.1.3"
-    "@types/json-schema": "npm:^7.0.15"
-    js-yaml: "npm:^4.1.0"
-  checksum: 10c0/5745813b3d964279f387677b7a903ba6634cdeaf879ff3a331a694392cbc923763f398506df190be114f2574b8b570baab3e367c2194bb35f50147ff6cf27d7a
-  languageName: node
-  linkType: hard
-
 "@astarlogic/memoire@workspace:services/apps/memoire":
   version: 0.0.0-use.local
   resolution: "@astarlogic/memoire@workspace:services/apps/memoire"
@@ -3027,25 +3016,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hono/node-server@npm:^1.13.8":
-  version: 1.13.8
-  resolution: "@hono/node-server@npm:1.13.8"
-  peerDependencies:
-    hono: ^4
-  checksum: 10c0/5880892fddc2e3272886b3158a278baf3d054d5772bbe98bb71d5eb1c6030900653c7445221ad4de688527522d782ac5924fb27f944d76fad0cdf7d48ca030d0
-  languageName: node
-  linkType: hard
-
-"@hono/typebox-validator@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "@hono/typebox-validator@npm:0.3.2"
-  peerDependencies:
-    "@sinclair/typebox": ">=0.31.15 <1"
-    hono: ">=3.9.0"
-  checksum: 10c0/3273da86535bac4fc2145e1511153d0065a08234360f306c357de8c9366e30e915de52550cf5981edede5f77511c7542ab230b749b4986a3e191267cd1e82903
-  languageName: node
-  linkType: hard
-
 "@humanfs/core@npm:^0.19.1":
   version: 0.19.1
   resolution: "@humanfs/core@npm:0.19.1"
@@ -3156,17 +3126,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsdevtools/ono@npm:^7.1.3":
-  version: 7.1.3
-  resolution: "@jsdevtools/ono@npm:7.1.3"
-  checksum: 10c0/a9f7e3e8e3bc315a34959934a5e2f874c423cf4eae64377d3fc9de0400ed9f36cb5fd5ebce3300d2e8f4085f557c4a8b591427a583729a87841fda46e6c216b9
-  languageName: node
-  linkType: hard
-
 "@lukeed/ms@npm:^2.0.2":
   version: 2.0.2
   resolution: "@lukeed/ms@npm:2.0.2"
   checksum: 10c0/843b922717313bcde4943f478145d8bc13115b9b91d83bbaed53739b5644122984412310aed574792f4e6b492f2cbda178175f601856d310f67e14834c3f17a0
+  languageName: node
+  linkType: hard
+
+"@mistralai/mistralai@npm:^1.5.2":
+  version: 1.5.2
+  resolution: "@mistralai/mistralai@npm:1.5.2"
+  dependencies:
+    zod-to-json-schema: "npm:^3.24.1"
+  peerDependencies:
+    zod: ">= 3"
+  checksum: 10c0/d33a8a71adac4d2074ea4bfa09605b1c2158b5ffeaa9a78f3d9602c822cf0885df660b09f2372f17d8a81e78fa64795f31d9fad0cc40a1fab57ca0a4df9dc009
   languageName: node
   linkType: hard
 
@@ -3864,44 +3838,6 @@ __metadata:
   version: 4.32.0
   resolution: "@rollup/rollup-win32-x64-msvc@npm:4.32.0"
   conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@scalar/core@npm:0.2.1":
-  version: 0.2.1
-  resolution: "@scalar/core@npm:0.2.1"
-  dependencies:
-    "@scalar/types": "npm:0.1.1"
-  checksum: 10c0/5e8f161b5984b6c3c5c3fc480e36e6eb956d6d57d83064aa69dbf07ead1a9def0b79677097b3593e12d794c9d60d59293ebebeb6409623af12dd2d50a571ff04
-  languageName: node
-  linkType: hard
-
-"@scalar/hono-api-reference@npm:^0.7.1":
-  version: 0.7.1
-  resolution: "@scalar/hono-api-reference@npm:0.7.1"
-  dependencies:
-    "@scalar/core": "npm:0.2.1"
-  peerDependencies:
-    hono: ^4.0.0
-  checksum: 10c0/9c308f9aa677d04989235d91c159c95c315ca5f92a365ff35b8d96e7782b66bfcade63b070100f88ebaaa0e3468ab2c22e688675a9cb52cf6be985156a807f72
-  languageName: node
-  linkType: hard
-
-"@scalar/openapi-types@npm:0.1.9":
-  version: 0.1.9
-  resolution: "@scalar/openapi-types@npm:0.1.9"
-  checksum: 10c0/8c815fadd4a52b496b9851484c537417c04c6408fa5c84f72ad1284c49944ffa74f002a3caa8ab07b3a2fb6434d3c20331da00ffd3f1aa6fb8511658d0c9ae7d
-  languageName: node
-  linkType: hard
-
-"@scalar/types@npm:0.1.1":
-  version: 0.1.1
-  resolution: "@scalar/types@npm:0.1.1"
-  dependencies:
-    "@scalar/openapi-types": "npm:0.1.9"
-    "@unhead/schema": "npm:^1.11.11"
-    zod: "npm:^3.23.8"
-  checksum: 10c0/8e9911cc2d7ac9606b68fbf14a3e437d6d4819acacb1c91f50ef5e6ba921c38ec2c8fb25154e11cfdd8c34b48c4f95644cc889924ab16534ea3f46510decd5db
   languageName: node
   linkType: hard
 
@@ -4756,16 +4692,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unhead/schema@npm:^1.11.11":
-  version: 1.11.20
-  resolution: "@unhead/schema@npm:1.11.20"
-  dependencies:
-    hookable: "npm:^5.5.3"
-    zhead: "npm:^2.2.4"
-  checksum: 10c0/f2f968639bbd18f90ddfb83b77c9256bc4c0379ab75efa24dc759f3f597aae707d4dde97df690823f8902eab31d73a5faa8bdd8daf18c6ac8e4503a78b42be74
-  languageName: node
-  linkType: hard
-
 "@vitest/coverage-v8@npm:2.1.8":
   version: 2.1.8
   resolution: "@vitest/coverage-v8@npm:2.1.8"
@@ -4948,6 +4874,8 @@ __metadata:
   resolution: "ai@workspace:services/packages/ai"
   dependencies:
     "@aws-sdk/client-bedrock-runtime": "npm:^3.758.0"
+    "@mistralai/mistralai": "npm:^1.5.2"
+    zod: "npm:^3.21.4"
   languageName: unknown
   linkType: soft
 
@@ -5443,13 +5371,6 @@ __metadata:
   dependencies:
     escape-string-regexp: "npm:^1.0.5"
   checksum: 10c0/fd9c7446551b8fc536f95e8a286d431017cd4ba1ec2e53997ec9159385e9c317672f6dfc4d49fdb97449fdb53b0bacd0a8bab9343b8fdd2e46c7ddf6173d0db7
-  languageName: node
-  linkType: hard
-
-"clone@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "clone@npm:2.1.2"
-  checksum: 10c0/ed0601cd0b1606bc7d82ee7175b97e68d1dd9b91fd1250a3617b38d34a095f8ee0431d40a1a611122dcccb4f93295b4fdb94942aa763392b5fe44effa50c2d5e
   languageName: node
   linkType: hard
 
@@ -7609,73 +7530,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono-openapi@npm:^0.4.4":
-  version: 0.4.6
-  resolution: "hono-openapi@npm:0.4.6"
-  dependencies:
-    json-schema-walker: "npm:^2.0.0"
-  peerDependencies:
-    "@hono/arktype-validator": ^2.0.0
-    "@hono/effect-validator": ^1.2.0
-    "@hono/typebox-validator": ^0.2.0 || ^0.3.0
-    "@hono/valibot-validator": ^0.5.1
-    "@hono/zod-validator": ^0.4.1
-    "@sinclair/typebox": ^0.34.9
-    "@valibot/to-json-schema": ^1.0.0-beta.3
-    arktype: ^2.0.0-rc.25
-    effect: ^3.11.3
-    hono: ^4.6.13
-    openapi-types: ^12.1.3
-    valibot: ^1.0.0-beta.9
-    zod: ^3.23.8
-    zod-openapi: ^4.0.0
-  peerDependenciesMeta:
-    "@hono/arktype-validator":
-      optional: true
-    "@hono/effect-validator":
-      optional: true
-    "@hono/typebox-validator":
-      optional: true
-    "@hono/valibot-validator":
-      optional: true
-    "@hono/zod-validator":
-      optional: true
-    "@sinclair/typebox":
-      optional: true
-    "@valibot/to-json-schema":
-      optional: true
-    arktype:
-      optional: true
-    effect:
-      optional: true
-    hono:
-      optional: true
-    openapi-types:
-      optional: true
-    valibot:
-      optional: true
-    zod:
-      optional: true
-    zod-openapi:
-      optional: true
-  checksum: 10c0/84436d2427b4440547ac5041d963de2717ed9fc33f07492f8b831568fbb0029f2ce354309d24126ccb962f7d7c9cda4d31f38d40804ab3ede4a4a01a3d3a037f
-  languageName: node
-  linkType: hard
-
-"hono@npm:^4.7.0":
-  version: 4.7.4
-  resolution: "hono@npm:4.7.4"
-  checksum: 10c0/b189c5b75527a0b2c6669a8b2d46a2c522c9f429c08da801373b13d25b476f20e639f667a9dac2fe42074e9b6f851d542d28026f158c5728b20034b9b0e3e738
-  languageName: node
-  linkType: hard
-
-"hookable@npm:^5.5.3":
-  version: 5.5.3
-  resolution: "hookable@npm:5.5.3"
-  checksum: 10c0/275f4cc84d27f8d48c5a5cd5685b6c0fea9291be9deea5bff0cfa72856ed566abde1dcd8cb1da0f9a70b4da3d7ec0d60dc3554c4edbba647058cc38816eced3d
-  languageName: node
-  linkType: hard
-
 "hosted-git-info@npm:^2.1.4":
   version: 2.8.9
   resolution: "hosted-git-info@npm:2.8.9"
@@ -8312,16 +8166,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-schema-walker@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "json-schema-walker@npm:2.0.0"
-  dependencies:
-    "@apidevtools/json-schema-ref-parser": "npm:^11.1.0"
-    clone: "npm:^2.1.2"
-  checksum: 10c0/be257826bbaa615349dbf6594826403938c50a9906e52407fcd8191b4f31cfcf22310efbd762382e8c9cbdcc6a75d4f3f9348c3bd6763a7b0eb4f70009b92f6d
-  languageName: node
-  linkType: hard
-
 "json-stable-stringify-without-jsonify@npm:^1.0.1":
   version: 1.0.1
   resolution: "json-stable-stringify-without-jsonify@npm:1.0.1"
@@ -8580,19 +8424,6 @@ __metadata:
   checksum: 10c0/7579ff94e899e2f76ab64491d76cf606274c874d8f2af4a442c016bd85688927fcfca157ba6bf74b08e9439dc010b248ce05b96cc7c126a354c3bae7fcb48b7f
   languageName: node
   linkType: hard
-
-"memoire@workspace:services/apps/rem":
-  version: 0.0.0-use.local
-  resolution: "memoire@workspace:services/apps/rem"
-  dependencies:
-    "@hono/node-server": "npm:^1.13.8"
-    "@hono/typebox-validator": "npm:^0.3.2"
-    "@scalar/hono-api-reference": "npm:^0.7.1"
-    core: "workspace:^"
-    hono: "npm:^4.7.0"
-    hono-openapi: "npm:^0.4.4"
-  languageName: unknown
-  linkType: soft
 
 "merge2@npm:^1.3.0":
   version: 1.4.1
@@ -11662,14 +11493,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zhead@npm:^2.2.4":
-  version: 2.2.4
-  resolution: "zhead@npm:2.2.4"
-  checksum: 10c0/3d166fb661f1b7fdf8a0ef2222d9e574ab241e72141f2f1fda62a9250ca73aabf2eaf0d66046a3984cd24d1dd9bac231338c6271684d6b8caa6b66af7c45f275
+"zod-to-json-schema@npm:^3.24.1":
+  version: 3.24.5
+  resolution: "zod-to-json-schema@npm:3.24.5"
+  peerDependencies:
+    zod: ^3.24.1
+  checksum: 10c0/0745b94ba53e652d39f262641cdeb2f75d24339fb6076a38ce55bcf53d82dfaea63adf524ebc5f658681005401687f8e9551c4feca7c4c882e123e66091dfb90
   languageName: node
   linkType: hard
 
-"zod@npm:^3.23.8":
+"zod@npm:^3.21.4":
   version: 3.24.2
   resolution: "zod@npm:3.24.2"
   checksum: 10c0/c638c7220150847f13ad90635b3e7d0321b36cce36f3fc6050ed960689594c949c326dfe2c6fa87c14b126ee5d370ccdebd6efb304f41ef5557a4aaca2824565
