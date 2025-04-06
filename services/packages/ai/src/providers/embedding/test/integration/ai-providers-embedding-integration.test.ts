@@ -1,5 +1,8 @@
 import { describe, expect, test } from 'vitest';
-import { embedDocumentChunks, embedQuery } from './ai-providers-embedding.js';
+import {
+  embedDocumentChunks,
+  embedQuery,
+} from '../../ai-providers-embedding.js';
 
 const testQuery = 'test query';
 const testChunks = ['test', 'document'];
