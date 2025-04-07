@@ -1,0 +1,19 @@
+{
+  "name": "memoire",
+  "private": true,
+  "scripts": {
+    "build": "yarn w:build-service",
+    "dev": "yarn w:dev --env-file=../../../.env src/index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.8",
+    "@hono/typebox-validator": "^0.3.2",
+    "core": "workspace:^",
+    "hono": "^4.7.0",
+    "hono-openapi": "^0.4.4"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@scalar/hono-api-reference": "^0.7.1"
+  }
+}
